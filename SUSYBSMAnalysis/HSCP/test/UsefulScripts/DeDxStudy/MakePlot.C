@@ -260,6 +260,15 @@ void MakePlot()
 //   StdObjName.push_back("harm2_SP_in_noC_CCC");       StdObjLegend.push_back("harm-2, old CC");
 //   StdObjName.push_back("harm2_SP_in_noC_newCCC");    StdObjLegend.push_back("harm-2, new CC");
 
+   StdObjName.push_back("harm2_PO_raw");                StdObjLegend.push_back("harm-2, PO");
+   StdObjName.push_back("Hybr2005_PO_raw");             StdObjLegend.push_back("Hybr-2-05, PO");
+   StdObjName.push_back("Hybr2010_PO_raw");             StdObjLegend.push_back("Hybr-2-10, PO");
+   StdObjName.push_back("Hybr2015_PO_raw");             StdObjLegend.push_back("Hybr-2-15, PO");
+
+   StdObjName.push_back("harm2_SO_in_noC_CCC");         StdObjLegend.push_back("harm-2, SO");
+   StdObjName.push_back("Hybr2005_SO_in_noC_CCC");      StdObjLegend.push_back("Hybr-2-05, SO");
+   StdObjName.push_back("Hybr2010_SO_in_noC_CCC");      StdObjLegend.push_back("Hybr-2-10, SO");
+   StdObjName.push_back("Hybr2015_SO_in_noC_CCC");      StdObjLegend.push_back("Hybr-2-15, SO");
 //   StdObjName.push_back("harm2_SO_in_noC_CCC");
 //   StdObjName.push_back("hybr201_SP_in_noC_CCC");     StdObjLegend.push_back("hybrid2-10, SP");
 //   StdObjName.push_back("hybr2015_SP_in_noC_CCC");    StdObjLegend.push_back("hybrid2-15, SP");
@@ -270,7 +279,7 @@ void MakePlot()
 //   StdObjName.push_back("hybr204_SP_in_noC_CCC");     StdObjLegend.push_back("hybrid2-40, SP");
 //   StdObjName.push_back("harm2_SO_in_noC_CCC");       StdObjLegend.push_back("harm-2, SO");
 //   StdObjName.push_back("Hybr201_SP_in_noC_CCC");     StdObjLegend.push_back("Hybrid2-10, SP");
-   StdObjName.push_back("Hybr2015_SP_in_noC_CCC");    StdObjLegend.push_back("Hybrid2-15");
+//   StdObjName.push_back("Hybr2015_SP_in_noC_CCC");    StdObjLegend.push_back("Hybrid2-15");
 //   StdObjName.push_back("Hybr2015_SP_in_noC_newCCC"); StdObjLegend.push_back("Hybrid2-15, new CC");
 //   StdObjName.push_back("Hybr202_SP_in_noC_CCC");     StdObjLegend.push_back("Hybrid2-20, SP");
 //   StdObjName.push_back("Hybr2025_SP_in_noC_CCC");    StdObjLegend.push_back("Hybrid2-25, SP");
@@ -296,25 +305,24 @@ void MakePlot()
 //   StdObjName.push_back("Ias_SP_in_noC");
 //   StdObjName.push_back("Ias_SP_in_noC_CI");
 //   StdObjName.push_back("Ias_SP_in_noC_CC");
-   StdObjName.push_back("Ias_SP_in_noC_CCC");           StdObjLegend.push_back("Ias (2015)");
-   StdObjName.push_back("Ias_SP_in_noC_CCC16");         StdObjLegend.push_back("Ias (2016)");
+//   StdObjName.push_back("Ias_SP_in_noC_CCC");           StdObjLegend.push_back("Ias (2015)");
+//   StdObjName.push_back("Ias_SP_in_noC_CCC16");         StdObjLegend.push_back("Ias (2016)");
 //   StdObjName.push_back("Ias_SP_in_noC_newCCC");      StdObjLegend.push_back("Ias, new CC");
+   StdObjName.push_back("Ias_SP_in_noC_CCC16");      StdObjLegend.push_back("Ias Strip+Pixel");
+   StdObjName.push_back("Ias_SO_in_noC_CCC16");      StdObjLegend.push_back("Ias Strip-Only");
+   StdObjName.push_back("Ias_PO_in_noC_CCC16");      StdObjLegend.push_back("Ias Pixel-Only");
 
 
    vector <dEdxPlotObj*> plotObj;
-   plotObj.push_back(new dEdxPlotObj("Histos_MCMinBias.root", "MC (MinBias)", "MCMinBias", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 1));
+ //  plotObj.push_back(new dEdxPlotObj("Histos_MCMinBias.root", "MC (MinBias)", "MCMinBias", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 1));
 //   plotObj.push_back(new dEdxPlotObj("Histos_Data2015.root", "Data 2015",   "Data", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
 //   plotObj.push_back(new dEdxPlotObj("Histos_Data2016.root", "Data 2016",   "Data", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
 //   plotObj.push_back(new dEdxPlotObj("Histos_Run273158.root", "Run 273158",   "Run273158", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
 //   plotObj.push_back(new dEdxPlotObj("Histos_Run273502.root", "Run 273502",   "Run273502", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run273725.root", "Run 273725",   "Run273725", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run274199.root", "Run 274199",   "Run274199", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run274200.root", "Run 274200",   "Run274200", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run274240.root", "Run 274240",   "Run274240", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run274998.root", "Run 274998",   "Run274998", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run274999.root", "Run 274999",   "Run274999", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run275000.root", "Run 275000",   "Run275000", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
-   plotObj.push_back(new dEdxPlotObj("Histos_Run275001.root", "Run 275001",   "Run275001", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
+   plotObj.push_back(new dEdxPlotObj("Histos_Run278018.root", "Run 278018",   "Run278018", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
+   plotObj.push_back(new dEdxPlotObj("Histos_Run278308.root", "Run 278308",   "Run278308", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
+   plotObj.push_back(new dEdxPlotObj("Histos_Run279931.root", "Run 279931",   "Run279931", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
+//   plotObj.push_back(new dEdxPlotObj("Histos_Run280385.root", "Run 280385",   "Run280385", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 0));
 //   plotObj.push_back(new dEdxPlotObj("Histos_MCDYM2600Q2.root",        "DY, Q = 2, M = 2.6TeV",    "DYM2600Q2",        HitObjName, StdObjName, HitObjLegend, StdObjLegend, 2));
 //   plotObj.push_back(new dEdxPlotObj("Histos_MCGluino_M1000_f10.root", "Gluino, f=10, M = 1TeV",   "Gluino_M1000_f10", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 2));
 //   plotObj.push_back(new dEdxPlotObj("Histos_MCGluino_M1800_f10.root", "Gluino, f=10, M = 1.8TeV", "Gluino_M1800_f10", HitObjName, StdObjName, HitObjLegend, StdObjLegend, 2));
@@ -339,17 +347,17 @@ void MakePlot()
    }
 
    cerr << "====== TESTA :: 2D Histograms ======" << endl;
-//   Draw2D (SaveDir, plotObj);
+   Draw2D (SaveDir, plotObj);
 
    cerr << "====== TESTB :: Standard Histos ======" << endl;
    SuperposeFilesOnDeDxObj (SaveDir, plotObj);
-//   HitPlots (SaveDir, plotObj);
+   HitPlots (SaveDir, plotObj);
 
    cerr << "====== TESTC :: Cross-compare estimators ======" << endl;
    CrossCompareAndControlPlots (SaveDir, plotObj, "SO", "Hybr");
    
    cerr << "====== TESTD :: Systematics study ======" << endl;
-   SystStudy (SaveDir, plotObj);
+//   SystStudy (SaveDir, plotObj);
 
    cerr << "====== TESTE :: Scale Factors ======" << endl;
    double SFMip, SFProfile;
@@ -386,15 +394,16 @@ void MakePlot()
    ObjNames.push_back("Hybr202_SP_in_noC_CCC_noF_MIP");   LegendLabels.push_back("hybrid-2-20"); Colors.push_back(kRed);
    ObjNames.push_back("Hybr2025_SP_in_noC_CCC_noF_MIP");  LegendLabels.push_back("hybrid-2-25"); Colors.push_back(kRed);
 */
-   vector <string> ObjNames; vector <string> LegendLabels; vector <Color_t> Colors;
-   ObjNames.push_back("Hybr2015_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-15"); Colors.push_back(kBlack);
-   ObjNames.push_back("Hybr2020_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-20"); Colors.push_back(kRed);
-   ObjNames.push_back("Hybr2025_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-25"); Colors.push_back(kBlue);
-   ObjNames.push_back("Hybr2030_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-30"); Colors.push_back(kGreen);
-   ObjNames.push_back("Hybr2035_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-35"); Colors.push_back(kCyan);
-   ObjNames.push_back("Ias_SP_in_noC_CCC_MIP");           LegendLabels.push_back("Ias (old)"); Colors.push_back(kMagenta);
-   ObjNames.push_back("Ias_SP_in_noC_CCC16_MIP");         LegendLabels.push_back("Ias (new)"); Colors.push_back(kAzure+2);
-   MakeROCGeneral (plotObj[8]->InputFile, plotObj[12]->InputFile, ObjNames, LegendLabels, Colors, SaveDir, "Estimators");
+
+//   vector <string> ObjNames; vector <string> LegendLabels; vector <Color_t> Colors;
+//   ObjNames.push_back("Hybr2015_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-15"); Colors.push_back(kBlack);
+//   ObjNames.push_back("Hybr2020_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-20"); Colors.push_back(kRed);
+//   ObjNames.push_back("Hybr2025_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-25"); Colors.push_back(kBlue);
+//   ObjNames.push_back("Hybr2030_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-30"); Colors.push_back(kGreen);
+//   ObjNames.push_back("Hybr2035_SP_in_noC_CCC_MIP");  LegendLabels.push_back("Hybrid-2-35"); Colors.push_back(kCyan);
+//   ObjNames.push_back("Ias_SP_in_noC_CCC_MIP");           LegendLabels.push_back("Ias (old)"); Colors.push_back(kMagenta);
+//   ObjNames.push_back("Ias_SP_in_noC_CCC16_MIP");         LegendLabels.push_back("Ias (new)"); Colors.push_back(kAzure+2);
+//   MakeROCGeneral (plotObj[8]->InputFile, plotObj[12]->InputFile, ObjNames, LegendLabels, Colors, SaveDir, "Estimators");
 }
 
    /* 

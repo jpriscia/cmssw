@@ -19,5 +19,5 @@ root -l -b << EOF
   gSystem->Load("libDataFormatsTrackerRecHit2D.so");
   gSystem->Load("libAnalysisDataFormatsSUSYBSMObjects.so");
   gInterpreter->SetClassAutoparsing(false);
-  .x MakePlot.C+("$1", "$arg2");
+  .x MakePlot.C+();
 EOF
