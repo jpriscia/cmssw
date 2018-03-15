@@ -164,7 +164,6 @@ if sys.argv[1]=='5':
 
 if sys.argv[1]=='6':
     CalibName    = 'MuonTimeOffset.txt'
-    diff         = 'MuonTiming_Old_To_New.txt'
     newCalibName = os.getcwd() +               '/' + CalibName
     oldCalibName = os.getcwd() + '/../../../data/' + CalibName
     mergedName   = os.getcwd() +    '/Updated.txt'
@@ -172,7 +171,6 @@ if sys.argv[1]=='6':
     oldCalibFile = open(oldCalibName, 'r').readlines()
     newCalibFile = open(newCalibName, 'r').readlines()
 
-    os.system('diff -u %s %s > %s' % (oldCalibName, newCalibName, diff))
     newRuns = [int(x) for x in newCalibFile[0].split(',') if x.find('runs') < 0]
     oldRuns = [int(x) for x in oldCalibFile[0].split(',') if x.find('runs') < 0]
     allruns = [int(x) for x in sorted(newRuns + oldRuns)]
@@ -204,49 +202,4 @@ if sys.argv[1]=='6':
           if found == False:
 	     print 'Warning: run', run, 'appears to have no parent'
     f.close()
-    
-#    f = open(diff, 'r')
-#    for l, line in enumerate(f):
-#       if l==0:
-#           # update the list of runs
-#       if l==1: continue
-#       if l>=2:
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
