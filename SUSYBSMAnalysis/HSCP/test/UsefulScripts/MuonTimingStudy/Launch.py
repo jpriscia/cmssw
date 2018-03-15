@@ -162,3 +162,91 @@ if sys.argv[1]=='4':
 if sys.argv[1]=='5':
     os.system('scp pictures/* ' + STORAGEDIR)
 
+if sys.argv[1]=='6':
+    CalibName    = 'MuonTimeOffset.txt'
+    diff         = 'MuonTiming_Old_To_New.txt'
+    newCalibName = os.getcwd() +               '/' + CalibName
+    oldCalibName = os.getcwd() + '/../../../data/' + CalibName
+    mergedName   = os.getcwd() +    '/Updated.txt'
+
+    oldCalibFile = open(oldCalibName, 'r').readlines()
+    newCalibFile = open(newCalibName, 'r').readlines()
+
+    os.system('diff -u %s %s > %s' % (oldCalibName, newCalibName, diff))
+    newRuns = [int(x) for x in newCalibFile[0].split(',') if x.find('runs') < 0]
+    oldRuns = [int(x) for x in oldCalibFile[0].split(',') if x.find('runs') < 0]
+    allruns = [int(x) for x in sorted(newRuns + oldRuns)]
+
+    for i, entry in enumerate(allruns):
+       if i+1 < len(allruns) and entry==allruns[i+1]:
+          allruns.remove(entry)
+    
+    with open(mergedName, 'w') as f:
+       f.write('      runs,')
+       for run in allruns[0:len(allruns)-1]: f.write('   %i,' % run)
+       f.write('   ' + str(allruns[len(allruns)-1]) + '\n')
+       f.write('%s' % newCalibFile[1])
+       for run in allruns:
+          found = False
+          for N in newCalibFile[2:]:
+             if N.find('run %i,' % run) == 0:
+                f.write('%s' % N)
+	        newCalibFile.remove(N)
+                found = True
+                break
+          if found == False:
+             for O in oldCalibFile[2:]:
+                if O.find('run %i,' % run) == 0:
+		   f.write('%s' % O)
+		   oldCalibFile.remove(O)
+		   found = True
+		   break
+          if found == False:
+	     print 'Warning: run', run, 'appears to have no parent'
+    f.close()
+    
+#    f = open(diff, 'r')
+#    for l, line in enumerate(f):
+#       if l==0:
+#           # update the list of runs
+#       if l==1: continue
+#       if l>=2:
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
