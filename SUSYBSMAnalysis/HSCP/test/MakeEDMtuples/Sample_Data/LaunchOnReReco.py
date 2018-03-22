@@ -87,7 +87,7 @@ def splitJSON_forJobs (jsonPath):
          for l in lumi:
             interval.append(int(l))
          for i, l in enumerate(range(interval[0], interval[1], LumisPerJob)):
-            s = '{%s: [%i, %i]}' % (str(run[0]), l, l+LumisPerJob-1 if l+LumisPerJob-1 <= interval[1] else interval[1])
+            s = '{"%s": [[%i, %i]]}' % (str(run[0]), l, l+LumisPerJob-1 if l+LumisPerJob-1 <= interval[1] else interval[1])
             jsons.append([str(run[0]), 'Run_%s_block_%i.json' % (str(run[0]), i), fileList])
 	    with open ('%s/%s' % (JSONDIR, jsons[len(jsons)-1][1]), 'w') as f:
                f.write(s)
@@ -108,7 +108,7 @@ if sys.argv[1]=='1':
    LaunchOnCondor.SendCluster_Create(FarmDirectory, JobName)
    LaunchOnCondor.Jobs_Queue = '8nh'
 
-   prefix = 'root://cms-xrd-global.cern.ch//' if not ISLOCAL else ''
+   prefix = 'root://cms-xrd-global.cern.ch/' if not ISLOCAL else ''
    INDEX  = -1
    for sample in datasetList :
       LaunchOnCondor.Jobs_InitCmds = []
@@ -141,10 +141,10 @@ if sys.argv[1]=='1':
             f.write("OUTPUTFILE = 'out.root'\n" )
             f.write("LUMITOPROCESS = '" +  os.getcwd()+"/"+JSONDIR+"/"+jsonName+"'\n")
             f.write("\n")
-            f.write("InputFileList = cms.untracked.vstring(\n")
+            f.write("InputFileList = cms.untracked.vstring( *(\n")
             for fileToProcess in fileLists[m]:
                f.write("'"+prefix+fileToProcess+"',\n")
-            f.write(")\n")
+            f.write(") )\n")
             f.write("\n")
             f.write("#main EDM tuple cfg that depends on the above parameters\n")
             f.write("execfile( os.path.expandvars('${CMSSW_BASE}/src/SUSYBSMAnalysis/HSCP/test/MakeEDMtuples/HSCParticleProducer_cfg.py') )\n")
