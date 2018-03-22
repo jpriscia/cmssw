@@ -13,8 +13,8 @@ import json
 import collections # kind of map
 
 #script parameters #feel free to edit those
-JSON          = '23Sept2016ReReco_Collisions16.json'
-#JSON          = 'test.json'
+#JSON          = '23Sept2016ReReco_Collisions16.json'
+JSON          = '2016F.json'
 GlobalTag     = '80X_dataRun2_2016LegacyRepro_v4'
 LOCALTIER     = 'T2_BE_UCL'
 ISLOCAL       = False
@@ -121,6 +121,7 @@ if sys.argv[1]=='1':
       os.system("mkdir -p out/%s" % run);
 
       for m, mask in enumerate(DATASETMASKS):
+         if len(fileLists)    == 0: continue
 	 if len(fileLists[m]) == 0: continue
          INDEX += 1
          datasetBaseName = string.strip(mask, '/')
@@ -152,8 +153,6 @@ if sys.argv[1]=='1':
          LaunchOnCondor.SendCluster_Push  (["CMSSW", ["HSCParticleProducer_Data_Template_cfg.py"] ])
 
    LaunchOnCondor.SendCluster_Submit()
-
-
 
 if sys.argv[1]=='2':
    FarmDirectory = "MERGE"
