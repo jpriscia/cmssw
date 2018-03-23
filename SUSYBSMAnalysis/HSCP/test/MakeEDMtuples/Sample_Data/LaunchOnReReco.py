@@ -154,6 +154,32 @@ if sys.argv[1]=='1':
 
    LaunchOnCondor.SendCluster_Submit()
 
+if sys.argv[1]=='1r': #resubmit
+   FarmDirectory = 'FARM'
+   shellFiles    = [x for x in os.listdir(FarmDirectory+'/inputs/') if x.find('.sh') > 0]
+
+   FinalCmdFile = FarmDirectory+'/inputs/HscpEdmProd.cmd'
+
+   toResubmit = []
+   for shellFile in shellFiles:
+      with open(FarmDirectory+'/inputs/'+shellFile, 'r') as f:
+         lines = f.readlines()
+      for line in lines:
+         if 'mv out.root' in line:
+            outputFile = string.strip(line.split(' ')[2])
+            print 'checking if file', outputFile, 'exists ...'
+            if not os.path.isfile(outputFile): toResubmit.append(shellFile)
+            break
+
+   print len(toResubmit), 'jobs to resubmit ...'
+   with open(FinalCmdFile, 'w') as f:
+      f.write('#!/bin/bash\n\n')
+      for shellFile in toResubmit:
+         f.write('sbatch --partition=Def --qos=normal --wckey=cms ' + FarmDirectory + '/inputs/' + shellFile + '\n')
+
+   initProxy()
+   os.system('sh ' + FinalCmdFile)
+
 if sys.argv[1]=='2':
    FarmDirectory = "MERGE"
    LaunchOnCondor.SendCluster_Create(FarmDirectory, "HSCPEdmMerge")
