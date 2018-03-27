@@ -181,11 +181,12 @@ if sys.argv[1]=='1r': #resubmit
                         jsonFileBegin = l.split('=')[1].strip('\'\n ')
                         break
                with open(jsonFileEnd, 'r') as f1, open(jsonFileBegin, 'r') as f2:
-                  l1 = f1.readline()
-	          l2 = f2.readline()
+                  l1 = f1.readline().strip()
+                  l2 = f2.readline().strip()
                   if l1 != l2:
                      toResubmit.append(shellFile)
                      print 'File', outputFile, 'does not have correct Lumis'
+                     break
 
    print len(toResubmit), 'jobs to resubmit ...'
    with open(FinalCmdFile, 'w') as f:
