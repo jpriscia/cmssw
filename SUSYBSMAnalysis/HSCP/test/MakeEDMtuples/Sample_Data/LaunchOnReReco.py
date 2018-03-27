@@ -19,7 +19,8 @@ GlobalTag     = '80X_dataRun2_2016LegacyRepro_v4'
 LOCALTIER     = 'T2_BE_UCL'
 ISLOCAL       = False
 JSONDIR       = 'JSONS'
-LumisPerJob   = 50
+LumisPerJob   = 10
+EmptyFileSize = 3262705
 
 DATASETS = []
 
@@ -167,9 +168,24 @@ if sys.argv[1]=='1r': #resubmit
       for line in lines:
          if 'mv out.root' in line:
             outputFile = string.strip(line.split(' ')[2])
+            jsonFileEnd = string.replace(outputFile, '.root', '.json')
             print 'checking if file', outputFile, 'exists ...'
-            if not os.path.isfile(outputFile): toResubmit.append(shellFile)
-            break
+            if not os.path.isfile(outputFile) or int(os.stat(outputFile).st_size) <= EmptyFileSize:
+               toResubmit.append(shellFile)
+               break
+            elif os.path.isfile(outputFile) and os.path.isfile(jsonFileEnd):
+               jsonFileBegin = ''
+               with open(FarmDirectory+'/inputs/'+string.replace(shellFile, '.sh', '_step_0_cfg.py'), 'r') as F:
+                  for i, l in enumerate (F):
+                     if 'LUMITOPROCESS' in l:
+                        jsonFileBegin = l.split('=')[1].strip('\'\n ')
+                        break
+               with open(jsonFileEnd, 'r') as f1, open(jsonFileBegin, 'r') as f2:
+                  l1 = f1.readline()
+	          l2 = f2.readline()
+                  if l1 != l2:
+                     toResubmit.append(shellFile)
+                     print 'File', outputFile, 'does not have correct Lumis'
 
    print len(toResubmit), 'jobs to resubmit ...'
    with open(FinalCmdFile, 'w') as f:
