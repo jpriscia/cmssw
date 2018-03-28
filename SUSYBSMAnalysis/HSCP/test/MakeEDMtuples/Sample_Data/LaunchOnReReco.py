@@ -14,13 +14,14 @@ import collections # kind of map
 
 #script parameters #feel free to edit those
 #JSON          = '23Sept2016ReReco_Collisions16.json'
-JSON          = '2016F.json'
-GlobalTag     = '80X_dataRun2_2016LegacyRepro_v4'
-LOCALTIER     = 'T2_BE_UCL'
-ISLOCAL       = False
-JSONDIR       = 'JSONS'
-LumisPerJob   = 10
-EmptyFileSize = 3262705
+JSON             = '2016F.json'
+GlobalTag        = '80X_dataRun2_2016LegacyRepro_v4'
+LOCALTIER        = 'T2_BE_UCL'
+ISLOCAL          = False
+JSONDIR          = 'JSONS'
+LumisPerJob      = 10
+EmptyFileSize    = 3262705
+ResubmitOnTheFly = True     # resubmit in a safe way only jobs not currently running
 
 DATASETS = []
 
@@ -157,7 +158,7 @@ if sys.argv[1]=='1':
 
 if sys.argv[1]=='1r': #resubmit
    FarmDirectory = 'FARM'
-   shellFiles    = [x for x in os.listdir(FarmDirectory+'/inputs/') if x.find('.sh') > 0]
+   shellFiles = [x for x in os.listdir(FarmDirectory+'/inputs/') if x.find('.sh') > 0]
 
    FinalCmdFile = FarmDirectory+'/inputs/HscpEdmProd.cmd'
 
@@ -169,8 +170,8 @@ if sys.argv[1]=='1r': #resubmit
          if 'mv out.root' in line:
             outputFile = string.strip(line.split(' ')[2])
             jsonFileEnd = string.replace(outputFile, '.root', '.json')
-            print 'checking if file', outputFile, 'exists ...'
             if not os.path.isfile(outputFile) or int(os.stat(outputFile).st_size) <= EmptyFileSize:
+               print 'File ', outputFile, 'either does not exist, or it is too small ...'
                toResubmit.append(shellFile)
                break
             elif os.path.isfile(outputFile) and os.path.isfile(jsonFileEnd):
@@ -185,9 +186,12 @@ if sys.argv[1]=='1r': #resubmit
                   l2 = f2.readline().strip()
                   if l1 != l2:
                      toResubmit.append(shellFile)
-                     print 'File', outputFile, 'does not have correct Lumis'
+                     print 'File', outputFile, 'does not have correct Lumis ...'
                      break
 
+   if ResubmitOnTheFly: #remove jobs already running
+      runningJobs = [os.path.basename(x.strip()) for x in os.popen('squeue -u ' + os.environ['USER'] + ' -o "%o"').read().split() if x.find('.sh') > 0]
+      toResubmit = [x for x in toResubmit if x not in runningJobs]
    print len(toResubmit), 'jobs to resubmit ...'
    with open(FinalCmdFile, 'w') as f:
       f.write('#!/bin/bash\n\n')
