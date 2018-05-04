@@ -471,7 +471,8 @@ bool PassPreselection(const susybsm::HSCParticle& hscp, const DeDxHitInfo* dedxH
           st->BS_Qual->Fill(track->qualityMask(),Event_Weight);
    }
 
-   if(TypeMode!=3 && track->qualityMask()<GlobalMinQual )return false;
+//   if(TypeMode!=3 && track->qualityMask()<GlobalMinQual )return false; // FIXME Tracks with quality > 2 are bad also!
+   if(TypeMode!=3 && track->qualityMask() != FixedQual)return false;
    if(st){st->Qual  ->Fill(0.0,Event_Weight);
           st->BS_Chi2->Fill(track->chi2()/track->ndof(),Event_Weight);
    }
@@ -1073,7 +1074,8 @@ std::cout<<"D\n";
 
 std::cout<<"E\n";
 
-      if(isData){    trackerCorrector.LoadDeDxCalibration(analysis_path+"../../data/Data13TeVGains_v2.root"); 
+//      if(isData){    trackerCorrector.LoadDeDxCalibration(analysis_path+"../UsefulScripts/MuonTimingStudy/forJoze/Weights_ALCARECO.root"); 
+      if(isData){    trackerCorrector.TrackerGains = NULL;
       }else{ trackerCorrector.TrackerGains = NULL; //FIXME check gain for MC
       }
 
@@ -1181,6 +1183,32 @@ std::cout<<"G\n";
                CurrentRun = ev.eventAuxiliary().run();
                tofCalculator.setRun(CurrentRun);
                trackerCorrector.setRun(CurrentRun);
+	       if (278018 <= CurrentRun && CurrentRun < 278308){
+                  dEdxK_Data    = 1.969; // +/- 0 dEdxC_Data    = 3.530; // +/- 0.625
+                  dEdxC_Data    = 3.530; // +/- 0.625
+                  dEdxSF [1]   *= 1.04098;
+//                  dEdxTemplates = loadDeDxTemplate(analysis_path+"../UsefulScripts/DeDxStudy/dEdxTemplate_hit_SP_in_noC_CCC_Run278018.root", true);
+                  SamplePlots->IntLumi->SetBinContent(1, IntegratedLuminosity13TeV16PostHIP);
+	       }
+
+	       if (278308 <= CurrentRun && CurrentRun < 279116){
+                  dEdxK_Data    = 1.870; // +/- 0.027
+                  dEdxC_Data    = 4.049; // +/- 0.571
+                  dEdxSF [1]   *= 1.06009;
+//                  dEdxTemplates = loadDeDxTemplate(analysis_path+"../UsefulScripts/DeDxStudy/dEdxTemplate_hit_SP_in_noC_CCC_Run278308.root", true);
+                  SamplePlots->IntLumi->SetBinContent(1, IntegratedLuminosity13TeV16PostHIP);
+	       }
+
+	       if (279116 < CurrentRun){
+                  dEdxK_Data    = 2.040; // +/- 0.029
+                  dEdxC_Data    = 4.294; // +/- 0.749
+                  dEdxSF [1]   *= 1.12230;
+//                  dEdxTemplates = loadDeDxTemplate(analysis_path+"../UsefulScripts/DeDxStudy/dEdxTemplate_hit_SP_in_noC_CCC_Run278308.root", true);
+                  SamplePlots->IntLumi->SetBinContent(1, IntegratedLuminosity13TeV16PostHIP);
+	       }
+	       else {
+		  SamplePlots->IntLumi->SetBinContent(1, IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP);
+	       }
             }
 
 
