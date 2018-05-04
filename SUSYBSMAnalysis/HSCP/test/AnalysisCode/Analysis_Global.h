@@ -90,6 +90,7 @@ double             GlobalMaxDZ        =   0.50;   // cut on 1D distance (cm) to 
 double             GlobalMaxDXY       =   0.50;   // cut on 2D distance (cm) to closest vertex in "R" direction
 double             GlobalMaxChi2      =   5.0;    // cut on Track maximal Chi2/NDF
 int                GlobalMinQual      =   2;      // cut on track quality (2 meaning HighPurity tracks)
+int                FixedQual          =   2;      // cut on track quality (2 meaning HighPurity tracks) -- select ONLY high purity tracks, other cuts are irrelevant
 unsigned int       GlobalMinNOH       =   8;//7AMSB;      // cut on number of (valid) track pixel+strip hits 
 int                GlobalMinNOPH      =   2;      // cut on number of (valid) track pixel hits 
 double             GlobalMinFOVH      =   0.8;//0.0AMSB;    // cut on fraction of valid track hits
