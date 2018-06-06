@@ -39,7 +39,8 @@ double IntegratedLuminosity13TeV15             = 2490.518; //2439.264; //pb
 //double IntegratedLuminosity13TeV16             = 4002.946; // pb
 double preTrackingChangeL1IntLumi              = 29679.982; // pb
 double IntegratedLuminosity13TeV16             = 32170.50;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
-double IntegratedLuminosity13TeV16PostHIP      = 12500.50;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
+double IntegratedLuminosity13TeV16G            = 12500.50;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
+double IntegratedLuminosity13TeV16PreG         = 32170.50 - 12500.50;
 
 double               SQRTS                     = 13;
 double               SQRTS15                   = 1315;
@@ -56,9 +57,13 @@ string IntegratedLuminosityFromE(double SQRTS_){
   if(SQRTS_==13 || SQRTS_==1315)
      sprintf(LumiText,"%1.1f fb^{-1} (%1.0f TeV)", 0.001*IntegratedLuminosity13TeV15, 13.0);
   else if(SQRTS_==1316.0)
-     sprintf(LumiText,"%1.1f fb^{-1} (%1.0f TeV)", 0.001*(IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP), 13.0);
+     sprintf(LumiText,"%1.1f fb^{-1} (%1.0f TeV)", 0.001*IntegratedLuminosity13TeV16PreG, 13.0);
+  else if(SQRTS_==13167.0)
+     sprintf(LumiText,"%1.1f fb^{-1} (%1.0f TeV)", 0.001*IntegratedLuminosity13TeV16G, 13.0);
   else if(SQRTS_==131615 || SQRTS_==131516)
      sprintf(LumiText,"2016: %1.1f fb^{-1}   2015: %1.1f fb^{-1} (%1.0f TeV)", 0.001*IntegratedLuminosity13TeV16, 0.001*IntegratedLuminosity13TeV15, 13.0);
+  else if(SQRTS_==131677)
+     sprintf(LumiText,"2016 - Pre-G: %1.1f fb^{-1}, Post-G: %1.1f fb^{-1} (%1.0f TeV)", 0.001*IntegratedLuminosity13TeV16PreG, 0.001*IntegratedLuminosity13TeV16G, 13.0);
   else sprintf(LumiText, "unknown energy and int. lumi");
 //  if(SQRTS_==78 || SQRTS_==87)sprintf(LumiText,"#sqrt{s} = %1.0f TeV, L = %1.1f fb^{-1}   #sqrt{s} = %1.0f TeV, L = %1.1f fb^{-1}", 7.0, 0.001*IntegratedLuminosity7TeV,8.0, 0.001*IntegratedLuminosity8TeV);
   return LumiText;
@@ -111,6 +116,7 @@ double             GlobalMinIm        =   0.0;    // cut on dEdxM at PRE-SELECTI
 double             GlobalMinTOF       =   1.0;    // cut on TOF   at PRE-SELECTION
 const int          MaxPredBins        =   6;      // The maximum number of different bins prediction is done in for any of the analyses (defines array size)
 int                PredBins           =   0;      //  How many different bins the prediction is split in for analysis being run, sets how many histograms are actually initialized.
+int                EtaBins            =  60;      //  How many bins we use for the background prediction method in Eta -- impacts background prediction method -- histograms with the name of the form "Pred_Eta*" in Analysis_PlotStructure.h
 
 // dEdx related variables, Name of dEdx estimator/discriminator to be used for selection (dEdxS) and for mass reconstruction (dEdxM)
 // as well as the range for the dEdx variable and K/C constant for mass reconstruction

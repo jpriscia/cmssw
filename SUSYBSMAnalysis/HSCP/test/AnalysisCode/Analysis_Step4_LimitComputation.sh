@@ -11,6 +11,7 @@ root -l -b << EOF
    //.x Analysis_Step4_LimitComputation.C++("FinalCOMBRun1", "", "");
 //   .x Analysis_Step4_LimitComputation.C++("Final13TeV15" , "", "");
    .x Analysis_Step4_LimitComputation.C++("Final13TeV16" , "", "");
+   .x Analysis_Step4_LimitComputation.C++("Final13TeV16G" , "", "");
 //   .x Analysis_Step4_LimitComputation.C++("FinalCOMBINERun2", "", "");
 EOF
 

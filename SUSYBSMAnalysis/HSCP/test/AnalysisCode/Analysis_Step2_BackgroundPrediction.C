@@ -106,6 +106,11 @@ void Analysis_Step2_BackgroundPrediction(std::string InputPattern="COMPILE")
           dEdxC_Data = is2016?dEdxC_Data16:dEdxC_Data15;
           dEdxK_MC   = is2016?dEdxK_MC16:dEdxK_MC15;
           dEdxC_MC   = is2016?dEdxC_MC16:dEdxC_MC15;
+//          bool is2016G = (DirName.find("13TeV16G")!=string::npos);
+//	  if (is2016G){
+//            dEdxK_Data = 2.040;
+//            dEdxC_Data = 4.294;
+//	  }
 
 
 

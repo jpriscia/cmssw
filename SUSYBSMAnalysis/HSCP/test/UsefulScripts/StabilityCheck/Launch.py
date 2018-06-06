@@ -61,7 +61,7 @@ if sys.argv[1]=='1':
    LaunchOnCondor.SendCluster_Submit()
 
 elif sys.argv[1]=='2':
-   os.system('find pictures/Histos_*.root  -type f -size +1024c | xargs hadd -f  pictures/Histos.root')
+   os.system('find pictures/Histos_*.root -type f -size +4096c | xargs hadd -f pictures/Histos.root')
 
 if sys.argv[1]=='3':
    os.system('sh MakePlot.sh')

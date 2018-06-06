@@ -31,7 +31,7 @@ with open(samplesFiles) as ifile:
         for t in types:
             fp = indir+"Type{}".format(t)+"/"+expectedFileName
 #            if not os.path.isfile(fp) or os.path.getsize(fp)<1024:
-            if os.path.isfile(fp) and os.path.getsize(fp)<1024:
+            if (os.path.isfile(fp) and os.path.getsize(fp)<1024) or not os.path.isfile(fp):
                 typeString = ", {},".format(t)
                 for root, _, files in os.walk(jobfilesdir):
                     for f in files:
@@ -49,11 +49,11 @@ for i, executable in enumerate(todo):
 #      toWrite = 'bsub -q 8nh -J HSCPResub_%i \'%s%s 0 ele\'' % (i, os.environ['CMSSW_BASE'], executable)
 #   elif os.environ['HOST'].find('ingrid'):
 #      toWrite = 'sbatch --partition=Def --qos=normal --wckey=cms %s\n' % executable
-   toWrite = 'sbatch --partition=Def --qos=normal --wckey=cms FARM/inputs/%s\n' % executable
+   toWrite = 'sbatch --partition=Def --qos=normal --wckey=cms FARM/inputs/%s' % executable
    print toWrite
-   newcmd.write(toWrite)
+   newcmd.write(toWrite+'\n')
 newcmd.close()
 
 #initProxy()
-os.system('sh newcmd.cmd')
+#os.system('sh newcmd.cmd')
 

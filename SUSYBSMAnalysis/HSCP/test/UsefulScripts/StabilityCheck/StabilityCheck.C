@@ -89,6 +89,10 @@ struct plotSt{
    TH1D* Vertex;
    TH1D* VertexDT;
    TH1D* VertexCSC;
+   TH1D* ObsA;
+   TH1D* ObsB;
+   TH1D* ObsC;
+   TH1D* ObsD;
    std::map<unsigned int, TH1D** > dEdxHitPerLumi;
 
    plotSt(string prefix, string sufix){
@@ -123,6 +127,10 @@ struct plotSt{
       histoName=prefix + "Vertex"       + sufix ; Vertex       = new TH1D(histoName.c_str(), histoName.c_str(),  100, -10.0, 10.0);
       histoName=prefix + "VertexDT"     + sufix ; VertexDT     = new TH1D(histoName.c_str(), histoName.c_str(),  100, -10.0, 10.0);
       histoName=prefix + "VertexCSC"    + sufix ; VertexCSC    = new TH1D(histoName.c_str(), histoName.c_str(),  100, -10.0, 10.0);
+      histoName=prefix + "ObsA"         + sufix ; ObsA         = new TH1D(histoName.c_str(), histoName.c_str(),  1, 0, 1); 
+      histoName=prefix + "ObsB"         + sufix ; ObsB         = new TH1D(histoName.c_str(), histoName.c_str(),  1, 0, 1); 
+      histoName=prefix + "ObsC"         + sufix ; ObsC         = new TH1D(histoName.c_str(), histoName.c_str(),  1, 0, 1); 
+      histoName=prefix + "ObsD"         + sufix ; ObsD         = new TH1D(histoName.c_str(), histoName.c_str(),  1, 0, 1); 
    };
 };
 std::map<string, std::map<string, plotSt*> > MapRunTriggerPlots;
@@ -233,7 +241,7 @@ void StabilityCheck(string DIRNAME="COMPILE", string OUTDIRNAME="pictures", stri
 
    std::vector<string> versions;
    versions.push_back("");
-//   versions.push_back("AOD");
+   versions.push_back("AOD");
 //   versions.push_back("FAKE");
 
 

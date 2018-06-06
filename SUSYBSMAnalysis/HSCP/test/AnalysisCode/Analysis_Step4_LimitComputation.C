@@ -190,8 +190,17 @@ printf("Test %s\n", MODE.c_str());
       if(MODE.find("OPTIMIZE")!=string::npos){    Optimize(InputPattern, Data, signal, SHAPESTRING!="", false);     return;} //testShapeBasedAnalysis(InputPattern,signal);  //use the second part if you want to run shape based analyssi on optimal point form c&c      
    }
 
-   if(MODE.find("COMPUTELIMIT2016")!=string::npos || MODE.find("OPTIMIZE2016")!=string::npos){
-      if(signal.find("13TeV16")==string::npos) return;
+   if(MODE.find("COMPUTELIMIT2016G")!=string::npos || MODE.find("OPTIMIZE2016G")!=string::npos){
+      if(signal.find("13TeV16G")==string::npos) return;
+      Data = "Data13TeV16G"; SQRTS=13167.0; EXCLUSIONDIR+="13TeV16G";
+      printf("EXCLUSIONDIR = %s\nData = %s\n",EXCLUSIONDIR.c_str(), Data.c_str());  
+
+      if(MODE.find("COMPUTELIMIT")!=string::npos){Optimize(InputPattern, Data, signal, SHAPESTRING!="", true);      return;}
+      if(MODE.find("OPTIMIZE")!=string::npos){    Optimize(InputPattern, Data, signal, SHAPESTRING!="", false);     return;} //testShapeBasedAnalysis(InputPattern,signal);  //use the second part if you want to run shape based analyssi on optimal point form c&c      
+   }
+
+   if(MODE.find("16G") == string::npos && (MODE.find("COMPUTELIMIT2016")!=string::npos || MODE.find("OPTIMIZE2016")!=string::npos)){
+      if(signal.find("13TeV16")==string::npos || signal.find("13TeV16G")!=string::npos) return;
       Data = "Data13TeV16"; SQRTS=1316.0; EXCLUSIONDIR+="13TeV16";
       printf("EXCLUSIONDIR = %s\nData = %s\n",EXCLUSIONDIR.c_str(), Data.c_str());  
 
@@ -220,6 +229,30 @@ printf("Test %s\n", MODE.c_str());
       return;
    }
 
+   if(MODE.find("COMBINE2016")!=string::npos){
+      printf("COMBINE!!!\n");
+
+      string signal13TeV16  = ReplacePartOfString(signal, "13TeV16", "13TeV") + "W13TeV16";
+      string signal13TeV16G = ReplacePartOfString(signal, "13TeV16G", "13TeV") + "W13TeV16G";
+
+      string EXCLUSIONDIR_SAVE = EXCLUSIONDIR;
+
+      //2016 PreG Limits
+      printf("2016 pre-G Data ...\n");
+      Data = "Data13TeV16"; SQRTS=1316.0; EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"13TeV16";
+      Optimize(InputPattern, Data, signal, SHAPESTRING!="", true);
+
+      //2016 PostG Limits
+      printf("2016G post-G Data ...\n");
+      Data = "Data13TeV16G"; SQRTS=13167.0; EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"13TeV16G";
+      Optimize(InputPattern, Data, ReplacePartOfString(signal, "13TeV16", "13TeV16G"), SHAPESTRING!="", true);
+
+      //Combined Limits
+      printf("Combining ...\n");
+      EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"COMB2016";  SQRTS=131667.0;
+      Combine(InputPattern, signal13TeV16, signal13TeV16G);
+      return;
+   }
 
    if(MODE.find("COMBINE_Run2")!=string::npos){
       printf("COMBINE!!!\n");
@@ -235,9 +268,14 @@ printf("Test %s\n", MODE.c_str());
       Optimize(InputPattern, Data, ReplacePartOfString(signal, "13TeV16", "13TeV"), SHAPESTRING!="", true);
 
       //2016 Limits
-      printf("2016 Data ...\n");
+      printf("2016 pre G Data ...\n");
       Data = "Data13TeV16"; SQRTS=1316.0; EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"13TeV16";
       Optimize(InputPattern, Data, signal, SHAPESTRING!="", true);
+
+      //2016G Limits
+      printf("2016G Data ...\n");
+      Data = "Data13TeV16G"; SQRTS=13167.0; EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"13TeV16G";
+      Optimize(InputPattern, Data, ReplacePartOfString(signal, "13TeV16", "13TeV"), SHAPESTRING!="", true);
 
       //Combined Limits
       printf("Combining ...\n");
@@ -245,11 +283,12 @@ printf("Test %s\n", MODE.c_str());
       Combine(InputPattern, signal13TeV15, signal13TeV16);
       return;
    }
-   if     (MODE.find("7TeV"   )!=string::npos){Data = "Data7TeV"   ; SQRTS=7.0   ; EXCLUSIONDIR+="7TeV"   ; }
-   else if(MODE.find("8TeV"   )!=string::npos){Data = "Data8TeV"   ; SQRTS=8.0   ; EXCLUSIONDIR+="8TeV"   ; }
-   else if(MODE.find("13TeV15")!=string::npos){Data = "Data13TeV"  ; SQRTS=1315.0; EXCLUSIONDIR+="13TeV15"; }
-   else if(MODE.find("13TeV16")!=string::npos){Data = "Data13TeV16"; SQRTS=1316.0; EXCLUSIONDIR+="13TeV16"; }
-   else if(MODE.find("13TeV"  )!=string::npos){Data = "Data13TeV"  ; SQRTS=13.0  ; EXCLUSIONDIR+="13TeV"  ; }
+   if     (MODE.find("7TeV"    )!=string::npos){Data = "Data7TeV"    ; SQRTS=7.0    ; EXCLUSIONDIR+="7TeV"    ; }
+   else if(MODE.find("8TeV"    )!=string::npos){Data = "Data8TeV"    ; SQRTS=8.0    ; EXCLUSIONDIR+="8TeV"    ; }
+   else if(MODE.find("13TeV15" )!=string::npos){Data = "Data13TeV"   ; SQRTS=1315.0 ; EXCLUSIONDIR+="13TeV15" ; }
+   else if(MODE.find("13TeV16G")!=string::npos){Data = "Data13TeV16G"; SQRTS=13167.0; EXCLUSIONDIR+="13TeV16G"; }
+   else if(MODE.find("13TeV16" )!=string::npos){Data = "Data13TeV16" ; SQRTS=1316.0 ; EXCLUSIONDIR+="13TeV16" ; }
+   else if(MODE.find("13TeV"   )!=string::npos){Data = "Data13TeV"   ; SQRTS=13.0   ; EXCLUSIONDIR+="13TeV"   ; }
    printf("EXCLUSIONDIR = %s\nData = %s\n",EXCLUSIONDIR.c_str(), Data.c_str());  
 
    // #FIXME JOZE
@@ -262,6 +301,7 @@ printf("Test %s\n", MODE.c_str());
    bool Combine = (MODE.find("COMB")!=string::npos);
    if (MODE.find("Run1")!=string::npos){EXCLUSIONDIR+="COMB"; SQRTS=78.0;}
    if (MODE.find("Run2")!=string::npos){EXCLUSIONDIR+="COMB"; SQRTS=131615.0;}
+   if (MODE.find("2016")!=string::npos){EXCLUSIONDIR+="COMB"; SQRTS=131677.0;}
    if(Combine) {PlotMinScale=1E-6; PlotMaxScale=300;}
 
    string outpath = string("Results/"+SHAPESTRING+EXCLUSIONDIR+"/");
@@ -270,7 +310,7 @@ printf("Test %s\n", MODE.c_str());
    //determine the list of models that are considered
    GetSampleDefinition(samples);
 
-   if(SQRTS!=78.0 && SQRTS!=131615.0 && SQRTS!=131516.0) keepOnlySamplesAtSQRTS(samples, SQRTS);
+   if(SQRTS!=78.0 && SQRTS!=131615.0 && SQRTS!=131516.0 && SQRTS!=131677.0) keepOnlySamplesAtSQRTS(samples, SQRTS);
 
    for(unsigned int s=0;s<samples.size();s++){
     if(samples[s].Type!=2)continue;
@@ -281,14 +321,16 @@ printf("Test %s\n", MODE.c_str());
     if(SQRTS==13.0    && samples[s].Name.find("_13TeV")==string::npos){continue;}
     if(SQRTS==1315.0  && samples[s].Name.find("_13TeV")==string::npos){continue;}
     if(SQRTS==1316.0  && samples[s].Name.find("_13TeV")==string::npos){continue;}
+    if(SQRTS==13167.0 && samples[s].Name.find("_13TeV")==string::npos){continue;}
 //    if(SQRTS==78.0){if(samples[s].Name.find("_7TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_7TeV"),5, ""); } }
     if(SQRTS==78.0){if(samples[s].Name.find("_8TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_8TeV"),5, ""); } }
     if(SQRTS==131615.0 || SQRTS==131516.0){
        if  (samples[s].Name.find("_13TeV")==string::npos){continue;}
        else{
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16", "");
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV15", "");
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV"  , "");
+          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16G", "");
+          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16" , "");
+          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV15" , "");
+          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV"   , "");
        }
     }
 
@@ -512,23 +554,23 @@ printf("Test %s\n", MODE.c_str());
    }
 
    if(Graphs>0) {
-   TkSystGraphs->Draw("A");
-   TkSystGraphs->SetTitle("");
-   TkSystGraphs->GetXaxis()->SetTitle("Mass (GeV)");
-   TkSystGraphs->GetYaxis()->SetTitle("Relative Uncertainty");
-   TkSystGraphs->GetYaxis()->SetTitleOffset(1.40);
-   TkSystGraphs->GetYaxis()->SetRangeUser(0.0, 0.70);
-   TkSystGraphs->GetYaxis()->SetNdivisions(505, "X");
-
-   LEG->Draw();
-   c1->SetLogy(false);
-   c1->SetGridy(false);
-
-   DrawPreliminary(LegendFromType(TkPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
-   SaveCanvas(c1,"Results/"+SHAPESTRING+EXCLUSIONDIR+"/", "TkUncertainty");
-   delete c1;
-   delete TkSystGraphs;
-   delete LEG;
+     TkSystGraphs->Draw("A");
+     TkSystGraphs->SetTitle("");
+     TkSystGraphs->GetXaxis()->SetTitle("Mass (GeV)");
+     TkSystGraphs->GetYaxis()->SetTitle("Relative Uncertainty");
+     TkSystGraphs->GetYaxis()->SetTitleOffset(1.40);
+     TkSystGraphs->GetYaxis()->SetRangeUser(0.0, 0.70);
+     TkSystGraphs->GetYaxis()->SetNdivisions(505, "X");
+     
+     LEG->Draw();
+     c1->SetLogy(false);
+     c1->SetGridy(false);
+     
+     DrawPreliminary(LegendFromType(TkPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
+     SaveCanvas(c1,"Results/"+SHAPESTRING+EXCLUSIONDIR+"/", "TkUncertainty");
+     delete c1;
+     delete TkSystGraphs;
+     delete LEG;
    }
 
    c1 = new TCanvas("c1", "c1",600,600);
@@ -556,24 +598,26 @@ printf("Test %s\n", MODE.c_str());
      }
    }
 
+   std::cerr << "I am here!" << std::endl;
+   std::cerr << "We have " << Graphs << " graphs ..." << std::endl;
    if(Graphs>0) {
-   MuSystGraphs->Draw("A");
-   MuSystGraphs->SetTitle("");
-   MuSystGraphs->GetXaxis()->SetTitle("Mass (GeV)");
-   MuSystGraphs->GetYaxis()->SetTitle("Relative Uncertainty");
-   MuSystGraphs->GetYaxis()->SetTitleOffset(1.40);
-   MuSystGraphs->GetYaxis()->SetRangeUser(0.0, 0.7);
-   MuSystGraphs->GetYaxis()->SetNdivisions(505, "X");
-
-   LEG->Draw();
-   c1->SetLogy(false);
-   c1->SetGridy(false);
-
-   DrawPreliminary(LegendFromType(MuPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
-   SaveCanvas(c1,"Results/"+SHAPESTRING+EXCLUSIONDIR+"/", "MuUncertainty");
-   delete c1;
-   delete MuSystGraphs;
-   delete LEG;
+     MuSystGraphs->Draw("A");
+     MuSystGraphs->SetTitle("");
+     MuSystGraphs->GetXaxis()->SetTitle("Mass (GeV)");
+     MuSystGraphs->GetYaxis()->SetTitle("Relative Uncertainty");
+     MuSystGraphs->GetYaxis()->SetTitleOffset(1.40);
+     MuSystGraphs->GetYaxis()->SetRangeUser(0.0, 0.7);
+     MuSystGraphs->GetYaxis()->SetNdivisions(505, "X");
+     
+     LEG->Draw();
+     c1->SetLogy(false);
+     c1->SetGridy(false);
+     
+     DrawPreliminary(LegendFromType(MuPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
+     SaveCanvas(c1,"Results/"+SHAPESTRING+EXCLUSIONDIR+"/", "MuUncertainty");
+     delete c1;
+     delete MuSystGraphs;
+     delete LEG;
    }
 
    /*
@@ -725,7 +769,7 @@ std::cout<<"TESTA\n";
          }else if(SQRTS==8){
             ThXSec   [k] = new TGraph(sizeof(THXSEC8TeV_Gluino_Mass)/sizeof(double),THXSEC8TeV_Gluino_Mass,THXSEC8TeV_Gluino_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr",sizeof(THXSEC8TeV_Gluino_Mass)/sizeof(double),THXSEC8TeV_Gluino_Mass,THXSEC8TeV_Gluino_Low,THXSEC8TeV_Gluino_High, PlotMinScale, PlotMaxScale);
-         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316){ 
+         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316 || SQRTS==13167 || SQRTS==131677){ 
             ThXSec   [k] = new TGraph(sizeof(THXSEC13TeV_Gluino_Mass)/sizeof(double),THXSEC13TeV_Gluino_Mass,THXSEC13TeV_Gluino_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr",sizeof(THXSEC13TeV_Gluino_Mass)/sizeof(double),THXSEC13TeV_Gluino_Mass,THXSEC13TeV_Gluino_Low,THXSEC13TeV_Gluino_High, PlotMinScale, PlotMaxScale);
          }else{
@@ -740,7 +784,7 @@ std::cout<<"TESTA\n";
          }else if(SQRTS==8){
             ThXSec   [k] = new TGraph(sizeof(THXSEC8TeV_Stop_Mass)/sizeof(double),THXSEC8TeV_Stop_Mass,THXSEC8TeV_Stop_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr",sizeof(THXSEC8TeV_Stop_Mass)/sizeof(double),THXSEC8TeV_Stop_Mass,THXSEC8TeV_Stop_Low,THXSEC8TeV_Stop_High, PlotMinScale, PlotMaxScale);
-         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316){
+         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316 || SQRTS==13167 || SQRTS==131677){
             ThXSec   [k] = new TGraph(sizeof(THXSEC13TeV_Stop_Mass)/sizeof(double),THXSEC13TeV_Stop_Mass,THXSEC13TeV_Stop_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr",sizeof(THXSEC13TeV_Stop_Mass)/sizeof(double),THXSEC13TeV_Stop_Mass,THXSEC13TeV_Stop_Low,THXSEC13TeV_Stop_High, PlotMinScale, PlotMaxScale);
          }else{
@@ -755,7 +799,7 @@ std::cout<<"TESTA\n";
          }else if(SQRTS==8){
             ThXSec   [k] = MakePlot(NULL, NULL, TkPattern,modelVector[k], 0, modelMap[modelVector[k]], LInt);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr", sizeof(THXSEC8TeV_GMStau_Mass)/sizeof(double),THXSEC8TeV_GMStau_Mass,THXSEC8TeV_GMStau_Low,THXSEC8TeV_GMStau_High, PlotMinScale, PlotMaxScale);
-         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316){ 
+         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316 || SQRTS==13167 || SQRTS==131677){ 
 //            #Prospino xsection that I get looks very weird, use pythia for the time being
             ThXSec   [k] = new TGraph(sizeof(THXSEC13TeV_GMStau_Mass)/sizeof(double),THXSEC13TeV_GMStau_Mass,THXSEC13TeV_GMStau_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr", sizeof(THXSEC13TeV_GMStau_Mass)/sizeof(double),THXSEC13TeV_GMStau_Mass,THXSEC13TeV_GMStau_Low,THXSEC13TeV_GMStau_High, PlotMinScale, PlotMaxScale);
@@ -776,7 +820,7 @@ std::cout<<"TESTA\n";
          }else if(SQRTS==8){
             ThXSec   [k] = MakePlot(NULL, NULL, TkPattern,modelVector[k], 0, modelMap[modelVector[k]], LInt);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr", sizeof(THXSEC8TeV_PPStau_Mass)/sizeof(double),THXSEC8TeV_PPStau_Mass,THXSEC8TeV_PPStau_Low,THXSEC8TeV_PPStau_High, PlotMinScale, PlotMaxScale);
-         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316){
+         }else if(SQRTS==13 || SQRTS==1315 || SQRTS==1316 || SQRTS==13167 || SQRTS==131677){
 //            #Prospino xsection that I get looks very weird, use pythia for the time being
             ThXSec   [k] = new TGraph(sizeof(THXSEC13TeV_PPStau_Mass)/sizeof(double),THXSEC13TeV_PPStau_Mass,THXSEC13TeV_PPStau_Cen);
             ThXSecErr[k] = GetErrorBand(modelVector[k]+"ThErr", sizeof(THXSEC13TeV_PPStau_Mass)/sizeof(double),THXSEC13TeV_PPStau_Mass,THXSEC13TeV_PPStau_Low,THXSEC13TeV_PPStau_High, PlotMinScale, PlotMaxScale);
@@ -918,6 +962,11 @@ std::cout<<"TESTC\n";
    TkGraphMap["Gluino16_f10"   ]->SetLineColor(4);  TkGraphMap["Gluino16_f10"   ]->SetMarkerColor(4);   TkGraphMap["Gluino16_f10"   ]->SetLineWidth(2);   TkGraphMap["Gluino16_f10"   ]->SetLineStyle(1);  TkGraphMap["Gluino16_f10"   ]->SetMarkerStyle(22);
    TkGraphMap["Gluino16_f50"   ]->SetLineColor(4);  TkGraphMap["Gluino16_f50"   ]->SetMarkerColor(4);   TkGraphMap["Gluino16_f50"   ]->SetLineWidth(2);   TkGraphMap["Gluino16_f50"   ]->SetLineStyle(1);  TkGraphMap["Gluino16_f50"   ]->SetMarkerStyle(23);
    TkGraphMap["Gluino16N_f10"  ]->SetLineColor(4);  TkGraphMap["Gluino16N_f10"  ]->SetMarkerColor(4);   TkGraphMap["Gluino16N_f10"  ]->SetLineWidth(2);   TkGraphMap["Gluino16N_f10"  ]->SetLineStyle(1);  TkGraphMap["Gluino16N_f10"  ]->SetMarkerStyle(26);
+   MuGraphMap["Gluino16G_f10"   ]->SetLineColor(4);  MuGraphMap["Gluino16G_f10"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16G_f10"   ]->SetLineWidth(2);   MuGraphMap["Gluino16G_f10"   ]->SetLineStyle(1);  MuGraphMap["Gluino16G_f10"   ]->SetMarkerStyle(22);
+   MuGraphMap["Gluino16G_f50"   ]->SetLineColor(4);  MuGraphMap["Gluino16G_f50"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16G_f50"   ]->SetLineWidth(2);   MuGraphMap["Gluino16G_f50"   ]->SetLineStyle(1);  MuGraphMap["Gluino16G_f50"   ]->SetMarkerStyle(23);
+   TkGraphMap["Gluino16G_f10"   ]->SetLineColor(4);  TkGraphMap["Gluino16G_f10"   ]->SetMarkerColor(4);   TkGraphMap["Gluino16G_f10"   ]->SetLineWidth(2);   TkGraphMap["Gluino16G_f10"   ]->SetLineStyle(1);  TkGraphMap["Gluino16G_f10"   ]->SetMarkerStyle(22);
+   TkGraphMap["Gluino16G_f50"   ]->SetLineColor(4);  TkGraphMap["Gluino16G_f50"   ]->SetMarkerColor(4);   TkGraphMap["Gluino16G_f50"   ]->SetLineWidth(2);   TkGraphMap["Gluino16G_f50"   ]->SetLineStyle(1);  TkGraphMap["Gluino16G_f50"   ]->SetMarkerStyle(23);
+   TkGraphMap["Gluino16GN_f10"  ]->SetLineColor(4);  TkGraphMap["Gluino16GN_f10"  ]->SetMarkerColor(4);   TkGraphMap["Gluino16GN_f10"  ]->SetLineWidth(2);   TkGraphMap["Gluino16GN_f10"  ]->SetLineStyle(1);  TkGraphMap["Gluino16GN_f10"  ]->SetMarkerStyle(26);
    //MOGraphMap["Gluino_f10"   ]->SetLineColor(4);  MOGraphMap["Gluino_f10"   ]->SetMarkerColor(4);   MOGraphMap["Gluino_f10"   ]->SetLineWidth(2);   MOGraphMap["Gluino_f10"   ]->SetLineStyle(1);  MOGraphMap["Gluino_f10"   ]->SetMarkerStyle(22);
    //MOGraphMap["Gluino_f50"   ]->SetLineColor(4);  MOGraphMap["Gluino_f50"   ]->SetMarkerColor(4);   MOGraphMap["Gluino_f50"   ]->SetLineWidth(2);   MOGraphMap["Gluino_f50"   ]->SetLineStyle(1);  MOGraphMap["Gluino_f50"   ]->SetMarkerStyle(23);
    //MOGraphMap["Gluino_f100"  ]->SetLineColor(4);  MOGraphMap["Gluino_f100"  ]->SetMarkerColor(4);   MOGraphMap["Gluino_f100"  ]->SetLineWidth(2);   MOGraphMap["Gluino_f100"  ]->SetLineStyle(1);  MOGraphMap["Gluino_f100"  ]->SetMarkerStyle(26);
@@ -928,6 +977,9 @@ std::cout<<"TESTC\n";
    MuGraphMap["Stop16"         ]->SetLineColor(2);  MuGraphMap["Stop16"         ]->SetMarkerColor(2);   MuGraphMap["Stop16"         ]->SetLineWidth(2);   MuGraphMap["Stop16"         ]->SetLineStyle(1);  MuGraphMap["Stop16"         ]->SetMarkerStyle(21);
    TkGraphMap["Stop16"         ]->SetLineColor(2);  TkGraphMap["Stop16"         ]->SetMarkerColor(2);   TkGraphMap["Stop16"         ]->SetLineWidth(2);   TkGraphMap["Stop16"         ]->SetLineStyle(1);  TkGraphMap["Stop16"         ]->SetMarkerStyle(21);
    TkGraphMap["Stop16N"        ]->SetLineColor(2);  TkGraphMap["Stop16N"        ]->SetMarkerColor(2);   TkGraphMap["Stop16N"        ]->SetLineWidth(2);   TkGraphMap["Stop16N"        ]->SetLineStyle(1);  TkGraphMap["Stop16N"        ]->SetMarkerStyle(25);
+   MuGraphMap["Stop16G"         ]->SetLineColor(2);  MuGraphMap["Stop16G"         ]->SetMarkerColor(2);   MuGraphMap["Stop16G"         ]->SetLineWidth(2);   MuGraphMap["Stop16G"         ]->SetLineStyle(1);  MuGraphMap["Stop16G"         ]->SetMarkerStyle(21);
+   TkGraphMap["Stop16G"         ]->SetLineColor(2);  TkGraphMap["Stop16G"         ]->SetMarkerColor(2);   TkGraphMap["Stop16G"         ]->SetLineWidth(2);   TkGraphMap["Stop16G"         ]->SetLineStyle(1);  TkGraphMap["Stop16G"         ]->SetMarkerStyle(21);
+   TkGraphMap["Stop16GN"        ]->SetLineColor(2);  TkGraphMap["Stop16GN"        ]->SetMarkerColor(2);   TkGraphMap["Stop16GN"        ]->SetLineWidth(2);   TkGraphMap["Stop16GN"        ]->SetLineStyle(1);  TkGraphMap["Stop16GN"        ]->SetMarkerStyle(25);
    //MOGraphMap["Stop"         ]->SetLineColor(2);  MOGraphMap["Stop"         ]->SetMarkerColor(2);   MOGraphMap["Stop"         ]->SetLineWidth(2);   MOGraphMap["Stop"         ]->SetLineStyle(1);  MOGraphMap["Stop"         ]->SetMarkerStyle(21);
    ThGraphMap["GMStau"       ]->SetLineColor(1);  ThGraphMap["GMStau"       ]->SetMarkerColor(1);   ThGraphMap["GMStau"       ]->SetLineWidth(1);   ThGraphMap["GMStau"       ]->SetLineStyle(3);  ThGraphMap["GMStau"       ]->SetMarkerStyle(1);
    ThGraphMap["PPStau"       ]->SetLineColor(6);  ThGraphMap["PPStau"       ]->SetMarkerColor(6);   ThGraphMap["PPStau"       ]->SetLineWidth(1);   ThGraphMap["PPStau"       ]->SetLineStyle(4);  ThGraphMap["PPStau"       ]->SetMarkerStyle(1);
@@ -939,7 +991,10 @@ std::cout<<"TESTC\n";
    MuGraphMap["PPStau16"       ]->SetLineColor(6);  MuGraphMap["PPStau16"       ]->SetMarkerColor(6);   MuGraphMap["PPStau16"       ]->SetLineWidth(2);   MuGraphMap["PPStau16"       ]->SetLineStyle(1);  MuGraphMap["PPStau16"       ]->SetMarkerStyle(20);
    TkGraphMap["GMStau16"       ]->SetLineColor(1);  TkGraphMap["GMStau16"       ]->SetMarkerColor(1);   TkGraphMap["GMStau16"       ]->SetLineWidth(2);   TkGraphMap["GMStau16"       ]->SetLineStyle(1);  TkGraphMap["GMStau16"       ]->SetMarkerStyle(20);
    TkGraphMap["PPStau16"       ]->SetLineColor(6);  TkGraphMap["PPStau16"       ]->SetMarkerColor(6);   TkGraphMap["PPStau16"       ]->SetLineWidth(2);   TkGraphMap["PPStau16"       ]->SetLineStyle(1);  TkGraphMap["PPStau16"       ]->SetMarkerStyle(20);
-
+   MuGraphMap["GMStau16G"       ]->SetLineColor(1);  MuGraphMap["GMStau16G"       ]->SetMarkerColor(1);   MuGraphMap["GMStau16G"       ]->SetLineWidth(2);   MuGraphMap["GMStau16G"       ]->SetLineStyle(1);  MuGraphMap["GMStau16G"       ]->SetMarkerStyle(20);
+   MuGraphMap["PPStau16G"       ]->SetLineColor(6);  MuGraphMap["PPStau16G"       ]->SetMarkerColor(6);   MuGraphMap["PPStau16G"       ]->SetLineWidth(2);   MuGraphMap["PPStau16G"       ]->SetLineStyle(1);  MuGraphMap["PPStau16G"       ]->SetMarkerStyle(20);
+   TkGraphMap["GMStau16G"       ]->SetLineColor(1);  TkGraphMap["GMStau16G"       ]->SetMarkerColor(1);   TkGraphMap["GMStau16G"       ]->SetLineWidth(2);   TkGraphMap["GMStau16G"       ]->SetLineStyle(1);  TkGraphMap["GMStau16G"       ]->SetMarkerStyle(20);
+   TkGraphMap["PPStau16G"       ]->SetLineColor(6);  TkGraphMap["PPStau16G"       ]->SetMarkerColor(6);   TkGraphMap["PPStau16G"       ]->SetLineWidth(2);   TkGraphMap["PPStau16G"       ]->SetLineStyle(1);  TkGraphMap["PPStau16G"       ]->SetMarkerStyle(20);
    //ThGraphMap["DY_Q1o3"      ]->SetLineColor(41); ThGraphMap["DY_Q1o3"      ]->SetMarkerColor(41);  ThGraphMap["DY_Q1o3"      ]->SetLineWidth(1);   ThGraphMap["DY_Q1o3"      ]->SetLineStyle(9);  ThGraphMap["DY_Q1o3"      ]->SetMarkerStyle(1);
    //TkGraphMap["DY_Q1o3"      ]->SetLineColor(41); TkGraphMap["DY_Q1o3"      ]->SetMarkerColor(41);  TkGraphMap["DY_Q1o3"      ]->SetLineWidth(2);   TkGraphMap["DY_Q1o3"      ]->SetLineStyle(1);  TkGraphMap["DY_Q1o3"      ]->SetMarkerStyle(33);
    //MOGraphMap["DY_Q1o3"      ]->SetLineColor(41); MOGraphMap["DY_Q1o3"      ]->SetMarkerColor(41);  MOGraphMap["DY_Q1o3"      ]->SetLineWidth(2);   MOGraphMap["DY_Q1o3"      ]->SetLineStyle(1);  MOGraphMap["DY_Q1o3"      ]->SetMarkerStyle(33);
@@ -950,17 +1005,23 @@ std::cout<<"TESTC\n";
    //MOGraphMap["DY_Q2o3"      ]->SetLineColor(43); MOGraphMap["DY_Q2o3"      ]->SetMarkerColor(43);  MOGraphMap["DY_Q2o3"      ]->SetLineWidth(2);   MOGraphMap["DY_Q2o3"      ]->SetLineStyle(1);  MOGraphMap["DY_Q2o3"      ]->SetMarkerStyle(34);
    //LQGraphMap["DY_Q2o3"      ]->SetLineColor(43); LQGraphMap["DY_Q2o3"      ]->SetMarkerColor(43);  LQGraphMap["DY_Q2o3"      ]->SetLineWidth(2);   LQGraphMap["DY_Q2o3"      ]->SetLineStyle(1);  LQGraphMap["DY_Q2o3"      ]->SetMarkerStyle(34);
    //LQGraphMap["DY_Q1"        ]->SetLineColor(46); LQGraphMap["DY_Q1"        ]->SetMarkerColor(46);  LQGraphMap["DY_Q1"        ]->SetLineWidth(2);   LQGraphMap["DY_Q1"        ]->SetLineStyle(1);  LQGraphMap["DY_Q1"        ]->SetMarkerStyle(20);
-
    ThGraphMap["DY_Q1"        ]->SetLineColor(46); ThGraphMap["DY_Q1"        ]->SetMarkerColor(46);  ThGraphMap["DY_Q1"        ]->SetLineWidth(1);   ThGraphMap["DY_Q1"        ]->SetLineStyle(8);  ThGraphMap["DY_Q1"        ]->SetMarkerStyle(1);
    MuGraphMap["DY_Q1"        ]->SetLineColor(46); MuGraphMap["DY_Q1"        ]->SetMarkerColor(46);  MuGraphMap["DY_Q1"        ]->SetLineWidth(2);   MuGraphMap["DY_Q1"        ]->SetLineStyle(1);  MuGraphMap["DY_Q1"      ]->SetMarkerStyle(20);
    TkGraphMap["DY_Q1"        ]->SetLineColor(46); TkGraphMap["DY_Q1"        ]->SetMarkerColor(46);  TkGraphMap["DY_Q1"        ]->SetLineWidth(2);   TkGraphMap["DY_Q1"        ]->SetLineStyle(1);  TkGraphMap["DY_Q1"      ]->SetMarkerStyle(20);
    ThGraphMap["DY16_Q1"        ]->SetLineColor(46); ThGraphMap["DY16_Q1"        ]->SetMarkerColor(46);  ThGraphMap["DY16_Q1"        ]->SetLineWidth(1);   ThGraphMap["DY16_Q1"        ]->SetLineStyle(8);  ThGraphMap["DY16_Q1"        ]->SetMarkerStyle(1);
    MuGraphMap["DY16_Q1"        ]->SetLineColor(46); MuGraphMap["DY16_Q1"        ]->SetMarkerColor(46);  MuGraphMap["DY16_Q1"        ]->SetLineWidth(2);   MuGraphMap["DY16_Q1"        ]->SetLineStyle(1);  MuGraphMap["DY16_Q1"      ]->SetMarkerStyle(20);
    TkGraphMap["DY16_Q1"        ]->SetLineColor(46); TkGraphMap["DY16_Q1"        ]->SetMarkerColor(46);  TkGraphMap["DY16_Q1"        ]->SetLineWidth(2);   TkGraphMap["DY16_Q1"        ]->SetLineStyle(1);  TkGraphMap["DY16_Q1"      ]->SetMarkerStyle(20);
+   ThGraphMap["DY16G_Q1"        ]->SetLineColor(46); ThGraphMap["DY16G_Q1"        ]->SetMarkerColor(46);  ThGraphMap["DY16G_Q1"        ]->SetLineWidth(1);   ThGraphMap["DY16G_Q1"        ]->SetLineStyle(8);  ThGraphMap["DY16G_Q1"        ]->SetMarkerStyle(1);
+   MuGraphMap["DY16G_Q1"        ]->SetLineColor(46); MuGraphMap["DY16G_Q1"        ]->SetMarkerColor(46);  MuGraphMap["DY16G_Q1"        ]->SetLineWidth(2);   MuGraphMap["DY16G_Q1"        ]->SetLineStyle(1);  MuGraphMap["DY16G_Q1"      ]->SetMarkerStyle(20);
+   TkGraphMap["DY16G_Q1"        ]->SetLineColor(46); TkGraphMap["DY16G_Q1"        ]->SetMarkerColor(46);  TkGraphMap["DY16G_Q1"        ]->SetLineWidth(2);   TkGraphMap["DY16G_Q1"        ]->SetLineStyle(1);  TkGraphMap["DY16G_Q1"      ]->SetMarkerStyle(20);
+
    //HQGraphMap["DY_Q1"        ]->SetLineColor(46); HQGraphMap["DY_Q1"        ]->SetMarkerColor(46);  HQGraphMap["DY_Q1"        ]->SetLineWidth(2);   HQGraphMap["DY_Q1"        ]->SetLineStyle(1);  HQGraphMap["DY_Q1"        ]->SetMarkerStyle(20);
-   ThGraphMap["DY16_Q2"        ]->SetLineColor(43); ThGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  ThGraphMap["DY16_Q2"        ]->SetLineWidth(1);   ThGraphMap["DY16_Q2"        ]->SetLineStyle(10);  ThGraphMap["DY16_Q2"        ]->SetMarkerStyle(1);
+   ThGraphMap["DY16_Q2"        ]->SetLineColor(43); ThGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  ThGraphMap["DY16_Q2"        ]->SetLineWidth(1);   ThGraphMap["DY16_Q2"        ]->SetLineStyle(10); ThGraphMap["DY16_Q2"      ]->SetMarkerStyle(1);
    MuGraphMap["DY16_Q2"        ]->SetLineColor(43); MuGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  MuGraphMap["DY16_Q2"        ]->SetLineWidth(2);   MuGraphMap["DY16_Q2"        ]->SetLineStyle(1);  MuGraphMap["DY16_Q2"      ]->SetMarkerStyle(34);
    TkGraphMap["DY16_Q2"        ]->SetLineColor(43); TkGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  TkGraphMap["DY16_Q2"        ]->SetLineWidth(2);   TkGraphMap["DY16_Q2"        ]->SetLineStyle(1);  TkGraphMap["DY16_Q2"      ]->SetMarkerStyle(34);
+   ThGraphMap["DY16G_Q2"        ]->SetLineColor(43); ThGraphMap["DY16G_Q2"        ]->SetMarkerColor(43);  ThGraphMap["DY16G_Q2"        ]->SetLineWidth(1);   ThGraphMap["DY16G_Q2"        ]->SetLineStyle(10); ThGraphMap["DY16G_Q2"      ]->SetMarkerStyle(1);
+   MuGraphMap["DY16G_Q2"        ]->SetLineColor(43); MuGraphMap["DY16G_Q2"        ]->SetMarkerColor(43);  MuGraphMap["DY16G_Q2"        ]->SetLineWidth(2);   MuGraphMap["DY16G_Q2"        ]->SetLineStyle(1);  MuGraphMap["DY16G_Q2"      ]->SetMarkerStyle(34);
+   TkGraphMap["DY16G_Q2"        ]->SetLineColor(43); TkGraphMap["DY16G_Q2"        ]->SetMarkerColor(43);  TkGraphMap["DY16G_Q2"        ]->SetLineWidth(2);   TkGraphMap["DY16G_Q2"        ]->SetLineStyle(1);  TkGraphMap["DY16G_Q2"      ]->SetMarkerStyle(34);
    //HQGraphMap["DY_Q2"        ]->SetLineColor(2 ); HQGraphMap["DY_Q2"        ]->SetMarkerColor(2 );  HQGraphMap["DY_Q2"        ]->SetLineWidth(2);   HQGraphMap["DY_Q2"        ]->SetLineStyle(1);  HQGraphMap["DY_Q2"        ]->SetMarkerStyle(21);
    //ThGraphMap["DY_Q3"        ]->SetLineColor(1 ); ThGraphMap["DY_Q3"        ]->SetMarkerColor(1 );  ThGraphMap["DY_Q3"        ]->SetLineWidth(1);   ThGraphMap["DY_Q3"        ]->SetLineStyle(9);  ThGraphMap["DY_Q3"        ]->SetMarkerStyle(1);
    //HQGraphMap["DY_Q3"        ]->SetLineColor(1 ); HQGraphMap["DY_Q3"        ]->SetMarkerColor(1 );  HQGraphMap["DY_Q3"        ]->SetLineWidth(2);   HQGraphMap["DY_Q3"        ]->SetLineStyle(1);  HQGraphMap["DY_Q3"        ]->SetMarkerStyle(22);
@@ -1020,14 +1081,13 @@ std::cout<<"TESTD\n";
       TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw();
    }
 
-   MuGraphMap["Gluino16_f10" ]->Draw("LP");
-   MuGraphMap["Gluino16_f50" ]->Draw("LP");
-   MuGraphMap["Stop16"       ]->Draw("LP");
-   MuGraphMap["GMStau16"     ]->Draw("LP");
-   MuGraphMap["PPStau16"     ]->Draw("LP");
-   //MuGraphMap["DY_Q2o3"    ]->Draw("LP");
-   MuGraphMap["DY16_Q1"    ]->Draw("LP");
-   MuGraphMap["DY16_Q2"    ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f10":"Gluino16_f10" ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f50":"Gluino16G_f50"]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"Stop16G"      :"Stop16G"      ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"GMStau16G"    :"GMStau16G"    ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"PPStau16G"    :"PPStau16G"    ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q1"     :"DY16G_Q1"     ]->Draw("LP");
+   MuGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q2"     :"DY16G_Q2"     ]->Draw("LP");
 
    DrawPreliminary(LegendFromType(MuPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
    TLegend* LEGMu = !Combine ? new TLegend(0.60,0.82-7*0.043,0.93,0.82) : new TLegend(0.60,0.15,0.93,0.15+7*0.043);
@@ -1036,14 +1096,13 @@ std::cout<<"TESTD\n";
    LEGMu->SetFillColor(0); 
    LEGMu->SetFillStyle(0);
    LEGMu->SetBorderSize(0);
-   LEGMu->AddEntry(MuGraphMap["Gluino16_f50"] , "gluino; 50% #tilde{g}g"    ,"LP");
-   LEGMu->AddEntry(MuGraphMap["Gluino16_f10"] , "gluino; 10% #tilde{g}g"    ,"LP");
-   LEGMu->AddEntry(MuGraphMap["Stop16"      ] , "stop"                      ,"LP");
-   LEGMu->AddEntry(MuGraphMap["PPStau16"    ] , "stau; dir. prod."           ,"LP");
-   LEGMu->AddEntry(MuGraphMap["GMStau16"    ] , "stau"                 ,"LP");
-   //LEGMu->AddEntry(MuGraphMap["DY_Q2o3"   ], "|Q| = 2e/3"                ,"LP");
-   LEGMu->AddEntry(MuGraphMap["DY16_Q1"   ], "|Q| = 1e"                ,"LP");
-   LEGMu->AddEntry(MuGraphMap["DY16_Q2"   ], "|Q| = 2e"                ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f10":"Gluino16_f10" ] , "gluino; 50% #tilde{g}g"    ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f50":"Gluino16G_f50"] , "gluino; 10% #tilde{g}g"    ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"Stop16G"      :"Stop16G"      ] , "stop"                      ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"GMStau16G"    :"GMStau16G"    ] , "stau; dir. prod."           ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"PPStau16G"    :"PPStau16G"    ] , "stau"                 ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q1"     :"DY16G_Q1"     ], "|Q| = 1e"                ,"LP");
+   LEGMu->AddEntry(MuGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q2"     :"DY16G_Q2"     ], "|Q| = 2e"                ,"LP");
 
    TLegend* LEGTh = new TLegend(0.25,0.82-(1+6)*0.043,0.60,0.82);
    LEGTh->SetTextFont(43); //give the font size in pixel (instead of fraction)
@@ -1122,15 +1181,15 @@ std::cout<<"TESTD\n";
       TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw();
    }
 
-   TkGraphMap["Gluino16_f10" ]->Draw("LP");
-   TkGraphMap["Gluino16_f50" ]->Draw("LP");
-   TkGraphMap["Gluino16N_f10"]->Draw("LP");
-   TkGraphMap["Stop16"       ]->Draw("LP");
-   TkGraphMap["Stop16N"      ]->Draw("LP");
-   TkGraphMap["GMStau16"     ]->Draw("LP");
-   TkGraphMap["PPStau16"     ]->Draw("LP");
-   TkGraphMap["DY16_Q1"    ]->Draw("LP");
-   TkGraphMap["DY16_Q2"    ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f10" :"Gluino16_f10" ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f50" :"Gluino16_f50" ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16GN_f10":"Gluino16N_f10"]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"Stop16G"       :"Stop16G"      ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"Stop16GN"      :"Stop16GN"     ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"GMStau16G"     :"GMStau16G"    ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"PPStau16G"     :"PPStau16G"    ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q1"      :"DY16G_Q1"     ]->Draw("LP");
+   TkGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q2"      :"DY16G_Q2"     ]->Draw("LP");
    //TkGraphMap["DY_Q2o3"    ]->Draw("LP");
 
    DrawPreliminary(LegendFromType(TkPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
@@ -1141,16 +1200,17 @@ std::cout<<"TESTD\n";
    LEGTk->SetFillColor(0); 
    LEGTk->SetFillStyle(0);
    LEGTk->SetBorderSize(0);
-   LEGTk->AddEntry(TkGraphMap["Gluino16_f50" ], "gluino; 50% #tilde{g}g"            ,"LP");
-   LEGTk->AddEntry(TkGraphMap["Gluino16_f10" ], "gluino; 10% #tilde{g}g"            ,"LP");
-   LEGTk->AddEntry(TkGraphMap["Gluino16N_f10"], "gluino; 10% #tilde{g}g; CS"        ,"LP");
-   LEGTk->AddEntry(TkGraphMap["Stop16"       ], "stop"                              ,"LP");
-   LEGTk->AddEntry(TkGraphMap["Stop16N"      ], "stop; CS"                          ,"LP");
-   LEGTk->AddEntry(TkGraphMap["PPStau16"     ], "stau; dir. prod."                ,"LP");
-   LEGTk->AddEntry(TkGraphMap["GMStau16"     ], "stau"                              ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f10" :"Gluino16_f10" ], "gluino; 50% #tilde{g}g"            ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16G_f50" :"Gluino16_f50" ], "gluino; 10% #tilde{g}g"            ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"Gluino16GN_f10":"Gluino16N_f10"], "gluino; 10% #tilde{g}g; CS"        ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"Stop16G"       :"Stop16G"      ], "stop"                              ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"Stop16GN"      :"Stop16GN"     ], "stop; CS"                          ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"GMStau16G"     :"GMStau16G"    ], "stau; dir. prod."                ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"PPStau16G"     :"PPStau16G"    ], "stau"                              ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q1"      :"DY16G_Q1"     ], "|Q| = 1e"                            ,"LP");
+   LEGTk->AddEntry(TkGraphMap[EXCLUSIONDIR.find("16G")?"DY16G_Q2"      :"DY16G_Q2"     ], "|Q| = 2e"                            ,"LP");
    //LEGTk->AddEntry(TkGraphMap["DY_Q2o3"    ], "|Q| = 2e/3"                            ,"LP");
-   LEGTk->AddEntry(TkGraphMap["DY16_Q1"    ], "|Q| = 1e"                            ,"LP");
-   LEGTk->AddEntry(TkGraphMap["DY16_Q2"    ], "|Q| = 2e"                            ,"LP");
+   /* 2016 G JOZZE */
 
    TLegend* LEGThTk = new TLegend(0.25,0.82-(1+6)*0.043,0.60,0.82);
    LEGThTk->SetTextFont(43); //give the font size in pixel (instead of fraction)
@@ -1248,9 +1308,6 @@ if(Combine){
    c1->SetLogy(true);
    SaveCanvas(c1, outpath, string("StauExclusionLog"));
    delete c1;
-
-
-
 }
 //////////////////////////////////////
 
@@ -2179,11 +2236,12 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
    CurrentSampleIndex        = JobIdToIndex(signal,samples); 
    if(CurrentSampleIndex<0){  printf("There is no signal corresponding to the JobId Given\n");  return;  } 
 
-   if      (Data.find("7TeV"   )!=string::npos){SQRTS=7.0;   } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
-   else if (Data.find("8TeV"   )!=string::npos){SQRTS=8.0;   } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
-   else if (Data.find("13TeV15")!=string::npos){SQRTS=1315.0;} //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
-   else if (Data.find("13TeV16")!=string::npos){SQRTS=1316.0;} //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
-   else if (Data.find("13TeV"  )!=string::npos){SQRTS=13.0;  } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   if      (Data.find("7TeV"    )!=string::npos){SQRTS=7.0;    } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   else if (Data.find("8TeV"    )!=string::npos){SQRTS=8.0;    } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   else if (Data.find("13TeV15" )!=string::npos){SQRTS=1315.0; } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   else if (Data.find("13TeV16G")!=string::npos){SQRTS=13167.0;} //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   else if (Data.find("13TeV16" )!=string::npos){SQRTS=1316.0; } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
+   else if (Data.find("13TeV"   )!=string::npos){SQRTS=13.0;   } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
 
    //For muon only don't run on neutral samples as near zero efficiency can make jobs take very long time
    if((signal.find("Gluino")!=string::npos || signal.find("Stop")!=string::npos) && signal.find("N")!=string::npos && TypeMode==3) return;
@@ -2253,11 +2311,12 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
          if(TypeMode_!=TypeMode)continue; //Not reading the cut line for the right TypeMode 
 
          string signalNameWithoutEnergy = signal;
-         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_7TeV"   , "");
-         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_8TeV"   , "");
-         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV15", "");
-         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV16", "");
-         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV"  , "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_7TeV"    , "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_8TeV"    , "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV15" , "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV16G", "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV16" , "");
+         signalNameWithoutEnergy = ReplacePartOfString (signalNameWithoutEnergy, "_13TeV"   , "");
 
 //         if(signalNameWithoutEnergy.find(str7TeV)!=string::npos)signalNameWithoutEnergy.erase(signalNameWithoutEnergy.find(str7TeV), str7TeV.length());
 //         if(signalNameWithoutEnergy.find(str8TeV)!=string::npos)signalNameWithoutEnergy.erase(signalNameWithoutEnergy.find(str8TeV), string(str8TeV).length()); 
@@ -2283,8 +2342,8 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
    }
 
    //normalise the signal samples to XSection * IntLuminosity
-//   double LInt  = H_Lumi->GetBinContent(1); // FIXME JOZE
-   double LInt  = IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP;
+   double LInt  = H_Lumi->GetBinContent(1); // FIXME JOZE
+//   double LInt  = IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP;
 //   LInt = Data.find("13TeV16")!=string::npos?IntegratedLuminosity13TeV16:IntegratedLuminosity13TeV15; // from before, but a neat trick
    double norm  = samples[CurrentSampleIndex].XSec*LInt/TotalE  ->Integral(); //normalize the samples to the actual lumi used for limits
    double normPU= samples[CurrentSampleIndex].XSec*LInt/(TotalEPU->Integral()>0?TotalEPU->Integral():TotalE->Integral());
@@ -2503,8 +2562,8 @@ void testShapeBasedAnalysis(string InputPattern, string signal){
    TH1D*  TotalEPU   = (TH1D*)GetObjectFromPath(InputFile, samples[s].Name+"/TotalEPU" );
 
    //normalise the signal samples to XSection * IntLuminosity
-//   double LInt  = H_Lumi->GetBinContent(1); // FIXME JOZE
-   double LInt  = IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP;
+   double LInt  = H_Lumi->GetBinContent(1); // FIXME JOZE
+//   double LInt  = IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP;
    double norm  = samples[CurrentSampleIndex].XSec*LInt/TotalE  ->Integral(); //normalize the samples to the actual lumi used for limits
    double normPU= samples[CurrentSampleIndex].XSec*LInt/TotalEPU->Integral();
    MassSign      ->Scale(norm);
@@ -3005,7 +3064,7 @@ bool Combine(string InputPattern, string signal1, string signal2){
    string CodeToExecute = "combineCards.py ";
    char massStr[255];
 
-   if (signal1.find("13TeV")==string::npos && signal2.find("13TeV")==string::npos){
+   if (signal1.find("7TeV")!=string::npos && signal2.find("8TeV")!=string::npos){
       //Get Optimal cut from sample11
       result11 =  stAllInfo(InputPattern+"/EXCLUSION7TeV/"+signal1+".txt");
       //Get Optimal cut from sample12
@@ -3035,7 +3094,8 @@ bool Combine(string InputPattern, string signal1, string signal2){
       if(is8TeVPresent)CodeToExecute+="   " + InputPattern+"/EXCLUSION8TeV/shape_"+(TypeStr+signal2)+".dat ";
    }
 
-   else {
+   // COMBINE2016
+   else if (signal1.find("W13TeV16")!=string::npos && signal2.find("W13TeV16G")!=string::npos){
       size_t toBreak1   = signal1.find("W13TeV");
       size_t toBreak2   = signal2.find("W13TeV");
       string signal11   = signal1.substr(0, toBreak1);
@@ -3043,9 +3103,9 @@ bool Combine(string InputPattern, string signal1, string signal2){
       string EXCLUSION1 = "/EXCLUSION"+signal1.substr(toBreak1+1, signal1.size()-toBreak1-1);
       string EXCLUSION2 = "/EXCLUSION"+signal2.substr(toBreak2+1, signal2.size()-toBreak2-1);
       //Get Optimal cut from sample11
-      result11 =  stAllInfo(InputPattern+EXCLUSION1+"/"+signal11+".txt");
+      result11 =  stAllInfo(InputPattern+EXCLUSION1+"/"+ReplacePartOfString(signal11,"13TeV", "13TeV16")+".txt");
       //Get Optimal cut from sample22
-      result12 =  stAllInfo(InputPattern+EXCLUSION2+"/"+signal12+".txt");
+      result12 =  stAllInfo(InputPattern+EXCLUSION2+"/"+ReplacePartOfString(signal12, "13TeV16", "13TeV16G")+".txt");
       char TypeStr[100] ;sprintf(TypeStr,"Type%i", TypeMode);
       JobName = TypeStr+signal11;
 
@@ -3053,24 +3113,32 @@ bool Combine(string InputPattern, string signal1, string signal2){
       sprintf(massStr,"%.0f",result.Mass);
 
       signal = signal11;
-      signal = ReplacePartOfString(signal, "_13TeV16", "");
-      signal = ReplacePartOfString(signal, "_13TeV15", "");
-      signal = ReplacePartOfString(signal, "_13TeV"  , "");
+      signal = ReplacePartOfString(signal, "_13TeV16G", "");
+      signal = ReplacePartOfString(signal, "_13TeV16" , "");
+      signal = ReplacePartOfString(signal, "_13TeV15" , "");
+      signal = ReplacePartOfString(signal, "_13TeV"   , "");
 
       FILE* pFileTmp = NULL;
 
-      bool is2015Present = true;
-      pFileTmp = fopen((InputPattern+EXCLUSION1+"/shape_"+(TypeStr+signal11)+".dat").c_str(), "r");
-      if(!pFileTmp){is2015Present=false;}else{fclose(pFileTmp);}
-      if(TypeMode!=0 && TypeMode!=2) is2015Present=false;
-
       bool is2016Present = true;
-      pFileTmp = fopen((InputPattern+EXCLUSION2+"/shape_"+(TypeStr+signal12)+".dat").c_str(), "r");
+      printf("Accesing the file %s\n", (InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat").c_str());
+      pFileTmp = fopen((InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat").c_str(), "r");
       if(!pFileTmp){is2016Present=false;}else{fclose(pFileTmp);}
+//      if(TypeMode!=0 && TypeMode!=2) is2016Present=false;
+
+      bool is2016GPresent = true;
+      printf("Accesing the file %s\n", (InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12, "13TeV16", "13TeV16G"))+".dat").c_str());
+      pFileTmp = fopen((InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12, "13TeV16", "13TeV16G"))+".dat").c_str(), "r");
+      if(!pFileTmp){is2016GPresent=false;}else{fclose(pFileTmp);}
 
 
-      if(is2015Present)CodeToExecute+="   " + InputPattern+EXCLUSION1+"/shape_"+(TypeStr+signal11)+".dat ";
-      if(is2016Present)CodeToExecute+="   " + InputPattern+EXCLUSION2+"/shape_"+(TypeStr+signal12)+".dat ";
+      if(is2016Present)CodeToExecute+="   " + InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat ";
+      if(is2016GPresent){
+         CodeToExecute+="   " + InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat ";
+	 string PreExecuteCode = string("sed -i \'s:13TeV16G:13TeV16:g\' ")+InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat";
+	 printf ("Renaming the signal in the datacard:\n%s\n", PreExecuteCode.c_str());
+	 system(PreExecuteCode.c_str());
+      }
    }
 
 
@@ -3161,9 +3229,18 @@ bool Combine(string InputPattern, string signal1, string signal2){
 
 
 bool useSample(int TypeMode, string sample) {
-  if(TypeMode==0 && (sample=="Gluino16_f10" || sample=="Gluino16N_f10" || sample=="Stop16N" || sample=="Stop16" || sample=="DY16_Q2o3" || sample=="GMStau16" || sample=="PPStau16")) return true;
-  if(TypeMode==2 && (sample=="Gluino16_f10" || sample=="Gluino16_f50" || sample=="Stop16" || sample=="GMStau16" || sample=="PPStau16" || sample=="DY16_Q2o3" || sample=="DY16_Q1")) return true;
-  if(TypeMode==3 && (sample=="Stop16" || sample=="Gluino16_f10" || sample=="Gluino16_f50" || sample=="Gluino16_f100")) return true;
+  if(TypeMode==0 && (sample=="Gluino16_f10" || sample=="Gluino16N_f10" || sample=="Stop16N" || sample=="Stop16" || sample=="DY16_Q2o3" || sample=="GMStau16" || sample=="PPStau16" ||
+    sample=="Gluino16G_f10" || sample=="Gluino16GN_f10" || sample=="Stop16GN" || sample=="Stop16G" || sample=="DY16G_Q2o3" || sample=="GMStau16G" || sample=="PPStau16G"))
+    return true;
+
+  if(TypeMode==2 && (sample=="Gluino16_f10" || sample=="Gluino16_f50" || sample=="Stop16" || sample=="GMStau16" || sample=="PPStau16" || sample=="DY16_Q2o3" || sample=="DY16_Q1" ||
+    sample=="Gluino16G_f10" || sample=="Gluino16G_f50" || sample=="Stop16G" || sample=="GMStau16G" || sample=="PPStau16G" || sample=="DY16G_Q2o3" || sample=="DY16G_Q1"))
+    return true;
+
+  if(TypeMode==3 && (sample=="Stop16" || sample=="Gluino16_f10" || sample=="Gluino16_f50" || sample=="Gluino16_f100" || 
+    sample=="Stop16G" || sample=="Gluino16G_f10" || sample=="Gluino16G_f50" || sample=="Gluino16G_f100"))
+    return true;
+
   if(TypeMode==4) return true;
   if(TypeMode==5) return true;
   return false;
