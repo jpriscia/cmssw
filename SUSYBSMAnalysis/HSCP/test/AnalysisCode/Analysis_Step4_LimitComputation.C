@@ -301,7 +301,7 @@ void Analysis_Step4_LimitComputation(string MODE="COMPILE", string InputPattern=
    if (MODE.find("Run1")!=string::npos){ EXCLUSIONDIR+="COMB"    ; SQRTS=78.0    ; }
    if (MODE.find("Run2")!=string::npos){ EXCLUSIONDIR+="COMB"    ; SQRTS=131615.0; }
    if (MODE.find("2016")!=string::npos){ EXCLUSIONDIR+="COMB2016"; SQRTS=131677.0; }
-   if(Combine) {PlotMinScale=1E-6; PlotMaxScale=300;}
+//   if(Combine) {PlotMinScale=1E-6; PlotMaxScale=300;} // FIXME JOZZE -- for 13TeV we don't need this
 
    string outpath = string("Results/"+SHAPESTRING+EXCLUSIONDIR+"/");
    MakeDirectories(outpath);
@@ -1059,7 +1059,7 @@ std::cout<<"TESTD\n";
    frame->SetTitle("");
    frame->SetStats(kFALSE);
    frame->GetXaxis()->SetTitle("Mass (GeV)");
-   frame->GetYaxis()->SetTitle(Combine?"95% CL limit on #sigma/#sigma_{th}":"95% CL limit on #sigma (pb)");
+   frame->GetYaxis()->SetTitle(/*Combine?"95% CL limit on #sigma/#sigma_{th}":*/"95% CL limit on #sigma (pb)");
    frame->GetYaxis()->SetTitleOffset(1.40);
    frame->SetMaximum(PlotMaxScale);
    frame->SetMinimum(PlotMinScale);
@@ -1073,7 +1073,7 @@ std::cout<<"TESTD\n";
    if      (MODE.find("13TeV16G")!=std::string::npos) tmp = "16G";
    else if (MODE.find("13TeV16")!=std::string::npos)  tmp = "16" ;
 
-   if(!Combine) {
+////   if(!Combine) {
       ThErrorMap["Gluino"+tmp+"_f10"]->Draw("F");
       ThGraphMap["Gluino"+tmp+"_f10" ]->Draw("L");
 
@@ -1094,9 +1094,9 @@ std::cout<<"TESTD\n";
                          
       ThErrorMap["DY"+tmp+"_Q2"   ]->Draw("F");
       ThGraphMap["DY"+tmp+"_Q2"    ]->Draw("L");
-   }else{
-      TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw(); // FIXME do we really need this for 2016? Since it's at 13TeV, we might not really need it finally
-   }
+////   }else{
+////      TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw(); // FIXME do we really need this for 2016? Since it's at 13TeV, we might not really need it finally
+////   }
 
    MuGraphMap["Gluino"+tmp+"_f10"]->Draw("LP");
    MuGraphMap["Gluino"+tmp+"_f50"]->Draw("LP");
@@ -1107,7 +1107,7 @@ std::cout<<"TESTD\n";
    MuGraphMap["DY"+tmp+"_Q2"     ]->Draw("LP");
 
    DrawPreliminary(LegendFromType(MuPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
-   TLegend* LEGMu = !Combine ? new TLegend(0.60,0.82-7*0.043,0.93,0.82) : new TLegend(0.60,0.15,0.93,0.15+7*0.043);
+   TLegend* LEGMu = /*!Combine ? */new TLegend(0.60,0.82-7*0.043,0.93,0.82)/* : new TLegend(0.60,0.15,0.93,0.15+7*0.043)*/;
    LEGMu->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGMu->SetTextSize(18); //font size
    LEGMu->SetFillColor(0); 
@@ -1124,7 +1124,7 @@ std::cout<<"TESTD\n";
    TLegend* LEGTh = new TLegend(0.25,0.82-(1+6)*0.043,0.60,0.82);
    LEGTh->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGTh->SetTextSize(18); //font size
-   if(!Combine) {
+////   if(!Combine) {
    LEGTh->SetHeader("Theoretical Prediction");
    LEGTh->SetFillColor(0);
    //LEGTh->SetFillStyle(0);
@@ -1152,7 +1152,7 @@ std::cout<<"TESTD\n";
    DYQ2ThLeg->SetFillColor(ThErrorMap["DY"+tmp+"_Q2"]->GetFillColor());
    LEGTh->AddEntry(DYQ2ThLeg   ,"|Q| = 2e (LO)" ,"LF");
    LEGTh->Draw();
-   }
+////   }
    LEGMu->Draw();
 
    c1->SetLogy(true);
@@ -1173,7 +1173,7 @@ std::cout<<"TESTD\n";
    frame->GetYaxis()->SetRangeUser(1e-4, 1.5e1); // JOZZE EDIT
    frame->Draw("AXIS");
 
-   if(!Combine) {
+////   if(!Combine) {
       ThErrorMap["Gluino"+tmp+"_f10"]->Draw("F");
       ThGraphMap["Gluino"+tmp+"_f10"]->Draw("L");
 
@@ -1194,9 +1194,9 @@ std::cout<<"TESTD\n";
 
       //ThErrorMap["DY_Q2o3"   ]->Draw("F");
       //ThGraphMap["DY_Q2o3"   ]->Draw("L");
-   }else{
-      TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw();
-   }
+////   }else{
+////      TLine* LineAtOne = new TLine(50,1,1550,1);      LineAtOne->SetLineStyle(3);   LineAtOne->Draw();
+////   }
 
    TkGraphMap["Gluino"+tmp+"_f10" ]->Draw("LP");
    TkGraphMap["Gluino"+tmp+"_f50" ]->Draw("LP");
@@ -1211,7 +1211,7 @@ std::cout<<"TESTD\n";
 
    DrawPreliminary(LegendFromType(TkPattern).c_str(), SQRTS, IntegratedLuminosityFromE(SQRTS));
 
-   TLegend* LEGTk = !Combine ? new TLegend(0.60,0.82-8*0.043,0.93,0.82) : new TLegend(0.60,0.15,0.93,0.15+8*0.043);
+   TLegend* LEGTk = /*!Combine ? */new TLegend(0.60,0.82-8*0.043,0.93,0.82)/* : new TLegend(0.60,0.15,0.93,0.15+8*0.043)*/;
    LEGTk->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGTk->SetTextSize(18); //font size
    LEGTk->SetFillColor(0); 
@@ -1232,37 +1232,37 @@ std::cout<<"TESTD\n";
    TLegend* LEGThTk = new TLegend(0.25,0.82-(1+6)*0.043,0.60,0.82);
    LEGThTk->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGThTk->SetTextSize(18); //font size
-   if(!Combine) {
+////   if(!Combine) {
    LEGThTk->SetHeader("Theoretical Prediction");
    LEGThTk->SetFillColor(0);
    //LEGThTk->SetFillStyle(0);
    LEGThTk->SetBorderSize(0);
-   TGraph* GlThLeg = (TGraph*) ThGraphMap["Gluino"+tmp+"_f10"]->Clone("GluinoThLeg");
+////   TGraph* GlThLeg = (TGraph*) ThGraphMap["Gluino"+tmp+"_f10"]->Clone("GluinoThLeg");
    GlThLeg->SetFillColor(ThErrorMap["Gluino"+tmp+"_f10"]->GetFillColor());
    LEGThTk->AddEntry(GlThLeg, "gluino (NLO+NLL)" ,"LF");
-   TGraph* StThLeg = (TGraph*) ThGraphMap["Stop"+tmp      ]->Clone("StopThLeg");
+////   TGraph* StThLeg = (TGraph*) ThGraphMap["Stop"+tmp      ]->Clone("StopThLeg");
    StThLeg->SetFillColor(ThErrorMap["Gluino"+tmp+"_f10"]->GetFillColor());
    LEGThTk->AddEntry(StThLeg   ,"stop (NLO+NLL)" ,"LF");
-   TGraph* PPStauThLeg = (TGraph*) ThGraphMap["PPStau"+tmp        ]->Clone("PPStauThLeg");
+////   TGraph* PPStauThLeg = (TGraph*) ThGraphMap["PPStau"+tmp        ]->Clone("PPStauThLeg");
    PPStauThLeg->SetFillColor(ThErrorMap["Gluino"+tmp+"_f10"]->GetFillColor());
    LEGThTk->AddEntry(PPStauThLeg   ,"stau; dir. prod. (NLO)" ,"LF");
-   TGraph* StauThLeg = (TGraph*) ThGraphMap["GMStau"+tmp        ]->Clone("StauThLeg");
+////   TGraph* StauThLeg = (TGraph*) ThGraphMap["GMStau"+tmp        ]->Clone("StauThLeg");
    StauThLeg->SetFillColor(ThErrorMap["Gluino"+tmp+"_f10"]->GetFillColor());
    LEGThTk->AddEntry(StauThLeg   ,"stau (NLO)" ,"LF");
    //TGraph* DYQ2o3ThLeg = (TGraph*) ThGraphMap["DY_Q2o3"        ]->Clone("DYQ2o3ThLeg");
    //DYQ2o3ThLeg->SetFillColor(ThErrorMap["DY_Q2o3"]->GetFillColor());
    //LEGThTk->AddEntry(DYQ2o3ThLeg   ,"|Q| = 2e/3 (LO)" ,"LF");
-   TGraph* DYQ1ThLeg = (TGraph*) ThGraphMap["DY"+tmp+"_Q1"        ]->Clone("DYQ1ThLeg");
+////   TGraph* DYQ1ThLeg = (TGraph*) ThGraphMap["DY"+tmp+"_Q1"        ]->Clone("DYQ1ThLeg");
    DYQ1ThLeg->SetFillColor(ThErrorMap["DY"+tmp+"_Q1"]->GetFillColor());
    LEGThTk->AddEntry(DYQ1ThLeg   ,"|Q| = 1e (LO)" ,"LF");
-   TGraph* DYQ2ThLeg = (TGraph*) ThGraphMap["DY"+tmp+"_Q2"        ]->Clone("DYQ2ThLeg");
+////   TGraph* DYQ2ThLeg = (TGraph*) ThGraphMap["DY"+tmp+"_Q2"        ]->Clone("DYQ2ThLeg");
    DYQ2ThLeg->SetFillColor(ThErrorMap["DY"+tmp+"_Q2"]->GetFillColor());
    LEGThTk->AddEntry(DYQ2ThLeg   ,"|Q| = 2e (LO)" ,"LF");
 
    LEGThTk->Draw();
-   }
+////   }
 
-   if(!Combine) LEGThTk->Draw();
+/*   if(!Combine)*/ LEGThTk->Draw();
    LEGTk->Draw();
    c1->SetLogy(true);
    SaveCanvas(c1, outpath, string("TkExclusionLog"));
@@ -1300,7 +1300,7 @@ if(Combine){
 
    DrawPreliminary("", SQRTS, IntegratedLuminosityFromE(SQRTS));
 
-   LEGTk = !Combine ? new TLegend(0.50,0.92-3*0.043,0.83,0.92) : new TLegend(0.45,0.15+4*0.043,0.80,0.15+7*0.043);
+   LEGTk =/* !Combine ? */new TLegend(0.50,0.92-3*0.043,0.83,0.92)/* : new TLegend(0.45,0.15+4*0.043,0.80,0.15+7*0.043)*/;
    LEGTk->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGTk->SetTextSize(18); //font size
    LEGTk->SetFillColor(0); 
@@ -1311,7 +1311,7 @@ if(Combine){
    LEGTk->AddEntry(TkGraphMap["GMStau"     ], LegendFromType(TkPattern).c_str()                              ,"LP");
    LEGTk->Draw();
 
-   LEGTh = !Combine ? new TLegend(0.50,0.92-3*0.043,0.83,0.92) : new TLegend(0.45,0.15+0*0.043,0.80,0.15+3*0.043);
+   LEGTh =/* !Combine ? */new TLegend(0.50,0.92-3*0.043,0.83,0.92)/* : new TLegend(0.45,0.15+0*0.043,0.80,0.15+3*0.043)*/;
    LEGTh->SetTextFont(43); //give the font size in pixel (instead of fraction)
    LEGTh->SetTextSize(18); //font size     
    LEGTh->SetFillColor(0); 
@@ -3165,7 +3165,7 @@ bool Combine(string InputPattern, string signal1, string signal2){
    system(CodeToExecute.c_str());   
    printf("%s \n",CodeToExecute.c_str());
 
-   result.XSec_Th = 1.0;
+//   result.XSec_Th = 1.0; // FIXME NOT ADEQUATE FOR COMBINING SAMPLES AT THE SAME ENERGY! -- take whatever is in any 13TeV sample
    //Muon only uses just 2012
    if(TypeMode==3 && signal1.find("7TeV")!=string::npos && signal2.find("8TeV")!=string::npos) {
      result.XSec_Obs=result12.XSec_Obs/result12.XSec_Th;
