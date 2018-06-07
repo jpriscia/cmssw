@@ -214,6 +214,8 @@ void keepOnlySamplesAtSQRTS(std::vector<stSample>& samples, double SQRTS_){
          if(     SQRTS_== 7 && tmpName.find("_7TeV" )==string::npos){samples.erase(samples.begin()+s);s--;}
          if(     SQRTS_== 8 && tmpName.find("_8TeV" )==string::npos){samples.erase(samples.begin()+s);s--;}
          if((SQRTS_==13 || SQRTS_==1315 || SQRTS_==1316 || SQRTS_==131516 || SQRTS_==131615) && tmpName.find("_13TeV")==string::npos){samples.erase(samples.begin()+s);s--;}
+	 if(SQRTS_==13167 && tmpName.find("_13TeV16G")==string::npos){samples.erase(samples.begin()+s);s--;}
+         if(SQRTS_==131677 && tmpName.find("_13TeV16")==string::npos){samples.erase(samples.begin()+s);s--;}
       }
    }
 }

@@ -87,6 +87,7 @@ if sys.argv[1]=='1':
                     LaunchOnCondor.Jobs_InitCmds = ['ulimit -c 0', 'export HOME=%s' % os.environ['HOME'], 'export X509_USER_PROXY=$HOME/x509_user_proxy/x509_proxy; voms-proxy-init --noregen;', 'export REMOTESTORAGESERVER='+RemoteServer, 'export REMOTESTORAGEPATH='+RemoteStorageDir.replace('/storage/data/cms/store/', '//store/')]
                  else: LaunchOnCondor.Jobs_InitCmds = ['ulimit -c 0']
                  if(int(vals[1])>=2 and skipSamples(Type, vals[2])==True):continue
+                 if vals[2].find("13TeV16") < 0: continue # skip everything that is not 2016 -- namely the 2015 samples
 #                 if(int(vals[1])!=1):continue #Skip everything except for background MC
                  LaunchOnCondor.SendCluster_Push(["FWLITE", os.getcwd()+"/Analysis_Step1_EventLoop.C", '"ANALYSE_'+str(index)+'_to_'+str(index)+'"'  , Type, vals[2].rstrip() ])
         f.close()
