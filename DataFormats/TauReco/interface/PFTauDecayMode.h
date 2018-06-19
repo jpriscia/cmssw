@@ -47,6 +47,9 @@ namespace reco {
          tauDecay3ChargedPion2PiZero,  // a1  (1.2 GeV) mediated
          tauDecay3ChargedPion3PiZero,  // a1  (1.2 GeV) mediated
          tauDecay3ChargedPion4PiZero,  // a1  (1.2 GeV) mediated
+	 tauDecay4ChargedPion0PiZero,
+	 tauDecay4ChargedPion1PiZero,
+	 tauDecay4ChargedPion2PiZero,
          tauDecaysElectron,
          tauDecayMuon,
          tauDecayOther                 // catch-all

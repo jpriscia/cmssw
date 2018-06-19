@@ -24,6 +24,9 @@ class TauDecayModes( object ):
             'kThreeProng2PiZero',
             'kThreeProng3PiZero',
             'kThreeProngNPiZero',
+            'kFourProng0PiZero',
+            'kFourProng1PiZero',
+            'kFourProng2PiZero',
             'kRareDecayMode'
             ]
         self.decayModes = dict( (index-1, name) for index, name in enumerate( tmp ) )
@@ -52,10 +55,10 @@ class TauDecayModes( object ):
     def translateGenModeToInt(self, dm):
         if dm in self.decayModeNames:
             return self.nameToInt(dm)
-        elif dm == 'electron':
-            return -11
-        elif dm == 'muon':
-            return -13
+        #elif dm == 'electron':
+        #    return -11
+        #elif dm == 'muon':
+        #    return -13
         elif dm == 'kOneProngOther':
             return 100 # one-prong + 100
         elif dm == 'kThreeProngOther':
@@ -90,20 +93,20 @@ class TauDecayModes( object ):
             pdg_id = abs(daughter.pdgId())
             if pdg_id == 22:
                 numPhotons += 1
-            elif pdg_id == 11:
-                numElectrons +=1
-            elif pdg_id == 13:
-                numMuons += 1
+            #elif pdg_id == 11:
+            #    numElectrons +=1
+            #elif pdg_id == 13:
+            #    numMuons += 1
             else:
                 if daughter.charge() != 0:
                     numChargedHadrons += 1
                 elif pdg_id not in [12, 14, 16]:
                     numNeutralHadrons += 1
 
-        if numElectrons == 1:
-            return "electron"
-        if numMuons == 1:
-            return "muon"
+       # if numElectrons == 1:
+       #     return "electron"
+       # if numMuons == 1:
+       #     return "muon"
 
         if numChargedHadrons == 1:
             if numNeutralHadrons != 0:
@@ -118,6 +121,19 @@ class TauDecayModes( object ):
                 return "kOneProng3PiZero"
             else:
                 return "kOneProngNPiZero"
+
+        elif numChargedHadrons == 2:
+            if numNeutralHadrons != 0:
+                return "kTwoProngOther"
+            if numPhotons == 0:
+                return "kTwoProng0PiZero"
+            elif numPhotons == 2:
+                return "kTwoProng1PiZero"
+            elif numPhotons == 4:
+                return "kTwoProng2PiZero"
+            else:
+                return "kTwoProngOther"
+            
         elif numChargedHadrons == 3:
             if numNeutralHadrons != 0:
                 return "kThreeProngOther"
@@ -132,6 +148,24 @@ class TauDecayModes( object ):
             else:
                 return "kThreeProngNPiZero"
 
+        elif numChargedHadrons == 4:
+            if numNeutralHadrons != 0:
+                return "kFourProngOther"
+            if numPhotons == 0:
+                return "kFourProng0PiZero"
+            elif numPhotons == 2:
+                return "kFourProng1PiZero"
+            elif numPhotons == 4:
+                return "kFourProng2PiZero"
+            else:
+                return "kFourProngOther"
+
+        #elif numElectrons == 1:
+        #    return "electron"
+        #elif numMuons == 1:
+        #    return "muon"
+        #elif numMuons > 1:
+        #    return "muon"
         return "kRareDecayMode"
 
 tauDecayModes = TauDecayModes()
