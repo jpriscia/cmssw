@@ -36,6 +36,10 @@ totevents = events.size() # total number of events in the files
 # Reminder: you can see the names of the collections stored in your input file by doing:
 # edmDumpEventContent outputFULL.root
 
+#
+label_combtaus  = ('combinatoricRecoTaus', '', 'TAURECO')
+handle_combtaus = Handle('vector<reco::PFBaseTau>')
+
 # PAT taus
 label_taus  = ('patTaus', '', 'TAURECO')
 #label_taus  = ('slimmedTaus', '', 'PAT')
@@ -72,6 +76,13 @@ for i, ev in enumerate(events):
     if i%100==0:
         print '===> processing %d / %d event' %(i, totevents)
     
+    ###############################################
+    # access the comb taus
+    ev.getByLabel(label_combtaus, handle_combtaus)
+    combtaus =  handle_combtaus.product()
+    for i in combtaus:
+        print i.decayMode()
+    #set_trace()
     ######################################################################################
     # access the taus
     ev.getByLabel(label_taus, handle_taus)
@@ -121,7 +132,7 @@ for i, ev in enumerate(events):
         #    print i.pdgId()
         #print 'New Tau'
         #set_trace()
-        print "decayMode: ",tt.decayMode()
+        #print "decayMode: ",tt.decayMode()
 
         if not len(matches):
             continue

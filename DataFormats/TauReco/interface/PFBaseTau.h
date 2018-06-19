@@ -58,6 +58,9 @@ class PFBaseTau : public BaseTau {
       kThreeProng2PiZero,
       kThreeProng3PiZero,
       kThreeProngNPiZero,
+      kFourProng0PiZero,
+      kFourProng1PiZero,
+      kFourProng2PiZero,
       kRareDecayMode
     };
 

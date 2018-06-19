@@ -44,6 +44,7 @@
 #include "boost/shared_ptr.hpp"
 #include <vector>
 
+
 namespace reco { namespace tau {
 
 template<class TauType, class PFCollType, class PFType>
@@ -545,13 +546,20 @@ namespace
     const unsigned int maxPiZeros = TauType::kOneProngNPiZero;
     
     // Determine our track index
+    //std::cout<<"nCharged: "<<nCharged<<" maxPiZeros: "<<maxPiZeros<<" nPiZeros: "<<nPiZeros<<std::endl;
     unsigned int trackIndex = (nCharged - 1)*(maxPiZeros + 1);
     
     // Check if we handle the given number of tracks
     if ( trackIndex >= TauType::kRareDecayMode ) return TauType::kRareDecayMode;
     
     if ( nPiZeros > maxPiZeros ) nPiZeros = maxPiZeros;
+
+    //std::cout<<nCharged<<" "<<nPiZeros<<std::endl;
+    //std::cout<<static_cast<typename TauType::hadronicDecayMode>(trackIndex + nPiZeros)<<std::endl<<std::endl;
+
     return static_cast<typename TauType::hadronicDecayMode>(trackIndex + nPiZeros);
+
+    
   }
 }
 
