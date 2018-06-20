@@ -36,6 +36,22 @@ readFiles.extend( [
 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_184.root',
 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_185.root',
 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_186.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_216.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_217.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_218.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_219.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_240.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_241.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_242.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_243.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_244.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_245.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_246.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_247.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_248.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_249.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_250.root',
+'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_25.root',
 #'/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v7-v1/110000/60326BEE-2C76-E711-AA1D-D067E5F914D3.root',
 #'/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v7-v1/110000/903E0CB7-2C76-E711-AF40-0CC47A78A3D8.root',
 #'/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v7-v1/110000/9CBA2BEC-2C76-E711-9AD7-02163E016092.root',
@@ -105,7 +121,7 @@ process.out = cms.EndPath(process.output)
 process.recoTauAK4PatJets08Region = cms.EDProducer("RecoTauPatJetRegionProducer",
     deltaR = cms.double(0.8),
     maxJetAbsEta = cms.double(2.5),
-    minJetPt = cms.double(14.0),
+    minJetPt = cms.double(10.0),  #it was 14
     pfCandAssocMapSrc = cms.InputTag(""),
     pfCandSrc = cms.InputTag("packedPFCandidates"),
     src = cms.InputTag("slimmedJets")
@@ -129,24 +145,25 @@ process.recoTauCommonSequence = cms.Sequence(process.recoTauAK4PatJets08Region +
 process.combinatoricRecoTaus = cms.EDProducer("RecoPFBaseTauProducer",
     buildNullTaus = cms.bool(False),
     builders = cms.VPSet(cms.PSet(
-        decayModes = cms.VPSet(cms.PSet(  #map -> 0   (nCharged-1)*(4+1)+NPiZeros
-            maxPiZeros = cms.uint32(0),
-            maxTracks = cms.uint32(6),
-            nCharged = cms.uint32(1),
-            nPiZeros = cms.uint32(0)
-        ),		       
-            cms.PSet(
-                maxPiZeros = cms.uint32(6),  #map -> 1  
-                maxTracks = cms.uint32(6),
-                nCharged = cms.uint32(1),
-                nPiZeros = cms.uint32(1)
-            ), 
-            cms.PSet(     
-                maxPiZeros = cms.uint32(5),  #map -> 2
-                maxTracks = cms.uint32(6),
-                nCharged = cms.uint32(1),
-                nPiZeros = cms.uint32(2)
-            ), 
+        decayModes = cms.VPSet(
+	    #cms.PSet(  #map -> 0   (nCharged-1)*(4+1)+NPiZeros
+		#maxPiZeros = cms.uint32(0),
+		#maxTracks = cms.uint32(6),
+		#nCharged = cms.uint32(1),
+		#nPiZeros = cms.uint32(0)
+	    #),		       
+            #cms.PSet(
+               # maxPiZeros = cms.uint32(6),  #map -> 1  
+               # maxTracks = cms.uint32(6),
+               # nCharged = cms.uint32(1),
+               # nPiZeros = cms.uint32(1)
+            #), 
+            #cms.PSet(     
+               # maxPiZeros = cms.uint32(5),  #map -> 2
+               # maxTracks = cms.uint32(6),
+               # nCharged = cms.uint32(1),
+               # nPiZeros = cms.uint32(2)
+            #), 
             cms.PSet(
                 maxPiZeros = cms.uint32(0),   #map -> (1*5+0) = 5 
                 maxTracks = cms.uint32(6),
@@ -159,18 +176,18 @@ process.combinatoricRecoTaus = cms.EDProducer("RecoPFBaseTauProducer",
                 nCharged = cms.uint32(2),
                 nPiZeros = cms.uint32(1)
             ), 
-            cms.PSet(
-                maxPiZeros = cms.uint32(0), #map ->10
-                maxTracks = cms.uint32(6),
-                nCharged = cms.uint32(3),
-                nPiZeros = cms.uint32(0) 
-            ), 
-            cms.PSet(
-                maxPiZeros = cms.uint32(3), #map->11
-                maxTracks = cms.uint32(6),
-                nCharged = cms.uint32(3),
-                nPiZeros = cms.uint32(1)
-            ),
+            #cms.PSet(
+            #    maxPiZeros = cms.uint32(0), #map ->10
+            #    maxTracks = cms.uint32(6),
+            #    nCharged = cms.uint32(3),
+            #    nPiZeros = cms.uint32(0) 
+            #), 
+            #cms.PSet(
+            #    maxPiZeros = cms.uint32(3), #map->11
+            #    maxTracks = cms.uint32(6),
+            #    nCharged = cms.uint32(3),
+            #    nPiZeros = cms.uint32(1)
+            #),
 	   #from here it is for HNL
 
 	    cms.PSet(
@@ -198,7 +215,7 @@ process.combinatoricRecoTaus = cms.EDProducer("RecoPFBaseTauProducer",
                 nPiZeros = cms.uint32(2) 
             )),
 
-        isolationConeSize = cms.double(0.5),
+        isolationConeSize = cms.double(0.5),      ##0.5 for now....
         minAbsPhotonSumPt_insideSignalCone = cms.double(2.5),
         minAbsPhotonSumPt_outsideSignalCone = cms.double(1000000000.0),
         minRelPhotonSumPt_insideSignalCone = cms.double(0.1),
@@ -243,13 +260,13 @@ process.combinatoricRecoTaus = cms.EDProducer("RecoPFBaseTauProducer",
                 minTrackVertexWeight = cms.double(-1.0)
             )
         ),
-        signalConeSize = cms.string('max(min(0.1, 3.0/pt()), 0.05)')
+        signalConeSize = cms.string('max(min(0.1, 5.0/pt()), 0.05)')  #it was 3.0
     )),
     chargedHadronSrc = cms.InputTag("ak4PFJetsRecoTauChargedHadrons"),
     jetRegionSrc = cms.InputTag("recoTauAK4PatJets08Region"),
     jetSrc = cms.InputTag("slimmedJets"),
     maxJetAbsEta = cms.double(2.5),
-    minJetPt = cms.double(14.0),
+    minJetPt = cms.double(10.0), #it was 14
     modifiers = cms.VPSet(cms.PSet(
         name = cms.string('sipt'),
         plugin = cms.string('RecoBaseTauImpactParameterSignificancePlugin'),
@@ -333,49 +350,50 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
     Prediscriminants = cms.PSet(
         BooleanOperator = cms.string('and')
     ),
-    decayModes = cms.VPSet(cms.PSet(
-        applyBendCorrection = cms.PSet(
-            eta = cms.bool(True),
-            mass = cms.bool(True),
-            phi = cms.bool(True)
-        ),
-        maxMass = cms.string('1.'),
-        minMass = cms.double(-1000.0),
-        nCharged = cms.uint32(1),
-        nChargedPFCandsMin = cms.uint32(1),
-        nPiZeros = cms.uint32(0),
-        nTracksMin = cms.uint32(1)
-    ), 
-        cms.PSet(
-            applyBendCorrection = cms.PSet(
-                eta = cms.bool(True),
-                mass = cms.bool(True),
-                phi = cms.bool(True)
-            ),
-            assumeStripMass = cms.double(0.1349),
-            maxMass = cms.string('max(1.3, min(1.3*sqrt(pt/100.), 4.2))'),
-            minMass = cms.double(0.3),
-            nCharged = cms.uint32(1),
-            nChargedPFCandsMin = cms.uint32(1),
-            nPiZeros = cms.uint32(1),
-            nTracksMin = cms.uint32(1)
-        ), 
-        cms.PSet(
-            applyBendCorrection = cms.PSet(
-                eta = cms.bool(True),
-                mass = cms.bool(True),
-                phi = cms.bool(True)
-            ),
-            assumeStripMass = cms.double(0.0),
-            maxMass = cms.string('max(1.2, min(1.2*sqrt(pt/100.), 4.0))'),
-            maxPi0Mass = cms.double(0.2),
-            minMass = cms.double(0.4),
-            minPi0Mass = cms.double(0.05),
-            nCharged = cms.uint32(1),
-            nChargedPFCandsMin = cms.uint32(1),
-            nPiZeros = cms.uint32(2),
-            nTracksMin = cms.uint32(1)
-        ), 
+    decayModes = cms.VPSet(
+	# cms.PSet(
+	#      applyBendCorrection = cms.PSet(
+			#	eta = cms.bool(True),
+			#	mass = cms.bool(True),
+			#	phi = cms.bool(True)
+			#	),
+              #maxMass = cms.string('1.'),
+	      #minMass = cms.double(-1000.0),
+	      #nCharged = cms.uint32(1),
+	      #nChargedPFCandsMin = cms.uint32(1),
+	      #nPiZeros = cms.uint32(0),
+	      #nTracksMin = cms.uint32(1)
+	 #), 
+        #cms.PSet(
+        #    applyBendCorrection = cms.PSet(
+        #        eta = cms.bool(True),
+        #        mass = cms.bool(True),
+        #        phi = cms.bool(True)
+        #    ),
+        #    assumeStripMass = cms.double(0.1349),
+        #    maxMass = cms.string('max(1.3, min(1.3*sqrt(pt/100.), 4.2))'),
+        #    minMass = cms.double(0.3),
+        #    nCharged = cms.uint32(1),
+        #    nChargedPFCandsMin = cms.uint32(1),
+        #    nPiZeros = cms.uint32(1),
+        #    nTracksMin = cms.uint32(1)
+        #), 
+        #cms.PSet(
+        #    applyBendCorrection = cms.PSet(
+        #        eta = cms.bool(True),
+        #        mass = cms.bool(True),
+        #        phi = cms.bool(True)
+        #    ),
+        #    assumeStripMass = cms.double(0.0),
+        #    maxMass = cms.string('max(1.2, min(1.2*sqrt(pt/100.), 4.0))'),
+        #    maxPi0Mass = cms.double(0.2),
+        #    minMass = cms.double(0.4),
+        #    minPi0Mass = cms.double(0.05),
+        #    nCharged = cms.uint32(1),
+        #    nChargedPFCandsMin = cms.uint32(1),
+        #    nPiZeros = cms.uint32(2),
+        #    nTracksMin = cms.uint32(1)
+        #), 
         cms.PSet(
             applyBendCorrection = cms.PSet(
                 eta = cms.bool(False),
@@ -402,32 +420,32 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
             nPiZeros = cms.uint32(1),
             nTracksMin = cms.uint32(2)
         ), 
-        cms.PSet(
-            applyBendCorrection = cms.PSet(
-                eta = cms.bool(False),
-                mass = cms.bool(False),
-                phi = cms.bool(False)
-            ),
-            maxMass = cms.string('4'),
-            minMass = cms.double(0.8),
-            nCharged = cms.uint32(3),
-            nChargedPFCandsMin = cms.uint32(1),
-            nPiZeros = cms.uint32(0),
-            nTracksMin = cms.uint32(2)
-        ), 
-        cms.PSet(
-            applyBendCorrection = cms.PSet(
-                eta = cms.bool(False),
-                mass = cms.bool(False),
-                phi = cms.bool(False)
-            ),
-            maxMass = cms.string('4'),
-            minMass = cms.double(0.9),
-            nCharged = cms.uint32(3),
-            nChargedPFCandsMin = cms.uint32(1),
-            nPiZeros = cms.uint32(1),
-            nTracksMin = cms.uint32(2)
-        ),
+        #cms.PSet(
+        #    applyBendCorrection = cms.PSet(
+        #        eta = cms.bool(False),
+        #        mass = cms.bool(False),
+        #        phi = cms.bool(False)
+        #    ),
+        #    maxMass = cms.string('4'),
+        #    minMass = cms.double(0.8),
+        #    nCharged = cms.uint32(3),
+        #    nChargedPFCandsMin = cms.uint32(1),
+        #    nPiZeros = cms.uint32(0),
+        #    nTracksMin = cms.uint32(2)
+        #), 
+        #cms.PSet(
+        #    applyBendCorrection = cms.PSet(
+        #        eta = cms.bool(False),
+        #        mass = cms.bool(False),
+        #        phi = cms.bool(False)
+        #    ),
+        #    maxMass = cms.string('4'),
+        #    minMass = cms.double(0.9),
+        #    nCharged = cms.uint32(3),
+        #    nChargedPFCandsMin = cms.uint32(1),
+        #    nPiZeros = cms.uint32(1),
+        #    nTracksMin = cms.uint32(2)
+        #),
 	 cms.PSet(
             applyBendCorrection = cms.PSet(
                 eta = cms.bool(False),
@@ -435,7 +453,7 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
                 phi = cms.bool(False)
             ),
             maxMass = cms.string('4.'),
-            minMass = cms.double(0.9),
+            minMass = cms.double(0.5), #was 0.9
             nCharged = cms.uint32(2),
             nChargedPFCandsMin = cms.uint32(1),
             nPiZeros = cms.uint32(2),
@@ -448,7 +466,7 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
 		phi = cms.bool(False)
 		),
 	    maxMass = cms.string('4.'),
-	    minMass = cms.double(0.9),
+	    minMass = cms.double(0.5), #was 0.9
 	    nCharged = cms.uint32(4),
 	    nChargedPFCandsMin = cms.uint32(1),
 	    nPiZeros = cms.uint32(0),
@@ -461,7 +479,7 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
                 phi = cms.bool(False)
                 ),
             maxMass = cms.string('4.'),
-            minMass = cms.double(0.9),
+            minMass = cms.double(0.5),
             nCharged = cms.uint32(4),
             nChargedPFCandsMin = cms.uint32(1),
             nPiZeros = cms.uint32(1),
@@ -474,7 +492,7 @@ process.hpsSelectionDiscriminator = cms.EDProducer("PFRecoBaseTauDiscriminationB
                 phi = cms.bool(False)
                 ),
             maxMass = cms.string('4.'),
-            minMass = cms.double(0.9),
+            minMass = cms.double(0.5),
             nCharged = cms.uint32(4),
             nChargedPFCandsMin = cms.uint32(1),
             nPiZeros = cms.uint32(2),

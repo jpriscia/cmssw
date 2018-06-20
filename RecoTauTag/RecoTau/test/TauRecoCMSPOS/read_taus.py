@@ -80,8 +80,8 @@ for i, ev in enumerate(events):
     # access the comb taus
     ev.getByLabel(label_combtaus, handle_combtaus)
     combtaus =  handle_combtaus.product()
-    for i in combtaus:
-        print i.decayMode()
+    #for i in combtaus:
+    #    print i.decayMode()
     #set_trace()
     ######################################################################################
     # access the taus
@@ -112,7 +112,7 @@ for i, ev in enumerate(events):
     # select only hadronically decaying taus
     #gen_taus = [pp for pp in gen_particles if abs(pp.pdgId())==15 and pp.status()==2 and isGenHadTau(pp)]
     gen_taus = [pp for pp in gen_particles if ((abs(pp.pdgId()) == 9900012 or abs(pp.pdgId()) == 9900014 or abs(pp.pdgId()) == 9900016) and pp.isLastCopy())]
-
+    if (gen_taus[0].pt()<10 or abs(gen_taus[0].eta())>2.5): continue
     # determine gen decaymode
     for gg in gen_taus:
         gg.decayMode = tauDecayModes.genDecayModeInt([d for d in finalDaughters(gg)])#  if abs(d.pdgId()) not in [12, 14, 16]])
