@@ -7,9 +7,11 @@ def isGenHadTau(gen_tau):
     ndau = gen_tau.numberOfDaughters()
     # identify as had decaying if no electron/muon appears as daughter
     isgentau = sum([abs(gen_tau.daughter(dd).pdgId()) in (11,13) for dd in range(ndau)]) == 0
+    #print [abs(gen_tau.daughter(dd).pdgId())  for dd in range(ndau)]
     # assign the gen tau a new attribut, visp4, 
     # which is the visible 4-momentum of the generated tau.
     # This is done by subtracting the neutrino p4's from the total gen tau p4.
+
     gen_tau.visp4 = gen_tau.p4()
     for neu in [gen_tau.daughter(dd) for dd in range(ndau) if abs(gen_tau.daughter(dd).pdgId()) in (12,14,16)]:
         gen_tau.visp4 -= neu.p4()

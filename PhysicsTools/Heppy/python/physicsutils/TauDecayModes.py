@@ -75,7 +75,7 @@ class TauDecayModes( object ):
         '''
 
         daughters = c.daughterPtrVector()
-
+        #for part in daughters : print part.pdgId()
         return TauDecayModes.genDecayMode(daughters)
 
     @staticmethod
@@ -88,8 +88,9 @@ class TauDecayModes( object ):
         numChargedHadrons = 0
         numNeutralHadrons = 0
         numPhotons = 0
-  
+        print [daughter.pdgId() for daughter in daughters]
         for daughter in daughters:
+            #print daughter.pdgId() 
             pdg_id = abs(daughter.pdgId())
             if pdg_id == 22:
                 numPhotons += 1
@@ -102,7 +103,7 @@ class TauDecayModes( object ):
                     numChargedHadrons += 1
                 elif pdg_id not in [12, 14, 16]:
                     numNeutralHadrons += 1
-
+                    #print 'eccone uno ', pdg_id
        # if numElectrons == 1:
        #     return "electron"
        # if numMuons == 1:

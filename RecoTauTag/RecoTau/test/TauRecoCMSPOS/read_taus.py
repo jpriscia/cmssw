@@ -1,4 +1,5 @@
 '''
+
 Loops on the events and operates the matching between reconstructed and generated taus.
 It produces two flat ntuples:
     - one with an entry for each gen tau (useful for efficiencies)
@@ -25,7 +26,7 @@ tofill_reco = OrderedDict(zip(branches, [-99.]*len(branches))) # initialise all 
 
 ##########################################################################################
 # Get ahold of the events
-events = Events('outputFULL.root') # make sure this corresponds to your file name!
+events = Events('../outputFULL_noIPCut.root') # make sure this corresponds to your file name!
 #events = Events('root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_lljj_M-4_V-0.004472135955_mu_pre2017_leptonFirst_NLO/heavyNeutrino_182.root')
 maxevents = -1 # max events to process
 totevents = events.size() # total number of events in the files
@@ -89,7 +90,7 @@ for i, ev in enumerate(events):
     taus = handle_taus.product()
     
     # loosely filter the reco taus 
-    taus = [tau for tau in taus if tau.pt()>18.]
+    taus = [tau for tau in taus if tau.pt()>10.] #was18 as the jet
 
     ######################################################################################
     # access the jets
@@ -97,7 +98,7 @@ for i, ev in enumerate(events):
     jets = handle_jets.product()
 
     # loosely filter jets
-    jets = [jet for jet in jets if jet.pt()>18. and abs(jet.eta())<2.5]
+    jets = [jet for jet in jets if jet.pt()>10. and abs(jet.eta())<2.5]
 
     ######################################################################################
     # access the vertices
@@ -112,10 +113,13 @@ for i, ev in enumerate(events):
     # select only hadronically decaying taus
     #gen_taus = [pp for pp in gen_particles if abs(pp.pdgId())==15 and pp.status()==2 and isGenHadTau(pp)]
     gen_taus = [pp for pp in gen_particles if ((abs(pp.pdgId()) == 9900012 or abs(pp.pdgId()) == 9900014 or abs(pp.pdgId()) == 9900016) and pp.isLastCopy())]
+
+    #set_trace()
     if (gen_taus[0].pt()<10 or abs(gen_taus[0].eta())>2.5): continue
     # determine gen decaymode
     for gg in gen_taus:
         gg.decayMode = tauDecayModes.genDecayModeInt([d for d in finalDaughters(gg)])#  if abs(d.pdgId()) not in [12, 14, 16]])
+        isGenHadTau(gg)
     #print gg.decayMode
     ######################################################################################
     # match reco taus to gen taus
@@ -125,7 +129,7 @@ for i, ev in enumerate(events):
     gen_taus_copy = gen_taus # we'll cyclically remove any gen taus that gets matched
     
     for tt in taus:
-        matches = [gg for gg in gen_taus_copy if deltaR(tt.p4(), gg.p4())<0.3] #visp4
+        matches = [gg for gg in gen_taus_copy if deltaR(tt.p4(), gg.visp4)<0.3] #visp4
 
         #print 'number of daughters ', len(tt.signalCands())
         #for i in tt.signalCands():
@@ -136,7 +140,7 @@ for i, ev in enumerate(events):
 
         if not len(matches):
             continue
-        matches.sort(key = lambda gg : deltaR(tt.p4(), gg.p4()))
+        matches.sort(key = lambda gg : deltaR(tt.p4(), gg.visp4))
         bestmatch = matches[0]
         tt.gen_tau = bestmatch
         bestmatch.reco_tau = tt
@@ -145,19 +149,32 @@ for i, ev in enumerate(events):
         #print bestmatch.reco_tau.decayMode
     ######################################################################################
     # match reco taus to reco jets
-    for jj in jets : jj.tau = None # first initialise the matching to None
+    if len(jets)==0:continue
+    for jj in jets : 
+        jj.tau = None # first initialise the matching to None
 
     taus_copy = taus # we'll cyclically remove any tau that gets matched
 
     for jj in jets:
-        matches = [tt for tt in taus_copy if deltaR(jj.p4(), tt.p4())<0.3]
+        matches = [tt for tt in taus_copy if deltaR(jj.p4(), tt.p4())<0.3]#0.3
         if not len(matches):
             continue
         matches.sort(key = lambda tt : deltaR(jj.p4(), tt.p4()))
         bestmatch = matches[0]
         jj.tau = bestmatch
+        jj.tau.gen_tau = None # not sure if this is needed
         taus_copy = [tt for tt in taus_copy if tt != bestmatch]
 
+        #that's for the jj-tt-gg match
+        gen_taus_copy1 = gen_taus
+        matches_gen = [gg for gg in gen_taus_copy1 if deltaR(jj.tau.p4(), gg.visp4)<0.3] 
+        print len(matches_gen)
+        if not len(matches_gen):
+            continue
+        matches_gen.sort(key = lambda gg : deltaR(tt.p4(), gg.visp4))
+        bestmatch_gen = matches_gen[0]
+        jj.tau.gen_tau = bestmatch_gen
+        gen_taus_copy = [gg for gg in gen_taus_copy1 if gg != bestmatch_gen]
     ######################################################################################
     # fill histograms
     for gg in gen_taus:
@@ -165,7 +182,6 @@ for i, ev in enumerate(events):
             pull = (gg.reco_tau.pt() - gg.pt())/gg.pt()
             histos['pull_pt'].Fill(pull)
     
-
     ######################################################################################
     # fill the ntuple: each gen tau makes an entry
     for gg in gen_taus:
@@ -186,12 +202,12 @@ for i, ev in enumerate(events):
         tofill_gen['tau_gen_phi'       ] = gg.phi()
         tofill_gen['tau_gen_charge'    ] = gg.charge()
         tofill_gen['tau_gen_decaymode' ] = gg.decayMode
-        #tofill_gen['tau_gen_vis_mass'  ] = gg.vismass()
-        #tofill_gen['tau_gen_vis_pt'    ] = gg.vispt()
-        #tofill_gen['tau_gen_vis_eta'   ] = gg.viseta()
-        #tofill_gen['tau_gen_vis_phi'   ] = gg.visphi()
+        tofill_gen['tau_gen_vis_mass'  ] = gg.vismass()
+        tofill_gen['tau_gen_vis_pt'    ] = gg.vispt()
+        tofill_gen['tau_gen_vis_eta'   ] = gg.viseta()
+        tofill_gen['tau_gen_vis_phi'   ] = gg.visphi()
         #print tofill_gen.values()
-        #print tofill_gen.keys(), tofill_gen.values()
+        #print tofill_gen
         ntuple_gen.Fill(array('f',tofill_gen.values()))
 
     # fill the ntuple: each gen tau makes an entry
@@ -219,10 +235,10 @@ for i, ev in enumerate(events):
                 tofill_gen['tau_gen_phi'       ] = jj.tau.gen_tau.phi()
                 tofill_gen['tau_gen_charge'    ] = jj.tau.gen_tau.charge()
                 tofill_gen['tau_gen_decaymode' ] = jj.tau.gen_tau.decayMode
-                #tofill_gen['tau_gen_vis_mass'  ] = jj.tau.gen_tau.vismass()
-                #tofill_gen['tau_gen_vis_pt'    ] = jj.tau.gen_tau.vispt()
-                #tofill_gen['tau_gen_vis_eta'   ] = jj.tau.gen_tau.viseta()
-                #tofill_gen['tau_gen_vis_phi'   ] = jj.tau.gen_tau.visphi()
+                tofill_gen['tau_gen_vis_mass'  ] = jj.tau.gen_tau.vismass()
+                tofill_gen['tau_gen_vis_pt'    ] = jj.tau.gen_tau.vispt()
+                tofill_gen['tau_gen_vis_eta'   ] = jj.tau.gen_tau.viseta()
+                tofill_gen['tau_gen_vis_phi'   ] = jj.tau.gen_tau.visphi()
         #print tofill_reco.keys() , tofill_reco.values()
         #print tofill_reco
         try:
