@@ -55,5 +55,5 @@ for i, executable in enumerate(todo):
 newcmd.close()
 
 #initProxy()
-#os.system('sh newcmd.cmd')
+os.system('sh newcmd.cmd')
 

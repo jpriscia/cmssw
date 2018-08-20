@@ -455,6 +455,8 @@ bool PassPreselection(const susybsm::HSCParticle& hscp, const DeDxHitInfo* dedxH
    if(st){st->TNOH  ->Fill(0.0,Event_Weight);
      if(dedxSObj){
          st->BS_TNOM->Fill(dedxSObj->numberOfMeasurements(),Event_Weight);
+         if(track->found() - dedxSObj->numberOfMeasurements()) 
+             st->BS_EtaNBH->Fill(track->eta(), track->found() - dedxSObj->numberOfMeasurements(), Event_Weight);
          if(PUA)st->BS_TNOM_PUA->Fill(dedxSObj->numberOfMeasurements(),Event_Weight);
          if(PUB)st->BS_TNOM_PUB->Fill(dedxSObj->numberOfMeasurements(),Event_Weight);
      }
@@ -482,8 +484,9 @@ bool PassPreselection(const susybsm::HSCParticle& hscp, const DeDxHitInfo* dedxH
    if(st && GenBeta>=0)st->Beta_PreselectedA->Fill(GenBeta, Event_Weight);
 
    if(st){st->BS_MPt ->Fill(track->pt(),Event_Weight);}
-   if(RescaleP){ if(RescaledPt(track->pt(),track->eta(),track->phi(),track->charge())<GlobalMinPt)return false;
-   }else{        if(track->pt()<GlobalMinPt)return false;   }
+   if(RescaleP){ if(RescaledPt(track->pt(),track->eta(),track->phi(),track->charge())<GlobalMinPt ||
+                    RescaledPt(track->pt(),track->eta(),track->phi(),track->charge())>GlobalMaxPt)return false;
+   }else{        if(track->pt()<GlobalMinPt || track->pt()>GlobalMaxPt)return false;   }
 
    if(st){st->MPt   ->Fill(0.0,Event_Weight);
      if(dedxSObj) st->BS_MIs->Fill(dedxSObj->dEdx(),Event_Weight);
@@ -491,6 +494,7 @@ bool PassPreselection(const susybsm::HSCParticle& hscp, const DeDxHitInfo* dedxH
    }
 
    if(dedxSObj && dedxSObj->dEdx()+RescaleI<GlobalMinIs)return false;
+   if(dedxSObj && dedxSObj->dEdx()+RescaleI>GlobalMaxIs)return false;
    if(dedxMObj && ((TypeMode!=5 && dedxMObj->dEdx()<GlobalMinIm) || (TypeMode==5 && dedxMObj->dEdx()>GlobalMinIm)) )return false;
    if(st){st->MI   ->Fill(0.0,Event_Weight);}
 
@@ -1358,6 +1362,8 @@ std::cout<<"G\n";
 	       }
                //skip events without track
 	       if(track.isNull())continue;
+	       // FIXME jozze skip events with |Eta| > 0.9 (out of the barrel)
+	       //if(track->eta()>0.9 || track->eta() < -0.9) continue;
 
                //require a track segment in the muon system
                if(TypeMode>1 && TypeMode!=5 && (muon.isNull() || !muon->isStandAloneMuon()))continue; 

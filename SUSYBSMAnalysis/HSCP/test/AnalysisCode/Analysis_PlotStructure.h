@@ -223,6 +223,7 @@ struct stPlots {
    TH2F*  BS_EtaPt;	   //TH3F*  AS_EtaPt;
    TH2F*  BS_EtaTOF;       //TH3F*  AS_EtaTOF;
    TH2F*  BS_EtaDz;
+   TH2F*  BS_EtaNBH;       // number of bad hits vs Eta
 
 
    TH2F*  BS_PIs;	   TH3F*  AS_PIs;
@@ -566,7 +567,8 @@ void stPlots_Init(TFile* HistoFile, stPlots& st, std::string BaseName, unsigned 
    Name = "BS_EtaIm"; st.BS_EtaIm = new TH2F(Name.c_str(), Name.c_str(),                   50,-3, 3,100, 0, dEdxM_UpLim);
    Name = "BS_EtaP" ; st.BS_EtaP  = new TH2F(Name.c_str(), Name.c_str(),                   50,-3, 3, 50, 0, PtHistoUpperBound);
    Name = "BS_EtaPt"; st.BS_EtaPt = new TH2F(Name.c_str(), Name.c_str(),                   50,-3, 3, 50, 0, PtHistoUpperBound);
-   Name = "BS_EtaTOF" ; st.BS_EtaTOF  = new TH2F(Name.c_str(), Name.c_str(),               50,-3, 3, 50, 0, 3);
+   Name = "BS_EtaTOF" ; st.BS_EtaTOF = new TH2F (Name.c_str(), Name.c_str(),               50,-3, 3, 50, 0, 3);
+   Name = "BS_EtaNBH" ; st.BS_EtaNBH = new TH2F (Name.c_str(), Name.c_str(),               60,-3, 3, 24, 0,24);
    Name = "BS_EtaDz"; st.BS_EtaDz  = new TH2F(Name.c_str(), Name.c_str(),                 50,-3, 3, 50, -IPbound, IPbound);
    Name = "BS_PIs"  ; st.BS_PIs   = new TH2F(Name.c_str(), Name.c_str(),                   50, 0, PtHistoUpperBound, 100, 0, dEdxS_UpLim);
    Name = "BS_PImHD"; st.BS_PImHD = new TH2F(Name.c_str(), Name.c_str(),                  500, 0, PtHistoUpperBound,1000, 0, dEdxM_UpLim);
@@ -913,6 +915,7 @@ bool stPlots_InitFromFile(TFile* HistoFile, stPlots& st, std::string BaseName)
    st.BS_EtaPt  = (TH2F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/BS_EtaPt");
    //st.AS_EtaPt  = (TH3F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/AS_EtaPt");
    st.BS_EtaTOF  = (TH2F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/BS_EtaTOF");
+   st.BS_EtaNBH  = (TH2F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/BS_EtaNBH");
    //st.AS_EtaTOF  = (TH3F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/AS_EtaTOF");
    st.BS_PIs    = (TH2F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/BS_PIs");
    st.AS_PIs    = (TH3F*)GetObjectFromPath(st.Directory, HistoFile,  BaseName + "/AS_PIs");
@@ -1138,6 +1141,14 @@ void stPlots_Draw(stPlots& st, std::string SavePath, std::string LegendTitle, un
    SaveCanvas(c1,SavePath,"EtaIm_BS", true);
    delete c1;
 
+   c1 = new TCanvas("c1","c1,",600,600);          legend.clear();
+   Histos[0] = (TH1*)st.BS_EtaNBH;                 legend.push_back("Before Cut");
+   DrawSuperposedHistos((TH1**)Histos, legend, "COLZ",  "#eta", "##NBH", 0,0, 0,0, false);
+   c1->SetLogz(true); c1->SetRightMargin(0.15);
+   DrawPreliminary(LegendTitle, SQRTS, IntegratedLuminosityFromE(SQRTS));
+   SaveCanvas(c1,SavePath,"EtaNBH_BS", true);
+   delete c1;
+
 //   c1 = new TCanvas("c1","c1,",600,600);          legend.clear();
 //   st.AS_EtaIm->GetXaxis()->SetRange(CutIndex+1,CutIndex+1);
 //   Histos[0] = (TH1*)st.AS_EtaIm->Project3D("zy");legend.push_back("After Cut");
@@ -1185,7 +1196,7 @@ void stPlots_Draw(stPlots& st, std::string SavePath, std::string LegendTitle, un
 //   delete c1;
 
    c1 = new TCanvas("c1","c1,",600,600);          legend.clear();
-   Histos[0] = (TH1*)st.BS_EtaTOF;                 legend.push_back("Before Cut");
+   Histos[0] = (TH1*)st.BS_EtaTOF;                legend.push_back("Before Cut");
    DrawSuperposedHistos((TH1**)Histos, legend, "COLZ",  "#eta", "1/#beta", 0,0, 0,0, false);
    c1->SetLogz(true); c1->SetRightMargin(0.15);
    DrawPreliminary(LegendTitle, SQRTS, IntegratedLuminosityFromE(SQRTS));
@@ -1853,6 +1864,7 @@ void stPlots_DrawComparison(std::string SavePath, std::string LegendTitle, unsig
 
 
    c1 = new TCanvas("c1","c1,",600,600);          legend.clear();
+   c1->SetLogy(true);
    for(unsigned int i=0;i<st.size();i++){
      Histos[i] = (TH1*)st[i]->BS_Eta->Clone();        legend.push_back(lg[i]);  if(Histos[i]->Integral()>0) Histos[i]->Scale(1.0/Histos[i]->Integral()); }
    DrawSuperposedHistos((TH1**)Histos, legend, "E1",  "#eta", "Fraction of tracks", 0,0, 1E-3,3);

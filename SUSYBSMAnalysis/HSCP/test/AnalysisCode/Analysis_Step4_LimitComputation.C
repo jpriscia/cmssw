@@ -323,14 +323,15 @@ void Analysis_Step4_LimitComputation(string MODE="COMPILE", string InputPattern=
     if(SQRTS==13167.0 && samples[s].Name.find("_13TeV16G")==string::npos){continue;}
 //    if(SQRTS==78.0){if(samples[s].Name.find("_7TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_7TeV"),5, ""); } }
     if(SQRTS==78.0){if(samples[s].Name.find("_8TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_8TeV"),5, ""); } }
-    if(SQRTS==131615.0 || SQRTS==131516.0 || SQRTS==131677){
+    if(SQRTS==131615.0 || SQRTS==131516.0){
        if  (samples[s].Name.find("_13TeV")==string::npos){continue;}
        else{
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16G", "");
           samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16" , "");
           samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV15" , "");
           samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV"   , "");
        }
+    } else if (SQRTS==131677){
+          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16G", "");
     }
 
     modelMap[samples[s].ModelName()].push_back(samples[s]);
@@ -973,7 +974,7 @@ std::cout<<"TESTC\n";
       MuGraphMap["DY_Q2"        ]->SetLineColor(43); MuGraphMap["DY_Q2"        ]->SetMarkerColor(43);  MuGraphMap["DY_Q2"        ]->SetLineWidth(2);   MuGraphMap["DY_Q2"        ]->SetLineStyle(1);  MuGraphMap["DY_Q2"      ]->SetMarkerStyle(34);
       TkGraphMap["DY_Q2"        ]->SetLineColor(43); TkGraphMap["DY_Q2"        ]->SetMarkerColor(43);  TkGraphMap["DY_Q2"        ]->SetLineWidth(2);   TkGraphMap["DY_Q2"        ]->SetLineStyle(1);  TkGraphMap["DY_Q2"      ]->SetMarkerStyle(34);
    }
-   if (MODE.find("13TeV16")!=std::string::npos && MODE.find("13TeV16G")==std::string::npos){
+   else if (MODE.find("13TeV16")!=std::string::npos && MODE.find("13TeV16G")==std::string::npos){
       ThGraphMap["Gluino16_f10"   ]->SetLineColor(4);  ThGraphMap["Gluino16_f10"   ]->SetMarkerColor(4);   ThGraphMap["Gluino16_f10"   ]->SetLineWidth(1);   ThGraphMap["Gluino16_f10"   ]->SetLineStyle(1);  ThGraphMap["Gluino16_f10"   ]->SetMarkerStyle(1);
       MuGraphMap["Gluino16_f10"   ]->SetLineColor(4);  MuGraphMap["Gluino16_f10"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16_f10"   ]->SetLineWidth(2);   MuGraphMap["Gluino16_f10"   ]->SetLineStyle(1);  MuGraphMap["Gluino16_f10"   ]->SetMarkerStyle(22);
       MuGraphMap["Gluino16_f50"   ]->SetLineColor(4);  MuGraphMap["Gluino16_f50"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16_f50"   ]->SetLineWidth(2);   MuGraphMap["Gluino16_f50"   ]->SetLineStyle(1);  MuGraphMap["Gluino16_f50"   ]->SetMarkerStyle(23);
@@ -997,7 +998,7 @@ std::cout<<"TESTC\n";
       MuGraphMap["DY16_Q2"        ]->SetLineColor(43); MuGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  MuGraphMap["DY16_Q2"        ]->SetLineWidth(2);   MuGraphMap["DY16_Q2"        ]->SetLineStyle(1);  MuGraphMap["DY16_Q2"      ]->SetMarkerStyle(34);
       TkGraphMap["DY16_Q2"        ]->SetLineColor(43); TkGraphMap["DY16_Q2"        ]->SetMarkerColor(43);  TkGraphMap["DY16_Q2"        ]->SetLineWidth(2);   TkGraphMap["DY16_Q2"        ]->SetLineStyle(1);  TkGraphMap["DY16_Q2"      ]->SetMarkerStyle(34);
    }
-   if (MODE.find("13TeV16G")!=std::string::npos){
+   else if (MODE.find("13TeV16G")!=std::string::npos){
       ThGraphMap["Gluino16G_f10"   ]->SetLineColor(4);  ThGraphMap["Gluino16G_f10"   ]->SetMarkerColor(4);   ThGraphMap["Gluino16G_f10"   ]->SetLineWidth(1);   ThGraphMap["Gluino16G_f10"   ]->SetLineStyle(1);  ThGraphMap["Gluino16G_f10"   ]->SetMarkerStyle(1);
       MuGraphMap["Gluino16G_f10"   ]->SetLineColor(4);  MuGraphMap["Gluino16G_f10"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16G_f10"   ]->SetLineWidth(2);   MuGraphMap["Gluino16G_f10"   ]->SetLineStyle(1);  MuGraphMap["Gluino16G_f10"   ]->SetMarkerStyle(22);
       MuGraphMap["Gluino16G_f50"   ]->SetLineColor(4);  MuGraphMap["Gluino16G_f50"   ]->SetMarkerColor(4);   MuGraphMap["Gluino16G_f50"   ]->SetLineWidth(2);   MuGraphMap["Gluino16G_f50"   ]->SetLineStyle(1);  MuGraphMap["Gluino16G_f50"   ]->SetMarkerStyle(23);
@@ -1170,7 +1171,7 @@ std::cout<<"TESTD\n";
 //   frame->GetYaxis()->SetTitleOffset(1.40);
 //   frame->SetMaximum(PlotMaxScale);
 //   frame->SetMinimum(PlotMinScale);
-   frame->GetYaxis()->SetRangeUser(1e-4, 1.5e1); // JOZZE EDIT
+   frame->GetYaxis()->SetRangeUser(!Combine?1e-4:3e-5, !Combine?1.5e1:2.5e1); // JOZZE EDIT
    frame->Draw("AXIS");
 
 ////   if(!Combine) {
@@ -1217,8 +1218,8 @@ std::cout<<"TESTD\n";
    LEGTk->SetFillColor(0); 
    LEGTk->SetFillStyle(0);
    LEGTk->SetBorderSize(0);
-   LEGTk->AddEntry(TkGraphMap["Gluino"+tmp+"_f10" ], "gluino; 50% #tilde{g}g"            ,"LP");
-   LEGTk->AddEntry(TkGraphMap["Gluino"+tmp+"_f50" ], "gluino; 10% #tilde{g}g"            ,"LP");
+   LEGTk->AddEntry(TkGraphMap["Gluino"+tmp+"_f50" ], "gluino; 50% #tilde{g}g"            ,"LP");
+   LEGTk->AddEntry(TkGraphMap["Gluino"+tmp+"_f10" ], "gluino; 10% #tilde{g}g"            ,"LP");
    LEGTk->AddEntry(TkGraphMap["Gluino"+tmp+"N_f10"], "gluino; 10% #tilde{g}g; CS"        ,"LP");
    LEGTk->AddEntry(TkGraphMap["Stop"+tmp      ], "stop"                              ,"LP");
    LEGTk->AddEntry(TkGraphMap["Stop"+tmp+"N"     ], "stop; CS"                          ,"LP");
@@ -1831,6 +1832,7 @@ TGraph* MakePlot(FILE* pFile, FILE* talkFile, string InputPattern, string ModelN
      XSecExp   [i] = Infos[i].XSec_Exp;
      LInt          = std::max(LInt, Infos[i].LInt);
 
+     if (ModelName.find("Stop")!=string::npos && ModelName.find("N")==string::npos) printf ("Model = %s Mass = %.0f XSecObs = %.3E\n", (InputPattern+""+SHAPESTRING+EXCLUSIONDIR+"/" + modelSamples[signalPoints[i]].Name +".txt").c_str(), Mass[i], XSecObs[i]);
      //printf("%i %s\n", (int)FileFound, (InputPattern+""+SHAPESTRING+EXCLUSIONDIR+"/" + modelSamples[signalPoints[i]].Name +".txt").c_str());
 //     I++;
    }
@@ -2425,16 +2427,20 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
       result = toReturn;
       result.MassMean  = Mean;
       result.MassSigma = Width;
+//      if (correctMassCut && TypeMode<=2 && !shape){
+//         TH1D* tmpMassSignProj = MassSign->ProjectionY("MassSignProj0",1,1);
+//         MinRange = tmpMassSignProj->GetXaxis()->GetBinLowEdge(tmpMassSignProj->GetXaxis()->FindBin(samples[JobIdToIndex(signal,samples)].Mass*0.625));
+//      }
       result.MassCut   = TypeMode<=2?MinRange:0;
       result.Mass      = samples[JobIdToIndex(signal,samples)].Mass;
-      if (signal.find("Q2")!=string::npos && SQRTS==1316.0 && result.Mass > 1000/* && TypeMode==0*/){
+//      if (signal.find("Q2")!=string::npos && SQRTS==1316.0 && result.Mass > 1000/* && TypeMode==0*/){
 //         if      (result.Mass == 1400) result.MassCut = 300;
 //         else if (result.Mass == 1800) result.MassCut = 190;
 //         else if (result.Mass == 2200) result.MassCut =  70;
 //         else if (result.Mass == 2600) result.MassCut =  50;
-         result.MassCut = result.Mass*0.5;
-	 MinRange = result.MassCut;
-      }
+//         result.MassCut = result.Mass*0.5;
+//	 MinRange = result.MassCut;
+//      }
       result.XSec_Th   = samples[JobIdToIndex(signal,samples)].XSec;
       result.XSec_Err  = samples[JobIdToIndex(signal,samples)].XSec * 0.15;
       toReturn = result;
@@ -2748,6 +2754,7 @@ bool runCombine(bool fastOptimization, bool getXsection, bool getSignificance, s
    result.NPredErr  = NPredErr;
    result.NSign     = NSign;
    NSign /= (result.XSec_Th*result.LInt); //normalize signal to 1pb
+//   NPred /= (result.XSec_Th*result.LInt); //normalize signal to 1pb
    double SignalScaleFactor = 1.0;
    for(unsigned int i=0;i<20 && NSign<1e-1; i++){SignalScaleFactor*=10.0;  NSign*=10.0;}  
    if(NPred<0.001) {NPred=0.001; NPredErr=NPred;}
@@ -3078,16 +3085,24 @@ bool Combine(string InputPattern, string signal1, string signal2){
    stAllInfo result12;
    stAllInfo result;
    string signal;
+   string EXCLUSION1;
+   string EXCLUSION2;
+   string signal11;
+   string signal12;
    string CodeToExecute = "combineCards.py ";
    char massStr[255];
 
    if (signal1.find("7TeV")!=string::npos && signal2.find("8TeV")!=string::npos){
       //Get Optimal cut from sample11
-      result11 =  stAllInfo(InputPattern+"/EXCLUSION7TeV/"+signal1+".txt");
+      EXCLUSION1 = "EXCLUSION7TeV";
+      EXCLUSION2 = "EXCLUSION8TeV";
+      signal11   = signal1;
+      signal12   = signal2;
+      result11   = stAllInfo(InputPattern+EXCLUSION1+signal1+".txt");
       //Get Optimal cut from sample12
-      result12 =  stAllInfo(InputPattern+"/EXCLUSION8TeV/"+signal2+".txt");
+      result12 =  stAllInfo(InputPattern+EXCLUSION2+signal2+".txt");
 
-      result = result12;
+      result = stAllInfo(InputPattern+EXCLUSION2+signal2+".txt");
       sprintf(massStr,"%.0f",result.Mass);
 
       signal = signal1;
@@ -3098,35 +3113,37 @@ bool Combine(string InputPattern, string signal1, string signal2){
       FILE* pFileTmp = NULL;
 
       bool is7TeVPresent = true;
-      pFileTmp = fopen((InputPattern+"/EXCLUSION7TeV/shape_"+(TypeStr+signal1)+".dat").c_str(), "r");
+      pFileTmp = fopen((InputPattern+EXCLUSION1+"shape_"+(TypeStr+signal1)+".dat").c_str(), "r");
       if(!pFileTmp){is7TeVPresent=false;}else{fclose(pFileTmp);}
       if(TypeMode==3) is7TeVPresent=false;
 
       bool is8TeVPresent = true;
-      pFileTmp = fopen((InputPattern+"/EXCLUSION8TeV/shape_"+(TypeStr+signal2)+".dat").c_str(), "r");
+      pFileTmp = fopen((InputPattern+EXCLUSION2+"shape_"+(TypeStr+signal2)+".dat").c_str(), "r");
       if(!pFileTmp){is8TeVPresent=false;}else{fclose(pFileTmp);}
 
 
-      if(is7TeVPresent)CodeToExecute+="   " + InputPattern+"/EXCLUSION7TeV/shape_"+(TypeStr+signal1)+".dat ";
-      if(is8TeVPresent)CodeToExecute+="   " + InputPattern+"/EXCLUSION8TeV/shape_"+(TypeStr+signal2)+".dat ";
+      if(is7TeVPresent)CodeToExecute+="   " + InputPattern+EXCLUSION1+"shape_"+(TypeStr+signal1)+".dat ";
+      if(is8TeVPresent)CodeToExecute+="   " + InputPattern+EXCLUSION2+"shape_"+(TypeStr+signal2)+".dat ";
    }
 
    // COMBINE2016
    else if (signal1.find("W13TeV16")!=string::npos && signal2.find("W13TeV16G")!=string::npos){
       size_t toBreak1   = signal1.find("W13TeV");
       size_t toBreak2   = signal2.find("W13TeV");
-      string signal11   = signal1.substr(0, toBreak1);
-      string signal12   = signal2.substr(0, toBreak2);
-      string EXCLUSION1 = "/EXCLUSION"+signal1.substr(toBreak1+1, signal1.size()-toBreak1-1);
-      string EXCLUSION2 = "/EXCLUSION"+signal2.substr(toBreak2+1, signal2.size()-toBreak2-1);
+      EXCLUSION1 = "/EXCLUSION"+signal1.substr(toBreak1+1, signal1.size()-toBreak1-1);
+      EXCLUSION2 = "/EXCLUSION"+signal2.substr(toBreak2+1, signal2.size()-toBreak2-1);
+      signal11   = signal1.substr(0, toBreak1);
+      signal12   = signal2.substr(0, toBreak2);
       //Get Optimal cut from sample11
+      std::cout << "Loading " << InputPattern+EXCLUSION1+"/"+ReplacePartOfString(signal11,"13TeV", "13TeV16")+".txt" << std::endl;
       result11 =  stAllInfo(InputPattern+EXCLUSION1+"/"+ReplacePartOfString(signal11,"13TeV", "13TeV16")+".txt");
       //Get Optimal cut from sample22
+      std::cout << "Loading " << InputPattern+EXCLUSION2+"/"+ReplacePartOfString(signal12,"13TeV16", "13TeV16G")+".txt" << std::endl;
       result12 =  stAllInfo(InputPattern+EXCLUSION2+"/"+ReplacePartOfString(signal12, "13TeV16", "13TeV16G")+".txt");
       char TypeStr[100] ;sprintf(TypeStr,"Type%i", TypeMode);
       JobName = TypeStr+signal11;
 
-      result = result12;
+      result =  stAllInfo(InputPattern+EXCLUSION2+"/"+ReplacePartOfString(signal12, "13TeV16", "13TeV16G")+".txt");
       sprintf(massStr,"%.0f",result.Mass);
 
       signal = signal11;
@@ -3138,13 +3155,13 @@ bool Combine(string InputPattern, string signal1, string signal2){
       FILE* pFileTmp = NULL;
 
       bool is2016Present = true;
-      printf("Accesing the file %s\n", (InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat").c_str());
+      printf("Accessing the file %s\n", (InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat").c_str());
       pFileTmp = fopen((InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat").c_str(), "r");
       if(!pFileTmp){is2016Present=false;}else{fclose(pFileTmp);}
 //      if(TypeMode!=0 && TypeMode!=2) is2016Present=false;
 
       bool is2016GPresent = true;
-      printf("Accesing the file %s\n", (InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12, "13TeV16", "13TeV16G"))+".dat").c_str());
+      printf("Accessing the file %s\n", (InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12, "13TeV16", "13TeV16G"))+".dat").c_str());
       pFileTmp = fopen((InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12, "13TeV16", "13TeV16G"))+".dat").c_str(), "r");
       if(!pFileTmp){is2016GPresent=false;}else{fclose(pFileTmp);}
 
@@ -3152,15 +3169,55 @@ bool Combine(string InputPattern, string signal1, string signal2){
       if(is2016Present)CodeToExecute+="   " + InputPattern+EXCLUSION1+"/shape_"+(TypeStr+ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat ";
       if(is2016GPresent){
          CodeToExecute+="   " + InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat ";
-	 string PreExecuteCode = string("sed -i \'s:13TeV16G:13TeV16:g\' ")+InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat";
-	 printf ("Renaming the signal in the datacard:\n%s\n", PreExecuteCode.c_str());
-	 system(PreExecuteCode.c_str());
+//	 string PreExecuteCode = string("sed -i \'s:13TeV16G:13TeV16:g\' ")+InputPattern+EXCLUSION2+"/shape_"+(TypeStr+ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat";
+//	 printf ("Renaming the signal in the datacard:\n%s\n", PreExecuteCode.c_str());
+//	 system(PreExecuteCode.c_str());
       }
    }
 
+   double NSign1 = result11.NSign/(result11.XSec_Th*result11.LInt),
+          NSign2 = result12.NSign/(result12.XSec_Th*result12.LInt),
+          SignalScaleFactor1 = 1.0,
+          SignalScaleFactor2 = 1.0,
+	  SignalScaleFactor;
+
+   for(unsigned int i=0;i<20 && NSign1<1e-1; i++) {SignalScaleFactor1*=10.0; NSign1*=10.0;}
+   for(unsigned int i=0;i<20 && NSign2<1e-1; i++) {SignalScaleFactor2*=10.0; NSign2*=10.0;}
+   if (SignalScaleFactor1 != SignalScaleFactor2){
+      printf ("Warning! SignalScaleFactor1 = %.2e is different from SignalScaleFactor2 = %.2e\n", SignalScaleFactor1, SignalScaleFactor2);
+      printf ("Rescaling the signal rates to the same level in both datacards before combining!\n");
+      double NPred1        = (result11.NPred>=0.001)?result11.NPred:0.001,
+	     NPredErrRatio = (result11.NPred>=0.001)?(result11.NPredErr/result11.NPred):0.001,
+             EffErrRatio   = result11.EffE/result11.Eff,
+             SignalUnc     = result11.TotalUnc+1,
+             NData1        = result11.NData;
+
+      string datacardPath1 = InputPattern+EXCLUSION1+string("/shape_Type")+((char) (48 + TypeMode))+(ReplacePartOfString(signal11, "13TeV", "13TeV16"))+".dat ",
+             datacardPath2 = InputPattern+EXCLUSION2+string("/shape_Type")+((char) (48 + TypeMode))+(ReplacePartOfString(signal12,"13TeV16","13TeV16G"))+".dat";
+      bool SecondIsGreater = (SignalScaleFactor1<SignalScaleFactor2);
+      double ratio    = SignalScaleFactor2/SignalScaleFactor1;
+      if (!SecondIsGreater) {
+         datacardPath1         = datacardPath2;
+         NSign1                = NSign2;
+         NData1                = result12.NData;
+         NPred1                = (result12.NPred>=0.001)?result12.NPred:0.001;
+	 NPredErrRatio         = (result12.NPred>=0.001)?(result12.NPredErr/result12.NPred):0.001;
+         EffErrRatio           = result12.EffE/result12.Eff,
+         SignalUnc             = result12.TotalUnc+1;
+	 SignalScaleFactor     = SignalScaleFactor1;
+	 signal11              = signal12;
+	 ratio                 = SignalScaleFactor1/SignalScaleFactor2;
+      } else SignalScaleFactor = SignalScaleFactor2;
+
+      std::cout << "Readjusting the rate in " + datacardPath1 + " from " << NSign1 << " to " << ratio*NSign1 << std::endl;
+      // new datacard for this case -> the combined datacard emerging from these two datacards will be correct
+      makeDataCard(datacardPath1,string("shape_")+JobName+".root", string("Type")+((char) (48 + TypeMode)), signal11, NData1, NPred1, 1.0+NPredErrRatio, NSign1*ratio, 1.0+fabs(EffErrRatio), SignalUnc, false);
+
+      printf ("Datacard %s has been rewritten!\n", datacardPath1.c_str());
+   } else SignalScaleFactor = SignalScaleFactor1;
 
 
-   CodeToExecute+=" > " + outpath+"shape_"+JobName+".dat ";
+   CodeToExecute+=" > " + outpath+"shape_"+JobName+".dat";
 
    system(CodeToExecute.c_str());   
    printf("%s \n",CodeToExecute.c_str());
@@ -3185,16 +3242,21 @@ bool Combine(string InputPattern, string signal1, string signal2){
    result.NPredErr = sqrt(pow(result11.NPredErr,2) + pow(result12.NPredErr,2));
 
    //compute combined significance
-   CodeToExecute = "cp " + outpath+"shape_"+JobName+".dat /tmp/.;";   
-   system(CodeToExecute.c_str());
-   result.Significance = computeSignificance(string("shape_")+JobName+".dat", false, signal, massStr, 1.0);
-   printf("Combined Significance = %f (%s)\n", result.Significance, (outpath+"shape_"+JobName+".dat").c_str());
-
    double NPred = result.NPred;
    double NSign = result.NSign;
-   double SignalScaleFactor = 1.0;
-   for(unsigned int i=0;i<20 && NSign<1e-1; i++){SignalScaleFactor*=10.0;  NSign*=10.0;}
+   if (SignalScaleFactor1 != SignalScaleFactor2){
+      printf ("\nMaking a note in ListOfMismatches.log!\n");
+      string analysisPath = "/home/ucl/cp3/jzobec/Run2HSCP16/Run2HSCP16_v4/CMSSW_8_0_30/src/SUSYBSMAnalysis/HSCP/test/AnalysisCode";
+      FILE * fdebug = fopen ((analysisPath+"/ListOfMismatches.log").c_str(), "a");
+      fprintf (fdebug, "Type %d Signal %s does not match!\n", TypeMode, signal.c_str());
+      fclose(fdebug);
+   }
 
+   CodeToExecute = "cp " + outpath+"shape_"+JobName+".dat /tmp/.;";   
+   system(CodeToExecute.c_str());
+   result.Significance = computeSignificance(outpath+"shape_"+JobName+".dat", false, signal, massStr, 1.0);
+   printf("Combined Significance = %f (%s)\n", result.Significance, (outpath+"shape_"+JobName+".dat").c_str());
+ 
    //ALL CODE BELOW IS A BIT DIFFERENT THAN THE ONE USED IN runCombined, BECAUSE HERE WE KEEP THE RESULTS ON LIMIT IN TERMS OF SIGNAL STRENGTH (r=SigmaObs/SigmaTH)
    if(true){
       //prepare and run the script that will run the external "combine" tool from the Higgs group
@@ -3227,12 +3289,12 @@ bool Combine(string InputPattern, string signal1, string signal2){
       tree->GetBranch("quantileExpected")->SetAddress(&TquantExp);
       for(int ientry=0;ientry<tree->GetEntriesFast();ientry++){
         tree->GetEntry(ientry);
-        if(TquantExp==0.025f){ result.XSec_Exp2Down = Tlimit*SignalScaleFactor;
-        }else if(TquantExp==0.160f){ result.XSec_ExpDown  = Tlimit*SignalScaleFactor;
-        }else if(TquantExp==0.500f){ result.XSec_Exp      = Tlimit*SignalScaleFactor;
-        }else if(TquantExp==0.840f){ result.XSec_ExpUp    = Tlimit*SignalScaleFactor;
-        }else if(TquantExp==0.975f){ result.XSec_Exp2Up   = Tlimit*SignalScaleFactor;
-        }else if(TquantExp==-1    ){ result.XSec_Obs      = Tlimit*SignalScaleFactor;
+        if(TquantExp==0.025f){ result.XSec_Exp2Down = Tlimit*(SignalScaleFactor/result.LInt); // FIXME jozze -- had to rescale with LInt, or limits are wrong
+        }else if(TquantExp==0.160f){ result.XSec_ExpDown  = Tlimit*(SignalScaleFactor/result.LInt);
+        }else if(TquantExp==0.500f){ result.XSec_Exp      = Tlimit*(SignalScaleFactor/result.LInt);
+        }else if(TquantExp==0.840f){ result.XSec_ExpUp    = Tlimit*(SignalScaleFactor/result.LInt);
+        }else if(TquantExp==0.975f){ result.XSec_Exp2Up   = Tlimit*(SignalScaleFactor/result.LInt);
+        }else if(TquantExp==-1    ){ result.XSec_Obs      = Tlimit*(SignalScaleFactor/result.LInt);
         }else{printf("Quantil %f unused by the analysis --> check the code\n", TquantExp);
         }
       }

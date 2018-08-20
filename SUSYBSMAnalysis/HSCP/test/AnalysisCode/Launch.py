@@ -106,7 +106,7 @@ elif sys.argv[1]=='2':
            smallFiles = commands.getstatusoutput('find ' + Path + 'Histos_*.root  -type f -size -1024c -exec ls -lSh {} +')[1]
            if(len(smallFiles)>1):
               print("Small files have been found, these are generally due to either crashed jobs, or to still running jobs.\nThe following files will NOT be hadd:\n" + smallFiles + "\n\n")           
-           os.system('find ' + Path + 'Histos_*.root  -type f -size +1024c | xargs hadd -n50 -f ' + Path + 'Histos.root ')
+           os.system('find ' + Path + 'Histos_*.root  -type f -size +1024c | xargs hadd -n 50 -f ' + Path + 'Histos.root ')
            LaunchOnCondor.SendCluster_Push(["ROOT", os.getcwd()+"/Analysis_Step2_BackgroundPrediction.C", '"'+Path+'"'])
         LaunchOnCondor.SendCluster_Submit()
 

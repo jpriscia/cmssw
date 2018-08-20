@@ -64,9 +64,9 @@ void Analysis_Step3_MakePlots()
 
    SQRTS=13.0;
 
-   Make2DPlot_Special("Results/Type0/", "Results/Type0/");
-
-   InputPattern = "Results/Type0/";   CutIndex = 4; CutIndexTight = 29;
+//   Make2DPlot_Special("Results/Type0/", "Results/Type0/");
+/*
+   InputPattern = "Results/Type0/";   CutIndex = 8; CutIndexTight = 29;
    MassPrediction(InputPattern, CutIndex,      "Mass", false, "13TeV16_Loose");
    MassPrediction(InputPattern, CutIndexTight, "Mass", false, "13TeV16_Tight");
 
@@ -80,7 +80,7 @@ void Analysis_Step3_MakePlots()
    CutFlowPlot(InputPattern, CutIndexTight);
    
    SelectionPlot(InputPattern, CutIndex, CutIndexTight);
-   PredictionAndControlPlot(InputPattern, "Data13TeV", CutIndex, 0);
+//   PredictionAndControlPlot(InputPattern, "Data13TeV", CutIndex, 0);
    PredictionAndControlPlot(InputPattern, "Data13TeV16", CutIndex, 0);
    PredictionAndControlPlot(InputPattern, "Data13TeV16G", CutIndex, 0);
 
@@ -103,18 +103,19 @@ void Analysis_Step3_MakePlots()
    CutFlowPlot(InputPattern, CutIndexTight);
    SelectionPlot(InputPattern, CutIndex, CutIndexTight);
 
-   PredictionAndControlPlot(InputPattern, "Data13TeV", CutIndex, CutIndex_Flip);
+//   PredictionAndControlPlot(InputPattern, "Data13TeV", CutIndex, CutIndex_Flip);
    PredictionAndControlPlot(InputPattern, "Data13TeV16", CutIndex, CutIndex_Flip);
    PredictionAndControlPlot(InputPattern, "Data13TeV16G", CutIndex, CutIndex_Flip);
 //  std::cout<<"A\n";
-   CheckPrediction(InputPattern, "_Flip", "Data13TeV");
+//   CheckPrediction(InputPattern, "_Flip", "Data13TeV");
    CheckPrediction(InputPattern, "_Flip", "Data13TeV16");
    CheckPrediction(InputPattern, "_Flip", "Data13TeV16G");
 //  std::cout<<"B\n";
-
+*/
 //   GetSystematicOnPrediction(InputPattern, "Data13TeV");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
    InputPattern="Results/Type2/";
 //   GetSystematicOnPrediction(InputPattern, "Data13TeV16");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
+   GetSystematicOnPrediction(InputPattern, "Data13TeV16G");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
 
   std::cout<<"ALL DONE WITH THE PLOTTING CODE\n";
 
@@ -2018,7 +2019,7 @@ void SelectionPlot(string InputPattern, unsigned int CutIndex, unsigned int CutI
 //      SQRTS=8; stPlots_DrawComparison(InputPattern + "/Selection_Comp_8TeV_DY"    , LegendTitle, CutIndex, CutIndexTight, &Data8TeVPlots, &MCTr8TeVPlots,   &SignPlots[JobIdToIndex("DY_8TeV_M100_Q1o3",samples)], &SignPlots[JobIdToIndex("DY_8TeV_M100_Q2o3",samples)], &SignPlots[JobIdToIndex("DY_8TeV_M600_Q2o3",samples)]);
 //    }
 
-    stPlots_Clear(&Data13TeV15Plots);
+//    stPlots_Clear(&Data13TeV15Plots);
     stPlots_Clear(&Data13TeV16Plots);
     stPlots_Clear(&Data13TeV16GPlots);
     stPlots_Clear(&MCTr13TeVPlots);
