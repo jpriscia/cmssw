@@ -38,9 +38,10 @@
 double IntegratedLuminosity13TeV15             = 2490.518; //2439.264; //pb
 //double IntegratedLuminosity13TeV16             = 4002.946; // pb
 double preTrackingChangeL1IntLumi              = 29679.982; // pb
-double IntegratedLuminosity13TeV16             = 32170.50;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
-double IntegratedLuminosity13TeV16G            = 12500.50;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
-double IntegratedLuminosity13TeV16PreG         = 32170.50 - 12500.50;
+double IntegratedLuminosity13TeV16             = 34228.911;  // pb -> not from brilcalc, but from the email, brilcalc numpy error
+double IntegratedLuminosity13TeV16G            = 16554.454;  // pb from brilcalc
+//double IntegratedLuminosity13TeV16G            = 18148.982;  // pb from brilcalc
+double IntegratedLuminosity13TeV16PreG         = 17674.457;
 
 double               SQRTS                     = 13;
 double               SQRTS15                   = 1315;
