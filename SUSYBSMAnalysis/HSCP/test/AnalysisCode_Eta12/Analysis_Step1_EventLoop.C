@@ -1211,7 +1211,7 @@ std::cout<<"G\n";
 //                  dEdxTemplates = loadDeDxTemplate(analysis_path+"../UsefulScripts/DeDxStudy/dEdxTemplate_hit_SP_in_noC_CCC_Run278308.root", true);
 	       }
 
-	       if (279116 < CurrentRun){
+	       if (279116 <= CurrentRun){
                   dEdxK_Data    = 2.040; // +/- 0.029
                   dEdxC_Data    = 4.294; // +/- 0.749
                   dEdxSF [1]   *= 1.12230;

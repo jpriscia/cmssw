@@ -51,13 +51,13 @@ class stAllInfo{
       fscanf(pFile,"Eff_SystPU   : %lf +- %lf\n",&Eff_SYSTPU, &EffE_SYSTPU);
       fscanf(pFile,"TotalUnc     : %lf\n",&TotalUnc);
       fscanf(pFile,"Signif       : %lf\n",&Significance);
-      fscanf(pFile,"XSec_Th      : %lf\n",&XSec_Th);
-      fscanf(pFile,"XSec_Exp     : %lf\n",&XSec_Exp);
-      fscanf(pFile,"XSec_ExpUp   : %lf\n",&XSec_ExpUp);
-      fscanf(pFile,"XSec_ExpDown : %lf\n",&XSec_ExpDown);
-      fscanf(pFile,"XSec_Exp2Up  : %lf\n",&XSec_Exp2Up);
-      fscanf(pFile,"XSec_Exp2Down: %lf\n",&XSec_Exp2Down);
-      fscanf(pFile,"XSec_Obs     : %lf\n",&XSec_Obs);
+      fscanf(pFile,"XSec_Th      : %lE\n",&XSec_Th);
+      fscanf(pFile,"XSec_Exp     : %lE\n",&XSec_Exp);
+      fscanf(pFile,"XSec_ExpUp   : %lE\n",&XSec_ExpUp);
+      fscanf(pFile,"XSec_ExpDown : %lE\n",&XSec_ExpDown);
+      fscanf(pFile,"XSec_Exp2Up  : %lE\n",&XSec_Exp2Up);
+      fscanf(pFile,"XSec_Exp2Down: %lE\n",&XSec_Exp2Down);
+      fscanf(pFile,"XSec_Obs     : %lE\n",&XSec_Obs);
       fscanf(pFile,"NData        : %E\n" ,&NData);
       fscanf(pFile,"NPred        : %E\n" ,&NPred);
       fscanf(pFile,"NPredErr     : %E\n" ,&NPredErr);
@@ -88,13 +88,13 @@ class stAllInfo{
       fprintf(pFile,"Eff_SystPU   : %f +- %f\n",Eff_SYSTPU, EffE_SYSTPU);
       fprintf(pFile,"TotalUnc     : %f\n",TotalUnc);
       fprintf(pFile,"Signif       : %f\n",Significance);
-      fprintf(pFile,"XSec_Th      : %f\n",XSec_Th);
-      fprintf(pFile,"XSec_Exp     : %f\n",XSec_Exp);
-      fprintf(pFile,"XSec_ExpUp   : %f\n",XSec_ExpUp);
-      fprintf(pFile,"XSec_ExpDown : %f\n",XSec_ExpDown);
-      fprintf(pFile,"XSec_Exp2Up  : %f\n",XSec_Exp2Up);
-      fprintf(pFile,"XSec_Exp2Down: %f\n",XSec_Exp2Down);
-      fprintf(pFile,"XSec_Obs     : %f\n",XSec_Obs);     
+      fprintf(pFile,"XSec_Th      : %.12E\n",XSec_Th);
+      fprintf(pFile,"XSec_Exp     : %.12E\n",XSec_Exp);
+      fprintf(pFile,"XSec_ExpUp   : %.12E\n",XSec_ExpUp);
+      fprintf(pFile,"XSec_ExpDown : %.12E\n",XSec_ExpDown);
+      fprintf(pFile,"XSec_Exp2Up  : %.12E\n",XSec_Exp2Up);
+      fprintf(pFile,"XSec_Exp2Down: %.12E\n",XSec_Exp2Down);
+      fprintf(pFile,"XSec_Obs     : %.12E\n",XSec_Obs);     
       fprintf(pFile,"NData        : %+6.2E\n",NData);
       fprintf(pFile,"NPred        : %+6.2E\n",NPred);
       fprintf(pFile,"NPredErr     : %+6.2E\n",NPredErr);
@@ -113,7 +113,7 @@ double RescaleFactor = 1.0;
 double RescaleError  = 0.2;
 
 //final Plot y-axis range
-double PlotMinScale = 0.0001;
+double PlotMinScale = 2.0e-7;
 double PlotMaxScale = 1000;
 
 //Easy flag to skip running time consuming Cls expected limits. True runs the limit, false does not
@@ -312,30 +312,34 @@ void Analysis_Step4_LimitComputation(string MODE="COMPILE", string InputPattern=
    if(SQRTS!=78.0 && SQRTS!=131615.0 && SQRTS!=131516.0 && SQRTS!=131677.0) keepOnlySamplesAtSQRTS(samples, SQRTS);
 
    for(unsigned int s=0;s<samples.size();s++){
-    if(samples[s].Type!=2)continue;
-    //printf("Name-->Model >>  %30s --> %s\n",samples[s].Name.c_str(), samples[s].ModelName().c_str());
-
-    if(SQRTS== 7.0    && samples[s].Name.find( "_7TeV")==string::npos){continue;}
-    if(SQRTS== 8.0    && samples[s].Name.find( "_8TeV")==string::npos){continue;}
-    if(SQRTS==13.0    && samples[s].Name.find("_13TeV")==string::npos){continue;}
-    if(SQRTS==1315.0  && samples[s].Name.find("_13TeV")==string::npos){continue;}
-    if(SQRTS==1316.0  && (samples[s].Name.find("_13TeV16")==string::npos || samples[s].Name.find("13TeV16G")!=string::npos)){continue;}
-    if(SQRTS==13167.0 && samples[s].Name.find("_13TeV16G")==string::npos){continue;}
-//    if(SQRTS==78.0){if(samples[s].Name.find("_7TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_7TeV"),5, ""); } }
-    if(SQRTS==78.0){if(samples[s].Name.find("_8TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_8TeV"),5, ""); } }
-    if(SQRTS==131615.0 || SQRTS==131516.0){
-       if  (samples[s].Name.find("_13TeV")==string::npos){continue;}
-       else{
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16" , "");
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV15" , "");
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV"   , "");
-       }
-    } else if (SQRTS==131677){
-          samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16G", "");
-    }
-
-    modelMap[samples[s].ModelName()].push_back(samples[s]);
-    if(modelMap[samples[s].ModelName()].size()==1)modelVector.push_back(samples[s].ModelName());
+      if(samples[s].Type!=2)continue;
+      //printf("Name-->Model >>  %30s --> %s\n",samples[s].Name.c_str(), samples[s].ModelName().c_str());
+      
+      if(SQRTS== 7.0    && samples[s].Name.find( "_7TeV")==string::npos){continue;}
+      if(SQRTS== 8.0    && samples[s].Name.find( "_8TeV")==string::npos){continue;}
+      if(SQRTS==13.0    && samples[s].Name.find("_13TeV")==string::npos){continue;}
+      if(SQRTS==1315.0  && samples[s].Name.find("_13TeV")==string::npos){continue;}
+      if(SQRTS==1316.0  && (samples[s].Name.find("_13TeV16")==string::npos || samples[s].Name.find("13TeV16G")!=string::npos)){continue;}
+      if(SQRTS==13167.0 && samples[s].Name.find("_13TeV16G")==string::npos){continue;}
+//      if(SQRTS==78.0){if(samples[s].Name.find("_7TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_7TeV"),5, ""); } }
+      if(SQRTS==78.0){if(samples[s].Name.find("_8TeV")==string::npos){continue;}else{samples[s].Name.replace(samples[s].Name.find("_8TeV"),5, ""); } }
+      if(SQRTS==131615.0 || SQRTS==131516.0){
+         if  (samples[s].Name.find("_13TeV")==string::npos){continue;}
+         else{
+            samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16" , "");
+            samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV15" , "");
+            samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV"   , "");
+         }
+      } else if (SQRTS==131677){
+//            if (samples[s].Name.find("13TeV16")==std::npos) continue;
+            if (samples[s].Name.find("13TeV16G")==string::npos) continue;
+            samples[s].Name = ReplacePartOfString (samples[s].Name,"_13TeV16G", "");
+      }
+      
+      if (!samples[s].ModelName().empty()){
+         modelMap[samples[s].ModelName()].push_back(samples[s]);
+         modelVector.push_back(samples[s].ModelName());
+      }
    }
    printf("EXCLUSIONDIR = %s\nData = %s\n",EXCLUSIONDIR.c_str(), Data.c_str());  
 
@@ -1064,7 +1068,7 @@ std::cout<<"TESTD\n";
    frame->GetYaxis()->SetTitleOffset(1.40);
    frame->SetMaximum(PlotMaxScale);
    frame->SetMinimum(PlotMinScale);
-   frame->GetYaxis()->SetRangeUser(1e-4, 1.5e1); // JOZZE EDIT
+   frame->GetYaxis()->SetRangeUser(!Combine?1e-4:2e-5, !Combine?1.5e1:2.5e1); // JOZZE EDIT
    frame->Draw("AXIS");
 
 
@@ -1171,7 +1175,7 @@ std::cout<<"TESTD\n";
 //   frame->GetYaxis()->SetTitleOffset(1.40);
 //   frame->SetMaximum(PlotMaxScale);
 //   frame->SetMinimum(PlotMinScale);
-   frame->GetYaxis()->SetRangeUser(!Combine?1e-4:3e-5, !Combine?1.5e1:2.5e1); // JOZZE EDIT
+   frame->GetYaxis()->SetRangeUser(!Combine?1e-4:2e-5, !Combine?1.5e1:2.5e1); // JOZZE EDIT
    frame->Draw("AXIS");
 
 ////   if(!Combine) {
@@ -2753,6 +2757,7 @@ bool runCombine(bool fastOptimization, bool getXsection, bool getSignificance, s
    result.NPred     = NPred;
    result.NPredErr  = NPredErr;
    result.NSign     = NSign;
+   printf ("NSign = %lf = %lf/(%.2e*%.4lf)\n", NSign, NSign/(result.XSec_Th*result.LInt),result.XSec_Th, result.LInt);
    NSign /= (result.XSec_Th*result.LInt); //normalize signal to 1pb
 //   NPred /= (result.XSec_Th*result.LInt); //normalize signal to 1pb
    double SignalScaleFactor = 1.0;
@@ -3222,6 +3227,8 @@ bool Combine(string InputPattern, string signal1, string signal2){
    system(CodeToExecute.c_str());   
    printf("%s \n",CodeToExecute.c_str());
 
+   printf ("Signal scale factor = %.2e\n", SignalScaleFactor);
+
 //   result.XSec_Th = 1.0; // FIXME NOT ADEQUATE FOR COMBINING SAMPLES AT THE SAME ENERGY! -- take whatever is in any 13TeV sample
    //Muon only uses just 2012
    if(TypeMode==3 && signal1.find("7TeV")!=string::npos && signal2.find("8TeV")!=string::npos) {
@@ -3246,7 +3253,7 @@ bool Combine(string InputPattern, string signal1, string signal2){
    double NSign = result.NSign;
    if (SignalScaleFactor1 != SignalScaleFactor2){
       printf ("\nMaking a note in ListOfMismatches.log!\n");
-      string analysisPath = "/home/ucl/cp3/jzobec/Run2HSCP16/Run2HSCP16_v4/CMSSW_8_0_30/src/SUSYBSMAnalysis/HSCP/test/AnalysisCode";
+      string analysisPath = "/home/ucl/cp3/jzobec/Run2HSCP16/Run2HSCP16_v4/CMSSW_8_0_30/src/SUSYBSMAnalysis/HSCP/test/AnalysisCode_Eta12";
       FILE * fdebug = fopen ((analysisPath+"/ListOfMismatches.log").c_str(), "a");
       fprintf (fdebug, "Type %d Signal %s does not match!\n", TypeMode, signal.c_str());
       fclose(fdebug);
@@ -3289,6 +3296,7 @@ bool Combine(string InputPattern, string signal1, string signal2){
       tree->GetBranch("quantileExpected")->SetAddress(&TquantExp);
       for(int ientry=0;ientry<tree->GetEntriesFast();ientry++){
         tree->GetEntry(ientry);
+        printf("Quantile=%f --> Limit = %f\n", TquantExp, Tlimit*(SignalScaleFactor/result.LInt));
         if(TquantExp==0.025f){ result.XSec_Exp2Down = Tlimit*(SignalScaleFactor/result.LInt); // FIXME jozze -- had to rescale with LInt, or limits are wrong
         }else if(TquantExp==0.160f){ result.XSec_ExpDown  = Tlimit*(SignalScaleFactor/result.LInt);
         }else if(TquantExp==0.500f){ result.XSec_Exp      = Tlimit*(SignalScaleFactor/result.LInt);

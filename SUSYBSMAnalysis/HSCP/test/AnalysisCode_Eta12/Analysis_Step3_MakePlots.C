@@ -63,7 +63,7 @@ void Analysis_Step3_MakePlots()
    std::vector<string> Legends;                 std::vector<string> Inputs;
 
    SQRTS=13.0;
-
+/*
    Make2DPlot_Special("Results/Type0/", "Results/Type0/");
 
    InputPattern = "Results/Type0/";   CutIndex = 4; CutIndexTight = 29;
@@ -111,11 +111,11 @@ void Analysis_Step3_MakePlots()
    CheckPrediction(InputPattern, "_Flip", "Data13TeV16");
    CheckPrediction(InputPattern, "_Flip", "Data13TeV16G");
 //  std::cout<<"B\n";
-
+*/
 //   GetSystematicOnPrediction(InputPattern, "Data13TeV");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
-//   InputPattern="Results/Type2/";
+   InputPattern="Results/Type2/";
 //   GetSystematicOnPrediction(InputPattern, "Data13TeV16");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
-//   GetSystematicOnPrediction(InputPattern, "Data13TeV16G");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
+   GetSystematicOnPrediction(InputPattern, "Data13TeV16G");  //FOR IMPOSSIBLE REASON, THIS FUNCTION CRASHES IF IT IS RUN TOGETHER WITH THE OTHER FUNCTIONS
 
   std::cout<<"ALL DONE WITH THE PLOTTING CODE\n";
 

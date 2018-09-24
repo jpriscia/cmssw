@@ -18,6 +18,13 @@ std::string ReplacePartOfString (std::string s, std::string a, std::string b){
    return toReturn;
 }
 
+std::string cleanSampleName (std::string s){
+   string toReturn = ReplacePartOfString (s, "_13TeV16G", "");
+   toReturn = ReplacePartOfString (toReturn, "_13TeV16", "");
+   toReturn = ReplacePartOfString (toReturn, "_13TeV", "");
+   return toReturn;
+}
+
 // return the TypeMode from a string inputPattern
 int TypeFromPattern(const std::string& InputPattern){
    if(InputPattern.find("Type0",0)<std::string::npos){       return 0;

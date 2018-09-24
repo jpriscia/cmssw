@@ -30,10 +30,15 @@ class TxtInfo {
 
    public:
       TxtInfo (string AnalysisPath, string Signal, unsigned int TypeMode, bool debug=false){
-         FILE*     fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV/"  +Signal+".txt").c_str(), "r");
+         FILE*     fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSIONCOMB2016/"  +Signal+".txt").c_str(), "r");
 //	 if (!fin) fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV15/"+Signal+".txt").c_str(), "r");
-	 if (!fin) fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV16/"+Signal+".txt").c_str(), "r");
-	 if (!fin)   fprintf (stderr, "Unable to open EXCLUSION dir in the analysis path %s for signal %s.txt\n", AnalysisPath.c_str(), Signal.c_str());
+//`	 if (!fin) fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV16/"+Signal+".txt").c_str(), "r");
+//`	 if (!fin) fin = fopen ((AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV16G/"+Signal+".txt").c_str(), "r");
+	 if (!fin) {
+//		 fprintf (stderr, "EXLUSION DIR = %s", (AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV16/"  +Signal+".txt").c_str());
+		 fprintf (stderr, "Unable to open EXCLUSION dir in the analysis path %s for signal %s.txt\n", AnalysisPath.c_str(), Signal.c_str());
+	 }
+//	 if (fin) fprintf (stderr, "EXCLUSION DIR = %s", (AnalysisPath+"Results/"+PatternFromType(TypeMode)+"EXCLUSION13TeV16/"  +Signal+".txt\n").c_str());
          Mass_     = -1;
          Eff_      = -1;
          XSec_Th_  = -1;
@@ -106,8 +111,9 @@ class SignalSummaryClass{
          InitBaseDirectory();
          GetSampleDefinition(samples, "../../AnalysisCode/Analysis_Samples.txt");
          for (size_t s=0; s < samples.size(); s++){
+            if (samples[s].Name.find("13TeV16")!=std::string::npos) continue;
             if (samples[s].ModelName() == ModelName){
-               Infos.push_back(new TxtInfo(AnalysisPath, samples[s].Name, TypeMode, debug));
+               Infos.push_back(new TxtInfo(AnalysisPath, cleanSampleName(samples[s].Name), TypeMode, debug));
             }
          }
 
@@ -123,7 +129,7 @@ class SignalSummaryClass{
       vector <double> MassVector() {
          vector <double> toReturn;
          for (auto it = Infos.begin(); it != Infos.end(); it++)
-            if ((*it)->Mass() > 0) toReturn.push_back ((*it)->Mass());
+            if ((*it)->Mass() > 0 && (*it)->Mass() < 2601) toReturn.push_back ((*it)->Mass());
 
          return toReturn;
       }
@@ -131,7 +137,7 @@ class SignalSummaryClass{
       vector <double> EffVector() {
          vector <double> toReturn;
          for (auto it = Infos.begin(); it != Infos.end(); it++)
-            if ((*it)->Mass() > 0) toReturn.push_back ((*it)->Eff());
+            if ((*it)->Mass() > 0 && (*it)->Mass() < 2601) toReturn.push_back ((*it)->Eff());
 
          return toReturn;
       }
@@ -139,7 +145,7 @@ class SignalSummaryClass{
       vector <double> XSecThVector() {
          vector <double> toReturn;
          for (auto it = Infos.begin(); it != Infos.end(); it++)
-            if ((*it)->Mass() > 0) toReturn.push_back ((*it)->XSec_Th());
+            if ((*it)->Mass() > 0 && (*it)->Mass() < 2601) toReturn.push_back ((*it)->XSec_Th());
 
          return toReturn;
       }
@@ -147,7 +153,7 @@ class SignalSummaryClass{
       vector <double> XSecExpVector() {
          vector <double> toReturn;
          for (auto it = Infos.begin(); it != Infos.end(); it++)
-            if ((*it)->Mass() > 0) toReturn.push_back ((*it)->XSec_Exp());
+            if ((*it)->Mass() > 0 && (*it)->Mass() < 2601) toReturn.push_back ((*it)->XSec_Exp());
 
          return toReturn;
       }
@@ -155,7 +161,7 @@ class SignalSummaryClass{
       vector <double> XSecObsVector() {
          vector <double> toReturn;
          for (auto it = Infos.begin(); it != Infos.end(); it++)
-            if ((*it)->Mass() > 0) toReturn.push_back ((*it)->XSec_Obs());
+            if ((*it)->Mass() > 0 && (*it)->Mass() < 2601) toReturn.push_back ((*it)->XSec_Obs());
 
          return toReturn;
       }
@@ -213,8 +219,11 @@ void Plotter (void){
    vector <string> SignalsToProcess;
    vector <string> SignalsLegend;
 
-   AnalysesPaths.push_back ("../../AnalysisCode_Paper/");  legend.push_back ("AN 2015");
-   AnalysesPaths.push_back ("../../AnalysisCode/");        legend.push_back ("Data 2016");
+   AnalysesPaths.push_back ("../../AnalysisCode/");              legend.push_back ("|#eta| < 2.1");
+//   AnalysesPaths.push_back ("../../AnalysisCode_Eta09/");        legend.push_back ("|#eta| < 0.9");
+   AnalysesPaths.push_back ("../../AnalysisCode_Eta12/");        legend.push_back ("|#eta| < 1.2");
+//   AnalysesPaths.push_back ("../../AnalysisCode_Eta14/");        legend.push_back ("|#eta| < 1.4");
+//   AnalysesPaths.push_back ("../../AnalysisCode_Eta16/");        legend.push_back ("|#eta| < 1.6");
 
    SignalsToProcess.push_back ("Gluino_f10");  SignalsLegend.push_back ("Gluino, f = 10");
    SignalsToProcess.push_back ("GluinoN_f10"); SignalsLegend.push_back ("Gluino, CS, f = 10");
@@ -224,42 +233,61 @@ void Plotter (void){
    SignalsToProcess.push_back ("GMStau");      SignalsLegend.push_back ("GMSBStau");
    SignalsToProcess.push_back ("PPStau");      SignalsLegend.push_back ("PPStau");
    SignalsToProcess.push_back ("DY_Q1");       SignalsLegend.push_back ("DY: |Q|=1");
-   SignalsToProcess.push_back ("DY_Q2");       SignalsLegend.push_back ("DY: |Q|=1");
+   SignalsToProcess.push_back ("DY_Q2");       SignalsLegend.push_back ("DY: |Q|=2");
 
    for (size_t s = 0; s < SignalsToProcess.size(); s++){
       vector <TGraph*> graphsXSecObs;
       vector <TGraph*> graphsXSecExp;
       vector <TGraph*> graphsEff;
+      SignalSummaryClass base ("../../AnalysisCode/", SignalsToProcess[s], 0);
+      bool skip = false;
       for (size_t a = 0; a < AnalysesPaths.size(); a++){
          SignalSummaryClass test (AnalysesPaths[a], SignalsToProcess[s], 0);
+	 if (test.size() != base.size()){
+            skip = true;
+            printf ("Signal sample %s does not have the same number of points. Skipping.\n", SignalsToProcess[s].c_str());
+            continue;
+	 }
+	 vector <double> EffVector  = test.EffVector();
+	 vector <double> basevector = base.EffVector();
+	 for (size_t t = 0; t < EffVector.size(); t++){
+            EffVector[t] /= basevector[t];
+	 }
          graphsXSecObs.push_back (new TGraph (test.size(), &(test.MassVector()[0]), &(test.XSecObsVector()[0])));
          graphsXSecExp.push_back (new TGraph (test.size(), &(test.MassVector()[0]), &(test.XSecExpVector()[0])));
-         graphsEff    .push_back (new TGraph (test.size(), &(test.MassVector()[0]), &(test.EffVector    ()[0])));
+//         graphsEff    .push_back (new TGraph (test.size(), &(test.MassVector()[0]), &(EffVector[0])));
+         graphsEff    .push_back (new TGraph (test.size(), &(test.MassVector()[0]), &(test.EffVector()[0])));
       }
+      if (skip) continue;
 
       TCanvas* c1 = new TCanvas ("c1", "c1", 600, 600);
-      TH1D tmp ("tmp", "tmp", 1, 0, 99999);
+      TH1D* tmp   = new TH1D ("tmp", "tmp", 1, 0, 2600);
       c1->SetLogy(true);
-      DrawFamilyOfGraphs (graphsXSecObs, &tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{obs} (pb)");
+      DrawFamilyOfGraphs (graphsXSecObs, tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{obs} (pb)");
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsXSecObs[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
       SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_XSecObs", true);
       delete c1;
+      delete tmp;
 
       c1 = new TCanvas ("c1", "c1", 600, 600);
+      tmp = new TH1D ("tmp", "tmp", 1, 0, 2600);
       c1->SetLogy(true);
-      DrawFamilyOfGraphs (graphsXSecExp, &tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{exp} (pb)");
+      DrawFamilyOfGraphs (graphsXSecExp, tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{exp} (pb)");
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsXSecExp[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
       SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_XSecExp", true);
       delete c1;
+      delete tmp;
 
       c1 = new TCanvas ("c1", "c1", 600, 600);
-      DrawFamilyOfGraphs (graphsEff, &tmp, "LP", "Mass (GeV)", "Efficiency", false);
+      tmp = new TH1D ("tmp", "tmp", 1, 0, 2600);
+      DrawFamilyOfGraphs (graphsEff, tmp, "LP", "Mass (GeV)", "Efficiency with respect to |#eta| < 2.1", false, 100, 2600, 0, 1.00);
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsEff[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
       SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_Eff", true);
       delete c1;
+      delete tmp;
 
       for (size_t g = 0; g < graphsXSecObs.size(); g++)
          delete graphsXSecObs[g];
