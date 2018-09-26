@@ -2284,6 +2284,7 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
    //Identify the signal sample
    GetSampleDefinition(samples);
    CurrentSampleIndex        = JobIdToIndex(signal,samples); 
+   printf("CurrentSampleIndez = %d\n", CurrentSampleIndex);
    if(CurrentSampleIndex<0){  printf("There is no signal corresponding to the JobId Given\n");  return;  } 
 
    if      (Data.find("7TeV"    )!=string::npos){SQRTS=7.0;    } //IntegratedLuminosity = IntegratedLuminosityFromE(SQRTS);
@@ -2336,7 +2337,7 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
    }
 
    //If Take the cuts From File --> Load the actual cut index
-   int OptimCutIndex = (OptCutIndex != nullptr)?(*OptCutIndex):-1;  //int OptimMassWindow;
+   int OptimCutIndex = -1;  //int OptimMassWindow;
    if(cutFromFile && OptimCutIndex < 0){ // if less than zero, read from the file, otherwise don't
       FILE* pFile = fopen("Analysis_Cuts.txt","r");
       if(!pFile){printf("Can't open %s\n","Analysis_Cuts.txt"); return;}
@@ -2389,13 +2390,12 @@ void Optimize(string InputPattern, string Data, string signal, bool shape, bool 
       }
       fclose(pFile);
       if(OptimCutIndex<0){printf("DID NOT FIND THE CUT TO USE FOR THIS SAMPLE %s\n",signal.c_str());return;}
-      else {
-         *OptCutIndex = OptimCutIndex;
-      }
    }
 
    //normalise the signal samples to XSection * IntLuminosity
    double LInt  = H_Lumi->GetBinContent(1); // FIXME JOZE
+   if (signal.find("13TeV16G")!=string::npos) LInt = IntegratedLuminosity13TeV16G; // FIXME quick and dirty patch, but shouldn't be needed if you run from step 1 - 5
+   else if (signal.find("13TeV16")!=string::npos) LInt = IntegratedLuminosity13TeV16PreG;
 //   double LInt  = IntegratedLuminosity13TeV16 - IntegratedLuminosity13TeV16PostHIP;
 //   LInt = Data.find("13TeV16")!=string::npos?IntegratedLuminosity13TeV16:IntegratedLuminosity13TeV15; // from before, but a neat trick
    double norm  = samples[CurrentSampleIndex].XSec*LInt/TotalE  ->Integral(); //normalize the samples to the actual lumi used for limits
@@ -2687,6 +2687,8 @@ bool runCombine(bool fastOptimization, bool getXsection, bool getSignificance, s
    double NSignErr, NSignPErr, NSignIErr, NSignMErr, NSignHErrUp, NSignHErrDown, NSignTErr, NSignPUErr;
    double signalsMeanHSCPPerEvent = GetSignalMeanHSCPPerEvent(InputPattern,CutIndex, MinRange, MaxRange);
 
+   printf ("signalsMeanHSCPPerEvent = %lf\n", signalsMeanHSCPPerEvent);
+   printf ("CurrentSampleIndex = %d, CutIndex = %d\n", CurrentSampleIndex, CutIndex);
    //IF 2D histograms --> we get all the information from there (and we can do shape based analysis AND/OR cut on mass)
    if(MassData->InheritsFrom("TH2")){
       //make the projection of all the 2D input histogram to get the shape for this single point
@@ -3247,26 +3249,47 @@ bool Combine(string InputPattern, string signal1, string signal2, int* OptCutInd
       Data = "Data"+tmp;
 
       printf ("DATA = %s\n", Data.c_str());
-      printf ("Rerunning %s to change its mass cut from %.0lf to %.0lf ...\n", SecondIsGreater?ReplacePartOfString(signal12,"13TeV16", "13TeV16G").c_str():ReplacePartOfString(signal11,"13TeV","13TeV16").c_str(), SecondIsGreater?result12.MassCut:result11.MassCut, MassCut2);
+      printf ("Rerunning %s (sample index = %d) to change its mass cut from %.0lf to %.0lf ...\n", SecondIsGreater?ReplacePartOfString(signal12,"13TeV16", "13TeV16G").c_str():ReplacePartOfString(signal11,"13TeV","13TeV16").c_str(), SecondIsGreater?SampleIndex2:SampleIndex1, SecondIsGreater?result12.MassCut:result11.MassCut, MassCut2);
       if (SecondIsGreater) result12.MassCut = result11.MassCut;
       else result11.MassCut = result12.MassCut;
-      int CurrentSampleIndex = SecondIsGreater?SampleIndex2:SampleIndex1;
+      CurrentSampleIndex = SecondIsGreater?SampleIndex2:SampleIndex1;
       MinRange = MassCut2;
       result.MassCut      = MinRange;
+/*
+      printf("2016G Data ...\n");
+      Data = "Data13TeV16G"; SQRTS=13167.0; EXCLUSIONDIR=EXCLUSIONDIR_SAVE+"13TeV16G";
+      Optimize(InputPattern, Data, ReplacePartOfString(signal, "13TeV16", "13TeV"), SHAPESTRING!="", true);
+*/
       TFile*InputFile     = new TFile((InputPattern + "Histos.root").c_str());
       TH1D* H_P           = (TH1D*)GetObjectFromPath(InputFile, Data+"/H_P");
       TH1D* H_D           = (TH1D*)GetObjectFromPath(InputFile, Data+"/H_D");
-      TH2D* MassData      = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, Data+"/Mass")):((TH2D*)GetObjectFromPath(InputFile, Data+"/Mass"));
-      TH2D* MassPred      = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, Data+"/Pred_Mass")):((TH2D*)GetObjectFromPath(InputFile, Data+"/Pred_Mass"));
-      TH2D* MassSign      = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass" )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass" ));
-      if(!MassSign){printf("The sample %s is not present in the root file, returns\n", SecondIsGreater?ReplacePartOfString(signal12, "13TeV16", "13TeV16G").c_str():ReplacePartOfString(signal11, "13TeV", "13TeV16").c_str());return false;}
-      TH2D* MassSignP     = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystP"    )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystP"    ));
-      TH2D* MassSignI     = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystI"    )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystI"    ));
-      TH2D* MassSignM     = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystM"    )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystM"    ));
-      TH2D* MassSignHUp   = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHUp"  )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHUp"  ));
-      TH2D* MassSignHDown = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHDown")):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHDown"));
-      TH2D* MassSignT     = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystT"    )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystT"    ));
-      TH2D* MassSignPU    = SecondIsGreater?((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystPU"   )):((TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystPU"   ));
+      TH2D* MassData      = (TH2D*)GetObjectFromPath(InputFile, Data+"/Mass");
+      TH2D* MassPred      = (TH2D*)GetObjectFromPath(InputFile, Data+"/Pred_Mass");
+      TH2D* MassSign      = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass" );
+      if(!MassSign){printf("The sample %s is not present in the root file, returns\n", ReplacePartOfString(signal11, "13TeV", "13TeV16").c_str());return false;}
+      TH2D* MassSignP     = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystP"    );
+      TH2D* MassSignI     = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystI"    );
+      TH2D* MassSignM     = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystM"    );
+      TH2D* MassSignHUp   = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHUp"  );
+      TH2D* MassSignHDown = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystHDown");
+      TH2D* MassSignT     = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystT"    );
+      TH2D* MassSignPU    = (TH2D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name + "/Mass_SystPU"   );
+      TH1D* TotalE        = (TH1D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name+"/TotalE" );
+      TH1D* TotalEPU      = (TH1D*)GetObjectFromPath(InputFile, samples[CurrentSampleIndex].Name+"/TotalEPU" );
+
+      double norm  = samples[CurrentSampleIndex].XSec*(SecondIsGreater?result12.LInt:result11.LInt)/TotalE  ->Integral(); //normalize the samples to the actual lumi used for limits
+      double normPU= samples[CurrentSampleIndex].XSec*(SecondIsGreater?result12.LInt:result11.LInt)/(TotalEPU->Integral()>0?TotalEPU->Integral():TotalE->Integral());
+
+      MassSign      ->Scale(norm);
+      MassSignP     ->Scale(norm);
+      MassSignI     ->Scale(norm);
+      MassSignM     ->Scale(norm);
+      MassSignHUp   ->Scale(norm);
+      MassSignHDown ->Scale(norm);
+      MassSignT     ->Scale(norm);
+      MassSignPU    ->Scale(normPU);
+
+
 
       // so far the shape analysis is disabled here! change the lines here to change it
       bool shape = false;
@@ -3284,6 +3307,16 @@ bool Combine(string InputPattern, string signal1, string signal2, int* OptCutInd
       if (!SecondIsGreater)
          result11.Save(OverwritePath);
       if (SQRTS != SQRTS_OLD) SQRTS = SQRTS_OLD;
+   }
+
+   double LInt1 = 0, LInt2 = 0;
+   if (signal1.find("13TeV16G")!=string::npos){
+	   LInt1 = IntegratedLuminosity13TeV16G; // FIXME quick and dirty patch, but shouldn't be needed if you run from step 1 - 5
+	   LInt2 = IntegratedLuminosity13TeV16PreG; // FIXME quick and dirty patch, but shouldn't be needed if you run from step 1 - 5
+   }
+   else if (signal1.find("13TeV16")!=string::npos) {
+	   LInt1 = IntegratedLuminosity13TeV16PreG;
+	   LInt2 = IntegratedLuminosity13TeV16G;
    }
 
    double NSign1 = result11.NSign/(result11.XSec_Th*result11.LInt),
