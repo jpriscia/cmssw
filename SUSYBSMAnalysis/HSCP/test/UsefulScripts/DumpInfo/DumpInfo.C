@@ -45,8 +45,61 @@ double TOFCut;
 
 bool isData = true;
 bool isMC   = !isData;
+bool makePlots = true;
 
+struct PlotObj {
+   TProfile2D* EtaVsMassVsMassErr;
+   TH1D* Mass;
+   TH1D* MassErr;
+   TH1D* MassRecompute;
+   TH1D* RunPeriod;
+   TH1D* Eta;
+   TH1D* EtaPostCut;
+   TH2D* EtaIh;
+   TH2D* EtaIas;
+   TH2D* EtaPt;
+   TH2D* EtaMass;
+   TH1D* P;
+   TH1D* Pt;
+   TH1D* Ih;
+   TH1D* Ias;
+   TH1D* Phi;
 
+   PlotObj (){
+      EtaVsMassVsMassErr = new TProfile2D ("EtaVsMass", "EtaVsMass", 300 ,    0, 3000, 60, -2.1, 2.1, 0, 5);
+      Mass          = new TH1D       ("Mass"     , "Mass"     , 300 ,    0, 3000);
+      MassErr       = new TH1D       ("MassErr"  , "MassErr"  , 150 ,    0, 4);
+      MassRecompute = new TH1D       ("MassReco" , "MassReco" , 300 ,    0, 3000);
+      RunPeriod     = new TH1D       ("RunPeriod", "RunPeriod", 6   ,    0,    6);
+      Eta           = new TH1D       ("Eta"      , "Eta"      , 60  , -2.1,  2.1);
+      EtaPostCut    = new TH1D       ("EtaPostC" , "EtaPostC" , 60  , -2.1,  2.1);
+      EtaIh         = new TH2D       ("EtaIh"    , "EtaIh"    , 60  , -2.1,  2.1,180, 0, 30);
+      EtaIas        = new TH2D       ("EtaIas"   , "EtaIas"   , 60  , -2.1,  2.1, 50, 0, 1);
+      EtaPt         = new TH2D       ("EtaPt"    , "EtaPt"    , 60  , -2.1,  2.1, 100, 0, 1000);
+      EtaMass       = new TH2D       ("EtaMass"  , "EtaMass"  , 60  , -2.1,  2.1, 300, 0, 3000);
+      P             = new TH1D       ("P"        , "P"        , 50  ,    0, 1200);
+      Pt            = new TH1D       ("Pt"       , "Pt"       , 50  ,    0, 1200);
+      Ih            = new TH1D       ("Ih"       , "Ih"       , 200 ,    0,   30); 
+      Ias           = new TH1D       ("Ias"      , "Ias"      , 50  ,    0,    1);
+      Phi           = new TH1D       ("Phi"      , "Phi"      , 50  ,-3.14, 3.14);
+   }
+};
+/*
+double GetMassErr (double P, double PErr, double dEdx, double dEdxErr, double M){
+   if (M < 0) return -1;
+   double KErr     = 0.2;
+   double CErr     = 0.4;
+   double cErr     = 0.01;
+   double Criteria = dEdx - dEdxC_Data;
+   double Fac1     = P*P/(2*M*dEdxK_Data);
+   double Fac2     = pow(2*M*M*dEdxK_Data/(P*P), 2);
+   double MassErr  = Fac1*sqrt(Fac2*pow(PErr/P, 2) + Criteria*Criteria*pow(KErr/dEdxK_Data,2) + dEdxErr*dEdxErr + dEdxC_Data*dEdxC_Data);
+
+   if (std::isnan(MassErr) || std::isinf(MassErr)) MassErr = -1;
+
+   return MassErr;
+}
+*/
 bool NotARegion (double Pt, double PtCut, double I, double ICut, double TOF, double TOFCut){
    return (Pt>PtCut  || (ICut>-1 && I>ICut)  || (TOFCut>-1 && TOF<=TOFCut));
 }
@@ -79,7 +132,7 @@ bool NotHRegion (double Pt, double PtCut, double I, double ICut, double TOF, dou
    return (Pt<=PtCut || (ICut>-1 && I<=ICut) || (TOFCut>-1 && TOF>TOFCut));
 }
 
-void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEvent& ev, FILE* pFile, double treeMass, muonTimingCalculator tofCalculator)
+void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEvent& ev, FILE* pFile, double treeMass, muonTimingCalculator tofCalculator, PlotObj* plotStruct = NULL)
 {
    reco::MuonRef  muon  = hscp.muonRef();
    reco::TrackRef track = hscp.trackRef();
@@ -146,7 +199,8 @@ void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEven
        //Compute dE/dx on the fly
        //computedEdx(dedxHits, Data/MC scaleFactor, templateHistoForDiscriminator, usePixel, useClusterCleaning, reverseProb)
        DeDxData dedxSObjTmp = computedEdx(dedxHits, dEdxSF, dEdxTemplates, true, useClusterCleaning, TypeMode==5, false, trackerCorrector.TrackerGains, true, true, 99, false, 1, 0.0, NULL);
-       DeDxData dedxMObjTmp = computedEdx(dedxHits, dEdxSF, NULL,          true, useClusterCleaning, false      , false, trackerCorrector.TrackerGains, true, true, 99, false, 1, 0.0, NULL);
+       double dEdxErr = 0;
+       DeDxData dedxMObjTmp = computedEdx(dedxHits, dEdxSF, NULL,          true, useClusterCleaning, false      , false, trackerCorrector.TrackerGains, true, true, 99, false, 1, 0.15, NULL, &dEdxErr);
 
        DeDxData* dedxSObj = dedxSObjTmp.numberOfMeasurements()>0?&dedxSObjTmp:NULL;
        DeDxData* dedxMObj = dedxMObjTmp.numberOfMeasurements()>0?&dedxMObjTmp:NULL;
@@ -159,8 +213,36 @@ void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEven
    if(TOFCut>-1 && tof && tof->inverseBeta()<=TOFCut)return;
 
    double Mass=0;
-   if(!track.isNull() && dedxMObj) Mass = GetMass(track->p(),dedxMObj->dEdx(), false);   
-//   if(CutMass>=0 && Mass<CutMass)return;
+   double MassErr=-1;
+   if(!track.isNull() && dedxMObj){
+      Mass    = GetMass(track->p(),dedxMObj->dEdx(), false);
+      MassErr = Mass*GetMassErr (track->p(), track->ptError(), dedxMObj->dEdx(), dEdxErr, Mass);
+   }
+
+   if (plotStruct){
+      plotStruct->EtaVsMassVsMassErr->Fill (Mass, track->eta(), MassErr/Mass);
+      plotStruct->MassRecompute     ->Fill (Mass);
+      plotStruct->P                 ->Fill (track->p());
+      plotStruct->Pt                ->Fill (track->pt());
+      plotStruct->Eta               ->Fill (track->eta());
+      plotStruct->Phi               ->Fill (track->phi());
+      plotStruct->MassErr           ->Fill (MassErr/Mass);
+      if (dedxMObj) {
+	 plotStruct->Ih     ->Fill (dedxMObj->dEdx());
+         plotStruct->EtaIh  ->Fill (track->eta(), dedxMObj->dEdx());
+      }
+      if (dedxSObj) {
+         plotStruct->Ias    ->Fill (dedxSObj->dEdx());
+         plotStruct->EtaIas ->Fill (track->eta(), dedxSObj->dEdx());
+      }
+      if (MassErr/Mass > 2.2) plotStruct->EtaPostCut->Fill(track->eta());
+      plotStruct->EtaPt     ->Fill (track->eta(), track->pt());
+      plotStruct->EtaMass   ->Fill (track->eta(), Mass);
+   }
+
+   if(CutMass>=0 && Mass<CutMass)return;
+   if(!PassPreselection (hscp, dedxHits, dedxSObj, dedxMObj, tof, dttof, csctof, ev, NULL, -1, false, 0, 0, MassErr/Mass)) return;
+ //  printf ("I passed the preselection!\n");
 
    double v3d=0;
    double dxy=0;
@@ -182,13 +264,14 @@ void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEven
    fprintf(pFile,"\n");
    fprintf(pFile,"%s\n", ev.getTFile()->GetName());
    fprintf(pFile,"---------------------------------------------------------------------------------------------------\n");
-   fprintf(pFile,"Candidate Type = %i --> Mass : %7.2f (recompute-->%7.2f)\n",hscp.type(),treeMass, Mass);
+   fprintf(pFile,"Candidate Type = %i --> Mass : %7.2f (recompute--> %7.2f +- %7.2f)\n",hscp.type(),treeMass, Mass, MassErr);
    fprintf(pFile,"------------------------------------------ EVENT INFO ---------------------------------------------\n");
    fprintf(pFile,"Run=%i Lumi=%i Event=%llu BX=%i  Orbit=%i Store=%i\n",ev.eventAuxiliary().run(),ev.eventAuxiliary().luminosityBlock(),ev.eventAuxiliary().event(),ev.eventAuxiliary().luminosityBlock(),ev.eventAuxiliary().orbitNumber(),ev.eventAuxiliary().storeNumber());
    edm::TriggerResultsByName tr = ev.triggerResultsByName("HLT");
 //   for(unsigned int i=0;i<tr.size();i++){
 //     fprintf(pFile, "Path %3i %50s --> %1i\n",i, tr.triggerName(i).c_str(),tr.accept(i));
 //   }
+   fprintf(pFile, "Path %50s --> %1i\n","HLT_PFMET170_HEHECleaned_v*", (int) passTriggerPatterns(tr, "HLT_PFMET170_NoiseCleaned_v*"));
    fprintf(pFile, "Path %50s --> %1i\n","HLT_PFMET170_NoiseCleaned_v*", (int) passTriggerPatterns(tr, "HLT_PFMET170_NoiseCleaned_v*"));
    fprintf(pFile, "Path %50s --> %1i\n","HLT_Mu45_eta2p1_v*"          , (int) passTriggerPatterns(tr, "HLT_Mu45_eta2p1_v*"));
    fprintf(pFile, "Path %50s --> %1i\n","HLT_Mu50_v*"                 , (int) passTriggerPatterns(tr, "HLT_Mu50_v*"));
@@ -301,6 +384,8 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
    else if (Region=="H"){ IncorrectRegion = NotHRegion;}
    else    {Region ="D";  IncorrectRegion = NotDRegion;}
 
+   TFile* outRoot = new TFile("out.root", "RECREATE");
+   PlotObj* plotStruct = new PlotObj();
    int CutIndex;
    double MassCut;
    sscanf(CutIndexStr.c_str(),"%d", &CutIndex);
@@ -337,12 +422,20 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
    muonTimingCalculator tofCalculator;
    tofCalculator.loadTimeOffset("../../../data/MuonTimeOffset.txt");
    bool is2016=(Data.find("13TeV16")!=string::npos);
+   bool is2016G=(Data.find("13TeV16G")!=string::npos);
+
+
+   dEdxK_Data = is2016?dEdxK_Data16:dEdxK_Data15;
+   dEdxC_Data = is2016?dEdxC_Data16:dEdxC_Data15;
+   dEdxK_MC   = is2016?dEdxK_MC16:dEdxK_MC15;
+   dEdxC_MC   = is2016?dEdxC_MC16:dEdxC_MC15;
+
    if(isData){ 
       dEdxSF [0] = 1.00000;
       dEdxSF [1] = (is2016)?1.41822:1.21836;
       dEdxTemplates = loadDeDxTemplate(is2016?"../../../data/Data13TeV16_dEdxTemplate.root":"../../../data/Data13TeV_Deco_SiStripDeDxMip_3D_Rcd_v2_CCwCI.root", true);
    }else{  
-      dEdxSF [0] = (is2016)?1.41822:1.09708;
+      dEdxSF [0] = (is2016)?1.09711:1.09708;
       dEdxSF [1] = (is2016)?1.09256:1.01875;
       dEdxTemplates = loadDeDxTemplate(is2016?"../../../data/MC13TeV16_dEdxTemplate.root":"../../../data/MC13TeV_Deco_SiStripDeDxMip_3D_Rcd_v2_CCwCI.root", true);
    }
@@ -355,7 +448,7 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
 
    TTree* tree           = (TTree*)GetObjectFromPath(InputFile, Data + "/HscpCandidates");
    printf("Tree Entries=%lli\n",tree->GetEntries());
-   cout << "Cut Pt " << PtCut << " Cut I " << ICut << " TOFCut " << TOFCut << endl;
+   cout << "Cut Pt " << PtCut << " Cut I " << ICut << " TOFCut " << TOFCut << " MassCut " << MassCut << endl;
 
    std::vector<string> FileName;
    for(unsigned int s=0;s<samples.size();s++){if(samples[s].Name == Data) GetInputFiles(samples[s], BaseDirectory, FileName);}
@@ -388,7 +481,7 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
    printf("Scanning %s                   :", Region.c_str());
 
    int TreeStep = tree->GetEntries()/50;if(TreeStep==0)TreeStep=1;
-   for (Int_t i=0;i<tree->GetEntries();i++){
+   for (size_t i=0;i<tree->GetEntries();i++){
      if(i%TreeStep==0){printf(".");fflush(stdout);}
       tree->GetEntry(i);
 //      printf("%6i %9i %1i  %6.2f %6.2f %6.2f\n",Run,Event,HscpI,Pt,I,TOF);
@@ -402,7 +495,33 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
        CurrentRun = ev.eventAuxiliary().run();
        tofCalculator.setRun(CurrentRun);
        trackerCorrector.setRun(CurrentRun);
+
+       if (278018 <= CurrentRun && CurrentRun < 278308){
+          dEdxK_Data    = 1.969; // +/- 0 dEdxC_Data    = 3.530; // +/- 0.625
+          dEdxC_Data    = 3.530; // +/- 0.625
+          dEdxSF [1]   *= 1.04098;
+       }
+
+       if (278308 <= CurrentRun && CurrentRun < 279116){
+          dEdxK_Data    = 1.870; // +/- 0.027
+          dEdxC_Data    = 4.049; // +/- 0.571
+          dEdxSF [1]   *= 1.06009;
+       }
+
+       if (279116 <= CurrentRun){
+          dEdxK_Data    = 2.040; // +/- 0.029
+          dEdxC_Data    = 4.294; // +/- 0.749
+          dEdxSF [1]   *= 1.12230;
+       }
     }
+
+    if (CurrentRun > 278818 && !is2016G) continue;
+    if      (CurrentRun >= 272728 && CurrentRun <= 275376) plotStruct->RunPeriod->Fill(0.5); // B
+    else if (CurrentRun >  275376 && CurrentRun <= 276283) plotStruct->RunPeriod->Fill(1.5); // C
+    else if (CurrentRun >  276283 && CurrentRun <= 276811) plotStruct->RunPeriod->Fill(2.5); // D
+    else if (CurrentRun >  276811 && CurrentRun <= 277420) plotStruct->RunPeriod->Fill(3.5); // E
+    else if (CurrentRun >  277420 && CurrentRun <= 278808) plotStruct->RunPeriod->Fill(4.5); // F
+    else if (CurrentRun >  278818)                         plotStruct->RunPeriod->Fill(5.5); // G, H
 
 
 
@@ -412,7 +531,9 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
       const susybsm::HSCParticleCollection& hscpColl = *hscpCollHandle;
 
       susybsm::HSCParticle hscp  = hscpColl[HscpI];
-      DumpCandidateInfo(hscp, ev, pFile, Mass, tofCalculator);
+      plotStruct->Mass->Fill (Mass);
+
+      DumpCandidateInfo(hscp, ev, pFile, Mass, tofCalculator, plotStruct);
 
       for(unsigned int h=0;h<hscpColl.size();h++){
          if(h==HscpI)continue;
@@ -428,6 +549,9 @@ void DumpInfo(string DIRNAME, string Pattern, string CutIndexStr="0", string Mas
    }printf("\n");
    fclose(pFile);
    fclose(pickEvent);
+
+   outRoot->Write();
+   outRoot->Close();
 
 
 
