@@ -328,7 +328,11 @@ def CreateTheCmdFile():
            elif(commands.getstatusoutput("uname -n"   )[1].find("purdue.edu")!=-1): cmd_file.write('requirements            = (request_memory > 200)\n')
 	   else: 		                                                    cmd_file.write('requirements            = (Memory > 200)\n')
 	   cmd_file.write('should_transfer_files   = YES\n')
-	   cmd_file.write('when_to_transfer_output = ON_EXIT\n')
+	   cmd_file.write('executable = $(filename)\n')
+	   cmd_file.write('output = '+Farm_Directories[2]+'$(ClusterId).$(ProcId).out\n')
+	   cmd_file.write('error  = '+Farm_Directories[2]+'$(ClusterId).$(ProcId).err\n')
+	   cmd_file.write('log    = '+Farm_Directories[2]+'$(ClusterId).$(ProcId).log\n')
+	   cmd_file.write('queue filename matching files '+Farm_Directories[1]+'*.sh\n')
         elif subTool=='slurm':
 	   cmd_file.write('#!/bin/bash\n')
 	   cmd_file.write(CopyRights + '\n')
@@ -447,7 +451,8 @@ def SendCluster_Push(Argv):
 		print "Getting the jobs..."
 	print Argv
         CreateTheShellFile(Argv)
-        AddJobToCmdFile()
+        if subTool != 'condor':
+		AddJobToCmdFile()
 	Jobs_Count = Jobs_Count+1
 
 def SendCluster_Submit():
