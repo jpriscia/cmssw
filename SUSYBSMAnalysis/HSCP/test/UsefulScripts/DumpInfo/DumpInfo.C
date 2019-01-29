@@ -58,7 +58,18 @@ struct PlotObj {
    TH2D* EtaIh;
    TH2D* EtaIas;
    TH2D* EtaPt;
+   TH2D* EtaP;
    TH2D* EtaMass;
+   TH2D* EtaNOH;
+   TH2D* EtaNOBH;
+   TH2D* IhIas;
+   TH2D* NOHIas;
+   TH2D* NOHIh;
+   TH2D* NOBHIas;
+   TH2D* NOBHIh;
+   TH2D* NOHMass;
+   TH2D* NOBHMass;
+   TH2D* NOMPt;
    TH1D* P;
    TH1D* Pt;
    TH1D* Ih;
@@ -73,10 +84,20 @@ struct PlotObj {
       RunPeriod     = new TH1D       ("RunPeriod", "RunPeriod", 6   ,    0,    6);
       Eta           = new TH1D       ("Eta"      , "Eta"      , 60  , -2.1,  2.1);
       EtaPostCut    = new TH1D       ("EtaPostC" , "EtaPostC" , 60  , -2.1,  2.1);
-      EtaIh         = new TH2D       ("EtaIh"    , "EtaIh"    , 60  , -2.1,  2.1,180, 0, 30);
-      EtaIas        = new TH2D       ("EtaIas"   , "EtaIas"   , 60  , -2.1,  2.1, 50, 0, 1);
-      EtaPt         = new TH2D       ("EtaPt"    , "EtaPt"    , 60  , -2.1,  2.1, 100, 0, 1000);
-      EtaMass       = new TH2D       ("EtaMass"  , "EtaMass"  , 60  , -2.1,  2.1, 300, 0, 3000);
+      EtaIh         = new TH2D       ("EtaIh"    , "EtaIh"    , 60  , -2.1,  2.1, 180, 0,   30 );
+      EtaIas        = new TH2D       ("EtaIas"   , "EtaIas"   , 60  , -2.1,  2.1,  50, 0,    1 );
+      EtaPt         = new TH2D       ("EtaPt"    , "EtaPt"    , 60  , -2.1,  2.1, 100, 0, 1000 );
+      EtaP          = new TH2D       ("EtaP"     , "EtaP"     , 60  , -2.1,  2.1,  50, 0, 1500 );
+      EtaMass       = new TH2D       ("EtaMass"  , "EtaMass"  , 60  , -2.1,  2.1, 300, 0, 3000 );
+      EtaNOH        = new TH2D       ("EtaNOH"   , "EtaNOH"   , 60  , -2.1,  2.1,  50, 0,   50 );
+      EtaNOBH       = new TH2D       ("EtaNOBH"  , "EtaNOBH"  , 60  , -2.1,  2.1,  50, 0,   50 );
+      IhIas         = new TH2D       ("IhIas"    , "IhIas"    , 180 ,    0,   30,  50, 0,    1 );
+      NOHIas        = new TH2D       ("NOHIas"   , "NOHIas"   , 50  ,    0,   50,  50, 0,    1 );
+      NOHIh         = new TH2D       ("NOHIh"    , "NOHIh"    , 50  ,    0,   50, 180, 0,   30 );
+      NOBHIas       = new TH2D       ("NOBHIas"  , "NOBHIas"  , 50  ,    0,   50,  50, 0,    1 );
+      NOBHIh        = new TH2D       ("NOBHIh"   , "NOBHIh"   , 50  ,    0,   50, 180, 0,   30 );
+      NOHMass       = new TH2D       ("NOHMass"  , "NOHMass"  , 50  ,    0,   50, 300, 0, 3000 );
+      NOBHMass      = new TH2D       ("NOBHMass" , "NOBHMass" , 50  ,    0,   50, 300, 0, 3000 );
       P             = new TH1D       ("P"        , "P"        , 50  ,    0, 1200);
       Pt            = new TH1D       ("Pt"       , "Pt"       , 50  ,    0, 1200);
       Ih            = new TH1D       ("Ih"       , "Ih"       , 200 ,    0,   30); 
@@ -207,7 +228,7 @@ void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEven
        //if(TypeMode==5)OpenAngle = deltaROpositeTrack(hscpColl, hscp); //OpenAngle is a global variable... that's uggly C++, but that's the best I found so far
 
 
-   if(TypeMode!=3 && (track->pt()<=PtCut))return;// || dedxSObj->dEdx()<=ICut))return;
+   if(TypeMode!=3 && (track->pt()<PtCut || dedxSObj->dEdx()<ICut))return;
    if(TypeMode==3 && SAtrack->pt()<PtCut) return;
    //   if(track->pt()<=PtCut || dedxSObj->dEdx()<=ICut)return;
    if(TOFCut>-1 && tof && tof->inverseBeta()<=TOFCut)return;
@@ -230,18 +251,28 @@ void DumpCandidateInfo(const susybsm::HSCParticle& hscp, const fwlite::ChainEven
       if (dedxMObj) {
 	 plotStruct->Ih     ->Fill (dedxMObj->dEdx());
          plotStruct->EtaIh  ->Fill (track->eta(), dedxMObj->dEdx());
+         plotStruct->EtaNOH ->Fill (track->eta(), dedxMObj->numberOfMeasurements());
+         plotStruct->EtaNOBH->Fill (track->eta(), track->found() - dedxMObj->numberOfMeasurements());
+	 plotStruct->NOHIh  ->Fill (dedxMObj->numberOfMeasurements(), dedxMObj->dEdx());
+	 plotStruct->NOBHIh ->Fill (track->found() - dedxMObj->numberOfMeasurements(), dedxMObj->dEdx());
+	 plotStruct->NOHMass->Fill (dedxMObj->numberOfMeasurements(), Mass);
+	 plotStruct->NOBHMass->Fill(track->found() - dedxMObj->numberOfMeasurements(), Mass);
+	 if (dedxSObj) plotStruct->IhIas->Fill(dedxMObj->dEdx(), dedxSObj->dEdx());
       }
       if (dedxSObj) {
          plotStruct->Ias    ->Fill (dedxSObj->dEdx());
          plotStruct->EtaIas ->Fill (track->eta(), dedxSObj->dEdx());
+	 plotStruct->NOHIas ->Fill (dedxSObj->numberOfMeasurements(), dedxSObj->dEdx());
+	 plotStruct->NOBHIas->Fill (track->found() - dedxMObj->numberOfMeasurements(), dedxSObj->dEdx());
       }
       if (MassErr/Mass > 2.2) plotStruct->EtaPostCut->Fill(track->eta());
       plotStruct->EtaPt     ->Fill (track->eta(), track->pt());
+      plotStruct->EtaP      ->Fill (track->eta(), track->p());
       plotStruct->EtaMass   ->Fill (track->eta(), Mass);
    }
 
    if(CutMass>=0 && Mass<CutMass)return;
-   if(!PassPreselection (hscp, dedxHits, dedxSObj, dedxMObj, tof, dttof, csctof, ev, NULL, -1, false, 0, 0, MassErr/Mass)) return;
+   if(!PassPreselection (hscp, dedxHits, dedxSObj, dedxMObj, tof, dttof, csctof, ev, NULL, -1, false, 0, 0, -1)) return;
  //  printf ("I passed the preselection!\n");
 
    double v3d=0;

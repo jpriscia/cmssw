@@ -219,6 +219,8 @@ void Plotter (void){
    vector <string> SignalsToProcess;
    vector <string> SignalsLegend;
 
+   int TypeMode = 2;
+
    AnalysesPaths.push_back ("../../AnalysisCode/");              legend.push_back ("|#eta| < 2.1");
 //   AnalysesPaths.push_back ("../../AnalysisCode_Eta09/");        legend.push_back ("|#eta| < 0.9");
    AnalysesPaths.push_back ("../../AnalysisCode_Eta12/");        legend.push_back ("|#eta| < 1.2");
@@ -239,10 +241,10 @@ void Plotter (void){
       vector <TGraph*> graphsXSecObs;
       vector <TGraph*> graphsXSecExp;
       vector <TGraph*> graphsEff;
-      SignalSummaryClass base ("../../AnalysisCode/", SignalsToProcess[s], 0);
+      SignalSummaryClass base ("../../AnalysisCode/", SignalsToProcess[s], TypeMode);
       bool skip = false;
       for (size_t a = 0; a < AnalysesPaths.size(); a++){
-         SignalSummaryClass test (AnalysesPaths[a], SignalsToProcess[s], 0);
+         SignalSummaryClass test (AnalysesPaths[a], SignalsToProcess[s], TypeMode);
 	 if (test.size() != base.size()){
             skip = true;
             printf ("Signal sample %s does not have the same number of points. Skipping.\n", SignalsToProcess[s].c_str());
@@ -266,7 +268,7 @@ void Plotter (void){
       DrawFamilyOfGraphs (graphsXSecObs, tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{obs} (pb)");
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsXSecObs[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
-      SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_XSecObs", true);
+      SaveCanvas (c1, (TypeMode==0?"TkOnly":"TkTOF"), SignalsToProcess[s] + "_XSecObs", true);
       delete c1;
       delete tmp;
 
@@ -276,7 +278,7 @@ void Plotter (void){
       DrawFamilyOfGraphs (graphsXSecExp, tmp, "LP", "Mass (GeV)", "95% CL limit on #sigma_{exp} (pb)");
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsXSecExp[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
-      SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_XSecExp", true);
+      SaveCanvas (c1, (TypeMode==0?"TkOnly":"TkTOF"), SignalsToProcess[s] + "_XSecExp", true);
       delete c1;
       delete tmp;
 
@@ -285,7 +287,7 @@ void Plotter (void){
       DrawFamilyOfGraphs (graphsEff, tmp, "LP", "Mass (GeV)", "Efficiency with respect to |#eta| < 2.1", false, 100, 2600, 0, 1.00);
       DrawPreliminary("Tracker - Only", 13.0, SignalsLegend[s]);
       DrawLegend((TObject**) &(graphsEff[0]), legend, "", "LP", 0.8, 0.9, 0.3, 0.05);
-      SaveCanvas (c1, "TkOnly", SignalsToProcess[s] + "_Eff", true);
+      SaveCanvas (c1, (TypeMode==0?"TkOnly":"TkTOF"), SignalsToProcess[s] + "_Eff", true);
       delete c1;
       delete tmp;
 

@@ -3307,16 +3307,22 @@ bool Combine(string InputPattern, string signal1, string signal2, int* OptCutInd
       if (!SecondIsGreater)
          result11.Save(OverwritePath);
       if (SQRTS != SQRTS_OLD) SQRTS = SQRTS_OLD;
-   }
 
-   double LInt1 = 0, LInt2 = 0;
-   if (signal1.find("13TeV16G")!=string::npos){
-	   LInt1 = IntegratedLuminosity13TeV16G; // FIXME quick and dirty patch, but shouldn't be needed if you run from step 1 - 5
-	   LInt2 = IntegratedLuminosity13TeV16PreG; // FIXME quick and dirty patch, but shouldn't be needed if you run from step 1 - 5
-   }
-   else if (signal1.find("13TeV16")!=string::npos) {
-	   LInt1 = IntegratedLuminosity13TeV16PreG;
-	   LInt2 = IntegratedLuminosity13TeV16G;
+      delete H_P           ;
+      delete H_D           ;
+      delete MassData      ;
+      delete MassPred      ;
+      delete MassSign      ;
+      delete MassSignP     ;
+      delete MassSignI     ;
+      delete MassSignM     ;
+      delete MassSignHUp   ;
+      delete MassSignHDown ;
+      delete MassSignT     ;
+      delete MassSignPU    ;
+      delete TotalE        ;
+      delete TotalEPU      ;
+      delete InputFile;
    }
 
    double NSign1 = result11.NSign/(result11.XSec_Th*result11.LInt),
