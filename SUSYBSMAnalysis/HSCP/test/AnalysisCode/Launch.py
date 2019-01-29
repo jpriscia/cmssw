@@ -10,12 +10,13 @@ import commands
 import time
 
 LaunchOnCondor.Jobs_InitCmds       = ['ulimit -c 0;']  #disable production of core dump in case of job crash
-LaunchOnCondor.Jobs_Queue = '8nh'
+LaunchOnCondor.subTool = 'condor'
+#LaunchOnCondor.Jobs_Queue = '8nh'
 
-UseRemoteSamples          = False#True
-RemoteStorageDir          = '/storage/data/cms/store/user/jozobec/HSCP2016/'
+UseRemoteSamples          = True
+#RemoteStorageDir          = '/storage/data/cms/store/user/jozobec/HSCP2016/'
 RemoteServer              = 'ingrid-se03.cism.ucl.ac.be'
-#RemoteStorageDir          = '/store/group/phys_exotica/hscp/'
+RemoteStorageDir          = '/store/group/phys_exotica/hscp/'
 
 #the vector below contains the "TypeMode" of the analyses that should be run
 AnalysesToRun = [0,2]#,4]#,3,5]
