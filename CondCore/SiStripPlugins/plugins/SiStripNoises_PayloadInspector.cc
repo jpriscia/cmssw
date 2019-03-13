@@ -249,11 +249,10 @@ namespace {
   *************************************************/
 
   // inherit from one of the predefined plot class: PlotImage
-  template<SiStripPI::OpMode op_mode_> class SiStripNoiseDistributionComparison : public cond::payloadInspector::PlotImage<SiStripNoises> {
+  template<SiStripPI::OpMode op_mode_> class SiStripNoiseDistributionComparisonBase : public cond::payloadInspector::PlotImage<SiStripNoises> {
 
   public:
-    SiStripNoiseDistributionComparison() : cond::payloadInspector::PlotImage<SiStripNoises>("SiStrip Noise values comparison"){
-      setSingleIov( false );
+    SiStripNoiseDistributionComparisonBase() : cond::payloadInspector::PlotImage<SiStripNoises>("SiStrip Noise values comparison"){
     }
 
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -418,21 +417,37 @@ namespace {
 
   };
 
-  typedef SiStripNoiseDistributionComparison<SiStripPI::STRIP_BASED>  SiStripNoiseValueComparisonPerStrip;
-  typedef SiStripNoiseDistributionComparison<SiStripPI::APV_BASED>    SiStripNoiseValueComparisonPerAPV;
-  typedef SiStripNoiseDistributionComparison<SiStripPI::MODULE_BASED> SiStripNoiseValueComparisonPerModule;
+  template<SiStripPI::OpMode op_mode_> class SiStripNoiseDistributionComparisonSingleTag : public SiStripNoiseDistributionComparisonBase<op_mode_> {
+  public:
+    SiStripNoiseDistributionComparisonSingleTag() : SiStripNoiseDistributionComparisonBase<op_mode_>(){
+      this->setSingleIov( false );
+    }
+  };
 
+  template<SiStripPI::OpMode op_mode_> class SiStripNoiseDistributionComparisonTwoTags : public SiStripNoiseDistributionComparisonBase<op_mode_> {
+  public:
+    SiStripNoiseDistributionComparisonTwoTags() : SiStripNoiseDistributionComparisonBase<op_mode_>(){
+      this->setTwoTags( true );
+    }
+  };
+
+  typedef SiStripNoiseDistributionComparisonSingleTag<SiStripPI::STRIP_BASED>  SiStripNoiseValueComparisonPerStripSingleTag;
+  typedef SiStripNoiseDistributionComparisonSingleTag<SiStripPI::APV_BASED>    SiStripNoiseValueComparisonPerAPVSingleTag;
+  typedef SiStripNoiseDistributionComparisonSingleTag<SiStripPI::MODULE_BASED> SiStripNoiseValueComparisonPerModuleSingleTag;
+
+  typedef SiStripNoiseDistributionComparisonTwoTags<SiStripPI::STRIP_BASED>  SiStripNoiseValueComparisonPerStripTwoTags;
+  typedef SiStripNoiseDistributionComparisonTwoTags<SiStripPI::APV_BASED>    SiStripNoiseValueComparisonPerAPVTwoTags;
+  typedef SiStripNoiseDistributionComparisonTwoTags<SiStripPI::MODULE_BASED> SiStripNoiseValueComparisonPerModuleTwoTags;
 
   /************************************************
     1d histogram comparison of SiStripNoises of 1 IOV 
   *************************************************/
 
   // inherit from one of the predefined plot class: PlotImage
-  class SiStripNoiseValueComparison : public cond::payloadInspector::PlotImage<SiStripNoises> {
+  class SiStripNoiseValueComparisonBase : public cond::payloadInspector::PlotImage<SiStripNoises> {
     
   public:
-    SiStripNoiseValueComparison() : cond::payloadInspector::PlotImage<SiStripNoises>("SiStrip Noise values comparison"){
-      setSingleIov( false );
+    SiStripNoiseValueComparisonBase() : cond::payloadInspector::PlotImage<SiStripNoises>("SiStrip Noise values comparison"){
     }
     
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -525,6 +540,22 @@ namespace {
 
     }
   };
+
+
+  class SiStripNoiseValueComparisonSingleTag : public SiStripNoiseValueComparisonBase{
+  public:
+    SiStripNoiseValueComparisonSingleTag() : SiStripNoiseValueComparisonBase(){
+      setSingleIov( false );
+    }
+  };
+
+  class SiStripNoiseValueComparisonTwoTags : public SiStripNoiseValueComparisonBase{
+  public:
+    SiStripNoiseValueComparisonTwoTags() : SiStripNoiseValueComparisonBase(){
+      setTwoTags( true );
+    }
+  };
+
 
   /************************************************
     SiStrip Noise Tracker Map 
@@ -627,10 +658,9 @@ namespace {
   /************************************************
     SiStrip Noise Tracker Map  (ratio with previous gain per detid)
   *************************************************/
-  template<SiStripPI::estimator est,int nsigma> class SiStripNoiseRatioWithPreviousIOVTrackerMap : public cond::payloadInspector::PlotImage<SiStripNoises> {
+  template<SiStripPI::estimator est,int nsigma> class SiStripNoiseRatioWithPreviousIOVTrackerMapBase : public cond::payloadInspector::PlotImage<SiStripNoises> {
   public:
-    SiStripNoiseRatioWithPreviousIOVTrackerMap() : cond::payloadInspector::PlotImage<SiStripNoises>( "Tracker Map of ratio of SiStripNoises "+estimatorType(est)+ "with previous IOV"){
-      setSingleIov( false );
+    SiStripNoiseRatioWithPreviousIOVTrackerMapBase() : cond::payloadInspector::PlotImage<SiStripNoises>( "Tracker Map of ratio of SiStripNoises "+estimatorType(est)+ "with previous IOV"){
     }
 
     std::map<unsigned int,float>computeEstimator(std::shared_ptr<SiStripNoises>  payload){
@@ -739,18 +769,46 @@ namespace {
     }
   };
 
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::min,1>  SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::max,1>  SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::mean,1> SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::rms,1>  SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::min,2>  SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::max,2>  SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::mean,2> SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::rms,2>  SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::min,3>  SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::max,3>  SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::mean,3> SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMap;
-    typedef SiStripNoiseRatioWithPreviousIOVTrackerMap<SiStripPI::rms,3>  SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMap;
+  template<SiStripPI::estimator est,int nsigma> class SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag : public SiStripNoiseRatioWithPreviousIOVTrackerMapBase<est, nsigma> {
+  public:
+    SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag() : SiStripNoiseRatioWithPreviousIOVTrackerMapBase<est, nsigma>(){
+      this->setSingleIov( false );
+    }
+  };
+
+  template<SiStripPI::estimator est,int nsigma> class SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags : public SiStripNoiseRatioWithPreviousIOVTrackerMapBase<est, nsigma> {
+  public:
+    SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags() : SiStripNoiseRatioWithPreviousIOVTrackerMapBase<est, nsigma>(){
+      this->setTwoTags( true );
+    }
+  };
+
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::min,1>  SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::max,1>  SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::mean,1> SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::rms,1>  SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::min,2>  SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::max,2>  SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::mean,2> SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::rms,2>  SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::min,3>  SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::max,3>  SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::mean,3> SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMapSingleTag;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapSingleTag<SiStripPI::rms,3>  SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMapSingleTag;
+  
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::min,1>  SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::max,1>  SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::mean,1> SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::rms,1>  SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::min,2>  SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::max,2>  SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::mean,2> SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::rms,2>  SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::min,3>  SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::max,3>  SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::mean,3> SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMapTwoTags;
+  typedef SiStripNoiseRatioWithPreviousIOVTrackerMapTwoTags<SiStripPI::rms,3>  SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMapTwoTags;
+
 
   /************************************************
   SiStrip Noise Tracker Summaries 
@@ -872,12 +930,10 @@ namespace {
   SiStrip Noise Comparator
   *************************************************/
 
-  template<SiStripPI::estimator est> class SiStripNoiseComparatorByRegion : public cond::payloadInspector::PlotImage<SiStripNoises> {
+  template<SiStripPI::estimator est> class SiStripNoiseComparatorByRegionBase : public cond::payloadInspector::PlotImage<SiStripNoises> {
   public:
-     SiStripNoiseComparatorByRegion() : cond::payloadInspector::PlotImage<SiStripNoises>( "SiStrip Noise "+estimatorType(est)+" comparator by Region" ),
-      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())}
-    {
-      setSingleIov( false );
+     SiStripNoiseComparatorByRegionBase() : cond::payloadInspector::PlotImage<SiStripNoises>( "SiStrip Noise "+estimatorType(est)+" comparator by Region" ),
+      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())}{
     }
 
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -1033,10 +1089,29 @@ namespace {
     TrackerTopology m_trackerTopo;
   };
 
-  typedef SiStripNoiseComparatorByRegion<SiStripPI::mean> SiStripNoiseComparatorMeanByRegion;
-  typedef SiStripNoiseComparatorByRegion<SiStripPI::min>  SiStripNoiseComparatorMinByRegion;
-  typedef SiStripNoiseComparatorByRegion<SiStripPI::max>  SiStripNoiseComparatorMaxByRegion;
-  typedef SiStripNoiseComparatorByRegion<SiStripPI::rms>  SiStripNoiseComparatorRMSByRegion;  
+  template<SiStripPI::estimator est> class SiStripNoiseComparatorByRegionSingleTag : public SiStripNoiseComparatorByRegionBase<est>{
+  public:
+    SiStripNoiseComparatorByRegionSingleTag() : SiStripNoiseComparatorByRegionBase<est>(){
+     this->setSingleIov( false );
+    }
+  };
+
+  template<SiStripPI::estimator est> class SiStripNoiseComparatorByRegionTwoTags :public SiStripNoiseComparatorByRegionBase<est>{
+  public:
+    SiStripNoiseComparatorByRegionTwoTags() : SiStripNoiseComparatorByRegionBase<est>(){
+      this->setTwoTags( true );
+    }
+  };
+
+  typedef SiStripNoiseComparatorByRegionSingleTag<SiStripPI::mean> SiStripNoiseComparatorMeanByRegionSingleTag;
+  typedef SiStripNoiseComparatorByRegionSingleTag<SiStripPI::min>  SiStripNoiseComparatorMinByRegionSingleTag;
+  typedef SiStripNoiseComparatorByRegionSingleTag<SiStripPI::max>  SiStripNoiseComparatorMaxByRegionSingleTag;
+  typedef SiStripNoiseComparatorByRegionSingleTag<SiStripPI::rms>  SiStripNoiseComparatorRMSByRegionSingleTag;  
+
+  typedef SiStripNoiseComparatorByRegionTwoTags<SiStripPI::mean> SiStripNoiseComparatorMeanByRegionTwoTags;
+  typedef SiStripNoiseComparatorByRegionTwoTags<SiStripPI::min>  SiStripNoiseComparatorMinByRegionTwoTags;
+  typedef SiStripNoiseComparatorByRegionTwoTags<SiStripPI::max>  SiStripNoiseComparatorMaxByRegionTwoTags;
+  typedef SiStripNoiseComparatorByRegionTwoTags<SiStripPI::rms>  SiStripNoiseComparatorRMSByRegionTwoTags;
 
   /************************************************
     Noise linearity
@@ -1289,10 +1364,14 @@ PAYLOAD_INSPECTOR_MODULE(SiStripNoises){
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValuePerStrip);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValuePerAPV);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValuePerModule);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparison);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerStrip);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerAPV);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerModule);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerStripSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerAPVSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerModuleSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerStripTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerAPVTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseValueComparisonPerModuleTwoTags);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_TrackerMap);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_TrackerMap);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_TrackerMap);
@@ -1301,22 +1380,38 @@ PAYLOAD_INSPECTOR_MODULE(SiStripNoises){
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMinByRegion);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMaxByRegion);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRMSByRegion);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMeanByRegion); 
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMinByRegion);  
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMaxByRegion);  
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorRMSByRegion);  
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMap);
-  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMap);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMeanByRegionSingleTag); 
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMinByRegionSingleTag);  
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMaxByRegionSingleTag);  
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorRMSByRegionSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMeanByRegionTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMinByRegionTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorMaxByRegionTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseComparatorRMSByRegionTwoTags);  
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV1sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV1sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV1sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV1sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV2sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV2sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV2sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV2sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMin_RatioWithPreviousIOV3sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMax_RatioWithPreviousIOV3sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseMean_RatioWithPreviousIOV3sigmaTrackerMapTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripNoiseRms_RatioWithPreviousIOV3sigmaTrackerMapTwoTags);
   PAYLOAD_INSPECTOR_CLASS(SiStripNoiseLinearity);
   PAYLOAD_INSPECTOR_CLASS(TIBNoiseHistory);
   PAYLOAD_INSPECTOR_CLASS(TOBNoiseHistory);

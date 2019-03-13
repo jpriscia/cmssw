@@ -521,12 +521,10 @@ namespace {
     Plot BadStrip by region comparison
   *************************************************/
 
-  class SiStripBadStripByRegionComparison : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
+  class SiStripBadStripByRegionComparisonBase : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
   public:
-    SiStripBadStripByRegionComparison() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "SiStrip BadStrip By Region Comparison" ),
-      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())}
-    {
-      setSingleIov( false );
+    SiStripBadStripByRegionComparisonBase() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "SiStrip BadStrip By Region Comparison" ),
+      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())} {
     }
 
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -712,13 +710,27 @@ namespace {
     TrackerTopology m_trackerTopo;
   };
 
+
+  class SiStripBadStripByRegionComparisonSingleTag : public SiStripBadStripByRegionComparisonBase {
+  public:
+    SiStripBadStripByRegionComparisonSingleTag() : SiStripBadStripByRegionComparisonBase(){
+      setSingleIov( false );
+    }
+  };
+
+  class SiStripBadStripByRegionComparisonTwoTags : public SiStripBadStripByRegionComparisonBase {
+  public:
+    SiStripBadStripByRegionComparisonTwoTags() : SiStripBadStripByRegionComparisonBase(){
+      setTwoTags ( true );
+    }
+  };
+
   /************************************************
     TrackerMap of SiStripBadStrip (bad strips fraction difference)
   *************************************************/
-  class SiStripBadStripFractionComparisonTrackerMap : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
+  class SiStripBadStripFractionComparisonTrackerMapBase : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
   public:
-    SiStripBadStripFractionComparisonTrackerMap() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "Tracker Map of SiStrip bad strip fraction difference" ){
-      setSingleIov( false );
+    SiStripBadStripFractionComparisonTrackerMapBase() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "Tracker Map of SiStrip bad strip fraction difference" ){
     }
 
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -820,6 +832,20 @@ namespace {
 
       delete reader;
       return true;
+    }
+  };
+
+  class SiStripBadStripFractionComparisonTrackerMapSingleTag : public SiStripBadStripFractionComparisonTrackerMapBase{
+  public:
+    SiStripBadStripFractionComparisonTrackerMapSingleTag() : SiStripBadStripFractionComparisonTrackerMapBase(){
+      setSingleIov( false );
+    }
+  };
+
+  class SiStripBadStripFractionComparisonTrackerMapTwoTags : public SiStripBadStripFractionComparisonTrackerMapBase{
+  public:
+    SiStripBadStripFractionComparisonTrackerMapTwoTags() :SiStripBadStripFractionComparisonTrackerMapBase(){
+      setTwoTags( true );
     }
   };
 
@@ -983,12 +1009,10 @@ namespace {
     Plot BadStrip Quality Comparison
   *************************************************/
 
-  class SiStripBadStripQualityComparison : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
+  class SiStripBadStripQualityComparisonBase : public cond::payloadInspector::PlotImage<SiStripBadStrip> {
   public:
-    SiStripBadStripQualityComparison() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "SiStrip BadStrip Quality Comparison Analysis" ),
-      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())}
-    {
-      setSingleIov( false );
+    SiStripBadStripQualityComparisonBase() : cond::payloadInspector::PlotImage<SiStripBadStrip>( "SiStrip BadStrip Quality Comparison Analysis" ),
+      m_trackerTopo{StandaloneTrackerTopology::fromTrackerParametersXMLFile(edm::FileInPath("Geometry/TrackerCommonData/data/trackerParameters.xml").fullPath())}{
     }
 
     bool fill( const std::vector<std::tuple<cond::Time_t,cond::Hash> >& iovs ) override{
@@ -1165,6 +1189,21 @@ namespace {
   private:
     TrackerTopology m_trackerTopo;
   };
+
+  class SiStripBadStripQualityComparisonSingleTag : public SiStripBadStripQualityComparisonBase {
+  public:
+    SiStripBadStripQualityComparisonSingleTag() : SiStripBadStripQualityComparisonBase(){
+      setSingleIov(false);
+    }
+  };
+
+  class SiStripBadStripQualityComparisonTwoTags : public SiStripBadStripQualityComparisonBase {
+  public:
+    SiStripBadStripQualityComparisonTwoTags() : SiStripBadStripQualityComparisonBase(){
+      setTwoTags(true);
+    }
+  };
+
   
 } // close namespace
 
@@ -1179,8 +1218,11 @@ PAYLOAD_INSPECTOR_MODULE(SiStripBadStrip){
   PAYLOAD_INSPECTOR_CLASS(SiStripBadStripTIDFractionByRun); 
   PAYLOAD_INSPECTOR_CLASS(SiStripBadStripTECFractionByRun); 
   PAYLOAD_INSPECTOR_CLASS(SiStripBadStripByRegion);
-  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripByRegionComparison);
-  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripFractionComparisonTrackerMap);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripByRegionComparisonSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripByRegionComparisonTwoTags);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripFractionComparisonTrackerMapSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripFractionComparisonTrackerMapTwoTags);
   PAYLOAD_INSPECTOR_CLASS(SiStripBadStripQualityAnalysis);
-  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripQualityComparison);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripQualityComparisonSingleTag);
+  PAYLOAD_INSPECTOR_CLASS(SiStripBadStripQualityComparisonTwoTags);
 }
