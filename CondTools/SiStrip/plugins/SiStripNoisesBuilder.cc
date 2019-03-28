@@ -14,6 +14,10 @@ void SiStripNoisesBuilder::analyze(const edm::Event& evt, const edm::EventSetup&
 
   edm::LogInfo("SiStripNoisesBuilder") << "... creating dummy SiStripNoises Data for Run " << run << "\n " << std::endl;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 670c69d8651... to test..
   SiStripNoises* obj = new SiStripNoises();
 
   SiStripDetInfoFileReader reader(fp_.fullPath());
