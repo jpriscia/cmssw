@@ -13,6 +13,7 @@
 <use   name="CalibFormats/SiStripObjects"/>
 <use   name="DataFormats/SiStripDetId"/>
 <use   name="CalibTracker/SiStripCommon"/>
+ <use   name="CalibTracker/StandaloneTrackerTopology"/>
 <library   file="*.cc" name="CondToolsSiStripPlugins">
   <flags   EDM_PLUGIN="1"/>
 </library>

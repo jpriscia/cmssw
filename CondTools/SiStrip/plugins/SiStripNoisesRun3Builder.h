@@ -21,10 +21,11 @@ class SiStripNoisesRun3Builder : public edm::EDAnalyzer {
 
   ~SiStripNoisesRun3Builder() override{};
 
-  void analyze(const edm::Event& , const edm::EventSetup&, const edm::ParameterSet&) override;
+  void analyze(const edm::Event& , const edm::EventSetup&) override;
 
  private:
   edm::FileInPath fp_;
   uint32_t printdebug_;
+  edm::ParameterSet conf_;
 };
 #endif
