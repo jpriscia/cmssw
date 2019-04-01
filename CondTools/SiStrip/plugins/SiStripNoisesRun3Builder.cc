@@ -22,7 +22,7 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
 
   unsigned int run=evt.id().run();
 
-  edm::LogInfo("SiStripNoisesBuilder") << "... creating dummy SiStripNoises Data for Run " << run << "\n " << std::endl;
+  edm::LogInfo("SiStripNoisesRun3Builder") << "... creating dummy SiStripNoises Data for Run " << run << "\n " << std::endl;
 
   ///////////new code//////////////
 
@@ -139,7 +139,7 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
 	
       obj->setData(noise,theSiStripVector);
       if (count<static_cast<int>(printdebug_))
-	edm::LogInfo("SiStripNoisesBuilder") << "detid " << it->first << " \t"
+	edm::LogInfo("SiStripNoisesRun3Builder") << "detid " << it->first << " \t"
 					     << " strip " << strip << " \t"
 					     << noise     << " \t" 
 					     << theSiStripVector.back()/10 << " \t" 
@@ -147,7 +147,7 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
     }    
       
     if ( ! obj->put(it->first,theSiStripVector) )
-      edm::LogError("SiStripNoisesBuilder")<<"[SiStripNoisesBuilder::analyze] detid already exists"<<std::endl;
+      edm::LogError("SiStripNoisesRun3Builder")<<"[SiStripNoisesBuilder::analyze] detid already exists"<<std::endl;
   }
 
 
@@ -162,7 +162,7 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
       mydbservice->appendSinceTime<SiStripNoises>(obj,mydbservice->currentTime(),"SiStripNoisesRcd");      
     }
   }else{
-    edm::LogError("SiStripNoisesBuilder")<<"Service is unavailable"<<std::endl;
+    edm::LogError("SiStripNoisesRun3Builder")<<"Service is unavailable"<<std::endl;
   }
 }
      

@@ -18,6 +18,9 @@ DEFINE_FWK_MODULE(SiStripPedestalsReader);
 #include "CondTools/SiStrip/plugins/SiStripNoisesBuilder.h"
 DEFINE_FWK_MODULE(SiStripNoisesBuilder);
 
+#include "CondTools/SiStrip/plugins/SiStripNoisesRun3Builder.h"
+DEFINE_FWK_MODULE(SiStripNoisesRun3Builder);
+
 #include "CondTools/SiStrip/plugins/SiStripNoisesReader.h"
 DEFINE_FWK_MODULE(SiStripNoisesReader);
 

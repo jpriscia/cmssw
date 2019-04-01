@@ -1,5 +1,5 @@
-#ifndef SiStripNoisesBuilder_H
-#define SiStripNoisesBuilder_H
+#ifndef SiStripNoisesRun3Builder_H
+#define SiStripNoisesRun3Builder_H
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "FWCore/Framework/interface/ESHandle.h"
