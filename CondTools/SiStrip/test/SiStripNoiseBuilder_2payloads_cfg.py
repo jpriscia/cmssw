@@ -61,7 +61,8 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 
 process.prod = cms.EDAnalyzer("SiStripNoisesRun3Builder",
                               printDebug = cms.untracked.uint32(1),
-                              file = cms.untracked.FileInPath('CalibTracker/SiStripCommon/data/SiStripDetInfo.dat')
+                              file = cms.untracked.FileInPath('CalibTracker/SiStripCommon/data/SiStripDetInfo.dat'),
+                              StripQualityLabel = cms.string('MergedBadComponent')
                               )
 
 
@@ -80,9 +81,9 @@ process.siStripQualityESProducer.ThresholdForReducedGranularity = cms.double(0.3
 process.siStripQualityESProducer.appendToDataLabel = 'MergedBadComponent'
 process.siStripQualityESProducer.PrintDebugOutput = cms.bool(True)
 
-process.siStripBadComponentInfo = cms.EDProducer("SiStripBadComponentInfo",
-                                                 StripQualityLabel = cms.string('MergedBadComponent')
-                                             )
+#process.siStripBadComponentInfo = cms.EDProducer("SiStripBadComponentInfo",
+#                                                 StripQualityLabel = cms.string('MergedBadComponent')
+#                                             )
 
 #process.print = cms.OutputModule("AsciiOutputModule")
 
