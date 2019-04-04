@@ -16,7 +16,8 @@
 SiStripNoisesRun3Builder::SiStripNoisesRun3Builder( const edm::ParameterSet& iConfig ):
   fp_(iConfig.getUntrackedParameter<edm::FileInPath>("file",edm::FileInPath("CalibTracker/SiStripCommon/data/SiStripDetInfo.dat"))),
   printdebug_(iConfig.getUntrackedParameter<uint32_t>("printDebug",1)),
-  conf_(iConfig){}
+  qualityLabelEarly_(iConfig.getParameter<std::string>("StripEarlyQualityLabel")),
+  qualityLabelLate_(iConfig.getParameter<std::string>("StripLateQualityLabel")){}
 
 void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSetup& iSetup){
 
@@ -33,15 +34,18 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
   edm::ESHandle<SiStripNoises> late2018NoisesHandle;
   iSetup.get<SiStripNoisesRcd>().get("Late2018", late2018NoisesHandle);
 
-  std::string  qualityLabel_ = conf_.getParameter<std::string>("StripQualityLabel");
-  edm::ESHandle<SiStripQuality> siStripQualityHandle;   
-  iSetup.get<SiStripQualityRcd>().get(qualityLabel_,siStripQualityHandle);
+  edm::ESHandle<SiStripQuality> siStripQualityEarlyHandle;   
+  iSetup.get<SiStripQualityRcd>().get(qualityLabelEarly_, siStripQualityEarlyHandle);
+
+  edm::ESHandle<SiStripQuality> siStripQualityLateHandle;
+  iSetup.get<SiStripQualityRcd>().get(qualityLabelLate_, siStripQualityLateHandle);
 
   std::unordered_map<int, std::unordered_map<int, std::vector<float> > > noises[2];// map [subdetector][layer] => noise
   std::unordered_map<int, std::unordered_map<int, float > > noises_avg[2];
   std::unordered_map<int, std::unordered_map<int, float > > noise_SF;
 
   const SiStripNoises iovs[2] = {*early2018NoisesHandle, *late2018NoisesHandle};
+
   
   for(size_t i=0; i<2; ++i){
 
@@ -64,8 +68,9 @@ void SiStripNoisesRun3Builder::analyze(const edm::Event& evt, const edm::EventSe
       for( int it=0; it < (range.second-range.first)*8/9; ++it ){
 
 	//SiStripQuality::Range detQualityRange = siStripQualityHandle->getRange(detid);
-	bool isBad_ = siStripQualityHandle->IsStripBad(d,it);
-	if (!isBad_){
+	bool isBadEarly_ = siStripQualityEarlyHandle->IsStripBad(d,it);
+	bool isBadLate_ = siStripQualityLateHandle->IsStripBad(d,it);
+	if (!isBadEarly_ && !isBadLate_){
 	  auto noise = early2018NoisesHandle->getNoise(it,range);
 	  if(noises[i].find(subid) == noises[i].end()) noises[i].emplace(subid, std::unordered_map<int, std::vector<float> >{});
 	  if((noises[i])[subid].find(layer) == (noises[i])[subid].end())  (noises[i])[subid].emplace(layer, std::vector<float>{});

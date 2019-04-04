@@ -26,6 +26,7 @@ class SiStripNoisesRun3Builder : public edm::EDAnalyzer {
  private:
   edm::FileInPath fp_;
   uint32_t printdebug_;
-  edm::ParameterSet conf_;
+  std::string qualityLabelEarly_;
+  std::string qualityLabelLate_;
 };
 #endif

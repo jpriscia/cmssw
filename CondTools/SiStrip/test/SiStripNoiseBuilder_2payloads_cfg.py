@@ -1,6 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 
+
 process = cms.Process("ICALIB")
+
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, '103X_dataRun2_Prompt_v3','')
+
 process.MessageLogger = cms.Service("MessageLogger",
                                     cout = cms.untracked.PSet(threshold = cms.untracked.string('INFO')),
                                     destinations = cms.untracked.vstring('cout')
@@ -16,7 +22,6 @@ process.source = cms.Source("EmptyIOVSource",
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1)
 )
-
 
 process.noiseEarly2018 = cms.ESSource("PoolDBESSource",
         DBParameters = cms.PSet(
@@ -47,7 +52,6 @@ process.noiseLate2018 = cms.ESSource("PoolDBESSource",
     )
 
 
-
 process.PoolDBOutputService = cms.Service("PoolDBOutputService",
                                           BlobStreamerName = cms.untracked.string('TBufferBlobStreamingService'),
                                           DBParameters = cms.PSet(authenticationPath = cms.untracked.string('/afs/cern.ch/cms/DB/conddb')),
@@ -62,28 +66,42 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 process.prod = cms.EDAnalyzer("SiStripNoisesRun3Builder",
                               printDebug = cms.untracked.uint32(1),
                               file = cms.untracked.FileInPath('CalibTracker/SiStripCommon/data/SiStripDetInfo.dat'),
-                              StripQualityLabel = cms.string('MergedBadComponent')
+                              StripEarlyQualityLabel = cms.string('MergedBadComponentEarly2018'),
+                              StripLateQualityLabel = cms.string('MergedBadComponentLate2018'),
                               )
 
 
 process.load("CalibTracker.SiStripESProducers.SiStripQualityESProducer_cfi")
 
-process.siStripQualityESProducer.ListOfRecordToMerge = cms.VPSet(
-    cms.PSet(record = cms.string("SiStripDetVOffRcd"), tag = cms.string('')),    # DCS information
-    cms.PSet(record = cms.string('SiStripDetCablingRcd'), tag = cms.string('')), # Use Detector cabling information to exclude detectors not connected            
-    cms.PSet(record = cms.string('SiStripBadChannelRcd'), tag = cms.string('')), # Online Bad components
-    cms.PSet(record = cms.string('SiStripBadFiberRcd'), tag = cms.string('')),   # Bad Channel list from the selected IOV as done at PCL
-    cms.PSet(record = cms.string('RunInfoRcd'), tag = cms.string(''))            # List of FEDs exluded during data taking          
-    )
+process.early2018SiStripQualityProducer = cms.ESProducer('SiStripQualityESProducer',
+                                                         ListOfRecordToMerge = cms.VPSet(
+                                                            cms.PSet(record = cms.string('SiStripBadModuleRcd'), tag = cms.string(''))
+                                                         ),
+                                                         ReduceGranularity = cms.bool(False),
+                                                         ThresholdForReducedGranularity = cms.double(0.3),
+                                                         appendToDataLabel = cms.string('MergedBadComponentEarly2018'),
+                                                         PrintDebugOutput = cms.bool(True),
+                                                        connect = cms.string("sqlite_file:dbfile_Early_2018.db")
+                                                     )
 
-process.siStripQualityESProducer.ReduceGranularity = cms.bool(False)
-process.siStripQualityESProducer.ThresholdForReducedGranularity = cms.double(0.3)
-process.siStripQualityESProducer.appendToDataLabel = 'MergedBadComponent'
-process.siStripQualityESProducer.PrintDebugOutput = cms.bool(True)
+
+process.late2018SiStripQualityProducer = cms.ESProducer('SiStripQualityESProducer',
+                                                        ListOfRecordToMerge = cms.VPSet(
+                                                            cms.PSet(record = cms.string('SiStripBadModuleRcd'), tag = cms.string(''))
+                                                       ),
+                                                       ReduceGranularity = cms.bool(False),
+                                                       ThresholdForReducedGranularity = cms.double(0.3),
+                                                       appendToDataLabel = cms.string('MergedBadComponentLate2018'),
+                                                       PrintDebugOutput = cms.bool(True),
+                                                       connect = cms.string("sqlite_file:dbfile_Late_2018.db")
+                                                   )
+
 
 #process.siStripBadComponentInfo = cms.EDProducer("SiStripBadComponentInfo",
 #                                                 StripQualityLabel = cms.string('MergedBadComponent')
 #                                             )
+
+
 
 #process.print = cms.OutputModule("AsciiOutputModule")
 
